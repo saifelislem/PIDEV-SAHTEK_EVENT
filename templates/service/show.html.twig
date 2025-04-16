@@ -1,0 +1,36 @@
+{% extends 'admin.html.twig' %}
+
+{% block title %}Détails du Service{% endblock %}
+
+{% block body %}
+    <div class="container-fluid">
+        <h1 class="h3 mb-4 text-gray-800">Détails du Service</h1>
+
+        {% for message in app.flashes('success') %}
+            <div class="alert alert-success">{{ message }}</div>
+        {% endfor %}
+        {% for message in app.flashes('error') %}
+            <div class="alert alert-danger">{{ message }}</div>
+        {% endfor %}
+
+        <div class="card shadow mb-4">
+            <div class="card-header py-3">
+                <h6 class="m-0 font-weight-bold text-primary">Service #{{ service.id }}</h6>
+            </div>
+            <div class="card-body">
+                <p><strong>ID:</strong> {{ service.id }}</p>
+                <p><strong>Type:</strong> {{ service.type }}</p>
+                <p><strong>Description:</strong> {{ service.description }}</p>
+                <p><strong>Coût:</strong> {{ service.cout }} TND</p>
+                <p><strong>Événement:</strong> {{ service.evenement ? service.evenement.nom : 'N/A' }}</p>
+                <a href="{{ path('app_service_index') }}" class="btn btn-secondary btn-user mt-3">Retour à la liste</a>
+                <a href="{{ path('app_service_edit', {'id': service.id}) }}" class="btn btn-primary btn-user mt-3">Modifier</a>
+                <form method="post" action="{{ path('app_service_delete', {'id': service.id}) }}" style="display:inline;" onsubmit="return confirm('Voulez-vous vraiment supprimer ce service ?');">
+                    <input type="hidden" name="_method" value="DELETE">
+                    <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ service.id) }}">
+                    <button type="submit" class="btn btn-danger btn-user mt-3">Supprimer</button>
+                </form>
+            </div>
+        </div>
+    </div>
+{% endblock %}

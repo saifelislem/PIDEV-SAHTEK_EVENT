@@ -1,0 +1,124 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ evenement.nom }} - Sahtek Event{% endblock %}
+
+{% block body %}
+    <!-- ***** Main Banner Area Start ***** -->
+    <div class="about-main-content">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="content">
+                        <div class="blur-bg"></div>
+                        <h4>PARTICIPEZ À NOS ÉVÉNEMENTS</h4>
+                        <div class="line-dec"></div>
+                        <h2>{{ evenement.nom }}</h2>
+                        <p>Rejoignez cet événement à {{ evenement.lieu|default('Lieu non spécifié') }} le {{ evenement.date|date('d M Y à H:i') }}.</p>
+                        <div class="main-button">
+                            <a href="{{ path('app_evenement_supports', {'id': evenement.id}) }}">Support</a>
+                            <a href="#reclamation">Réclamation</a>
+                            <a href="#feedback">Feedback</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- ***** Main Banner Area End ***** -->
+
+    <!-- ***** Participated Events Start ***** -->
+    <div class="cities-town">
+        <div class="container">
+            <div class="row">
+                <div class="slider-content">
+                    <div class="row">
+                        <div class="col-lg-12">
+                            <h2>Vos <em>Événements Participés</em></h2>
+                        </div>
+                        <div class="col-lg-12">
+                            <div class="owl-cites-town owl-carousel">
+                                {% for participation in app.user.participations %}
+                                    {% set event = participation.evenement %}
+                                    <div class="item">
+                                        <div class="thumb">
+                                            <img src="{{ asset('assets/front/images/cities-01.jpg') }}" alt="{{ event.nom }}"
+                                                 onerror="this.src='{{ asset('assets/front/images/cities-01.jpg') }}'">
+                                            <h4>{{ event.nom }}</h4>
+                                        </div>
+                                    </div>
+                                  {% endfor %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- ***** Participated Events End ***** -->
+
+    <!-- Reclamation Form -->
+    <div id="reclamation" class="reservation-form">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-12">
+                    <form id="reservation-form" name="gs" method="post" action="{{ path('app_evenement_details', {'id': evenement.id}) }}" enctype="multipart/form-data">
+                        {{ form_start(reclamation_form) }}
+                        <div class="row">
+                            <div class="col-lg-12">
+                                <h4>Soumettre une Réclamation pour <em>{{ evenement.nom }}</em></h4>
+                            </div>
+                            <div class="col-lg-6">
+                                {{ form_row(reclamation_form.message, {'attr': {'class': 'form-control'}}) }}
+                            </div>
+                            <div class="col-lg-6">
+                                {{ form_row(reclamation_form.image, {'attr': {'class': 'form-control'}}) }}
+                            </div>
+                            <div class="col-lg-6">
+                                {{ form_row(reclamation_form.pass, {'attr': {'class': 'form-control'}}) }}
+                            </div>
+                            <div class="col-lg-12">
+                                <fieldset>
+                                    <button type="submit" class="main-button">Envoyer Réclamation</button>
+                                </fieldset>
+                            </div>
+                        </div>
+                        {{ form_end(reclamation_form) }}
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Feedback Form -->
+    <div id="feedback" class="reservation-form">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-12">
+                    <form id="reservation-form" name="gs" method="post" action="{{ path('app_evenement_details', {'id': evenement.id}) }}">
+                        {{ form_start(feedback_form) }}
+                        <div class="row">
+                            <div class="col-lg-12">
+                                <h4>Soumettre un Feedback pour <em>{{ evenement.nom }}</em></h4>
+                            </div>
+                            <div class="col-lg-6">
+                                {{ form_row(feedback_form.message, {'attr': {'class': 'form-control'}}) }}
+                            </div>
+                            <div class="col-lg-6">
+                                {{ form_row(feedback_form.note, {'attr': {'class': 'form-control'}}) }}
+                            </div>
+                            <div class="col-lg-6">
+                                {{ form_row(feedback_form.pass, {'attr': {'class': 'form-control'}}) }}
+                            </div>
+                            <div class="col-lg-12">
+                                <fieldset>
+                                    <button type="submit" class="main-button">Envoyer Feedback</button>
+                                </fieldset>
+                            </div>
+                        </div>
+                        {{ form_end(feedback_form) }}
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

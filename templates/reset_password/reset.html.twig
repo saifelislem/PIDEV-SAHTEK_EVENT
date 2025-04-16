@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Réinitialiser mon mot de passe - WoOx Travel</title>
+    <link href="{{ asset('assets/back/css/sb-admin-2.min.css') }}" rel="stylesheet">
+</head>
+<body class="bg-gradient-primary">
+<div class="container">
+    <div class="card o-hidden border-0 shadow-lg my-5">
+        <div class="card-body p-0">
+            <div class="row">
+                <div class="col-lg-6 d-none d-lg-block bg-password-image"></div>
+                <div class="col-lg-6">
+                    <div class="p-5">
+                        <div class="text-center">
+                            <h1 class="h4 text-gray-900 mb-4">Nouveau mot de passe</h1>
+                        </div>
+                        {% for message in app.flashes('success') %}
+                            <div class="alert alert-success">{{ message }}</div>
+                        {% endfor %}
+                        {% for message in app.flashes('error') %}
+                            <div class="alert alert-danger">{{ message }}</div>
+                        {% endfor %}
+                        {{ form_start(form, {'attr': {'class': 'user'}}) }}
+                        {{ form_errors(form) }}
+                        <div class="form-group">
+                            {{ form_row(form.password.first, {'attr': {'class': 'form-control form-control-user', 'placeholder': 'Nouveau mot de passe'}}) }}
+                            {{ form_errors(form.password.first) }}
+                        </div>
+                        <div class="form-group">
+                            {{ form_row(form.password.second, {'attr': {'class': 'form-control form-control-user', 'placeholder': 'Confirmer le mot de passe'}}) }}
+                            {{ form_errors(form.password.second) }}
+                        </div>
+                        <button type="submit" class="btn btn-primary btn-user btn-block">Réinitialiser</button>
+                        {{ form_end(form) }}
+                        <hr>
+                        <div class="text-center">
+                            <a class="small" href="{{ path('app_login') }}">Retour à la connexion</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="{{ asset('assets/back/vendor/jquery/jquery.min.js') }}"></script>
+<script src="{{ asset('assets/back/vendor/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
+<script src="{{ asset('assets/back/js/sb-admin-2.min.js') }}"></script>
+</body>
+</html>

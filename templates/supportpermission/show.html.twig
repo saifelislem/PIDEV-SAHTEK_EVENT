@@ -1,0 +1,59 @@
+{% extends 'admin.html.twig' %}
+
+{% block title %}Détails de la Permission de Support{% endblock %}
+
+{% block body %}
+    <div class="container-fluid">
+        <h1 class="h3 mb-4 text-gray-800">Détails de la Permission de Support</h1>
+
+        {% for message in app.flashes('success') %}
+            <div class="alert alert-success">{{ message }}</div>
+        {% endfor %}
+        {% for message in app.flashes('error') %}
+            <div class="alert alert-danger">{{ message }}</div>
+        {% endfor %}
+
+        <div class="card shadow mb-4">
+            <div class="card-header py-3">
+                <h6 class="m-0 font-weight-bold text-primary">Permission #{{ supportpermission.id }}</h6>
+            </div>
+            <div class="card-body">
+                <table class="table table-bordered">
+                    <tbody>
+                    <tr>
+                        <th>ID</th>
+                        <td>{{ supportpermission.id }}</td>
+                    </tr>
+                    <tr>
+                        <th>Type de Permission</th>
+                        <td>{{ supportpermission.permissionType }}</td>
+                    </tr>
+                    <tr>
+                        <th>Rôle</th>
+                        <td>{{ supportpermission.role }}</td>
+                    </tr>
+                    <tr>
+                        <th>Date de Début</th>
+                        <td>{{ supportpermission.startDate ? supportpermission.startDate|date('Y-m-d') : 'N/A' }}</td>
+                    </tr>
+                    <tr>
+                        <th>Date de Fin</th>
+                        <td>{{ supportpermission.endDate ? supportpermission.endDate|date('Y-m-d') : 'N/A' }}</td>
+                    </tr>
+                    <tr>
+                        <th>Support Associé</th>
+                        <td>{{ supportpermission.support ? supportpermission.support.titre : 'N/A' }}</td>
+                    </tr>
+                    </tbody>
+                </table>
+                <a href="{{ path('app_supportpermission_index') }}" class="btn btn-secondary btn-user mt-3">Retour à la liste</a>
+                <a href="{{ path('app_supportpermission_edit', {'id': supportpermission.id}) }}" class="btn btn-primary btn-user mt-3">Modifier</a>
+                <form method="post" action="{{ path('app_supportpermission_delete', {'id': supportpermission.id}) }}" style="display:inline;" onsubmit="return confirm('Voulez-vous vraiment supprimer cette permission ?');">
+                    <input type="hidden" name="_method" value="DELETE">
+                    <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ supportpermission.id) }}">
+                    <button type="submit" class="btn btn-danger btn-user mt-3">Supprimer</button>
+                </form>
+            </div>
+        </div>
+    </div>
+{% endblock %}

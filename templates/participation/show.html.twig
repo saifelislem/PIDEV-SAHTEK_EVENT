@@ -1,0 +1,55 @@
+{% extends 'admin.html.twig' %}
+
+{% block title %}Détails de la Participation{% endblock %}
+
+{% block body %}
+    <div class="container-fluid">
+        <h1 class="h3 mb-4 text-gray-800">Détails de la Participation</h1>
+
+        {% for message in app.flashes('success') %}
+            <div class="alert alert-success">{{ message }}</div>
+        {% endfor %}
+        {% for message in app.flashes('error') %}
+            <div class="alert alert-danger">{{ message }}</div>
+        {% endfor %}
+
+        <div class="card shadow mb-4">
+            <div class="card-header py-3">
+                <h6 class="m-0 font-weight-bold text-primary">Participation #{{ participation.id }}</h6>
+            </div>
+            <div class="card-body">
+                <table class="table table-bordered">
+                    <tbody>
+                    <tr>
+                        <th>Id</th>
+                        <td>{{ participation.id }}</td>
+                    </tr>
+                    <tr>
+                        <th>Utilisateur</th>
+                        <td>{{ participation.utilisateur ? participation.utilisateur.nom ~ ' ' ~ participation.utilisateur.prenom ~ ' (' ~ participation.utilisateur.email ~ ')' : 'Non défini' }}</td>
+                    </tr>
+                    <tr>
+                        <th>Événement</th>
+                        <td>{{ participation.evenement ? participation.evenement.nom : 'Non défini' }}</td>
+                    </tr>
+                    <tr>
+                        <th>Date d'inscription</th>
+                        <td>{{ participation.dateInscription ? participation.dateInscription|date('d/m/Y H:i') : 'Non définie' }}</td>
+                    </tr>
+                    <tr>
+                        <th>Moyen de paiement</th>
+                        <td>{{ participation.moyenPaiement ?: 'Non défini' }}</td>
+                    </tr>
+                    </tbody>
+                </table>
+                <a href="{{ path('app_participation_index') }}" class="btn btn-secondary btn-user mt-3">Retour à la liste</a>
+                <a href="{{ path('app_participation_edit', {'id': participation.id}) }}" class="btn btn-primary btn-user mt-3">Modifier</a>
+                <form method="post" action="{{ path('app_participation_delete', {'id': participation.id}) }}" style="display:inline;" onsubmit="return confirm('Voulez-vous vraiment supprimer cette participation ?');">
+                    <input type="hidden" name="_method" value="DELETE">
+                    <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ participation.id) }}">
+                    <button type="submit" class="btn btn-danger btn-user mt-3">Supprimer</button>
+                </form>
+            </div>
+        </div>
+    </div>
+{% endblock %}

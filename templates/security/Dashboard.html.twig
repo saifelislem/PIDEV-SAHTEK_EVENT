@@ -1,0 +1,225 @@
+{% extends 'admin.html.twig' %}
+
+{% block title %}Tableau de bord{% endblock %}
+
+{% block body %}
+    <div class="d-sm-flex align-items-center justify-content-between mb-4">
+        <h1 class="h3 mb-0 text-gray-800">Tableau de bord</h1>
+    </div>
+
+    {% for message in app.flashes('success') %}
+        <div class="alert alert-success">{{ message }}</div>
+    {% endfor %}
+    {% for message in app.flashes('error') %}
+        <div class="alert alert-danger">{{ message }}</div>
+    {% endfor %}
+
+    <div class="row">
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="card border-left-primary shadow h-100 py-2">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">Utilisateurs</div>
+                            <div class="h5 mb-0 font-weight-bold text-gray-800">{{ user_count }}</div>
+                        </div>
+                        <div class="col-auto">
+                            <i class="fas fa-users fa-2x text-gray-300"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="card border-left-success shadow h-100 py-2">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs font-weight-bold text-success text-uppercase mb-1">Événements</div>
+                            <div class="h5 mb-0 font-weight-bold text-gray-800">{{ event_count }}</div>
+                        </div>
+                        <div class="col-auto">
+                            <i class="fas fa-calendar fa-2x text-gray-300"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="card border-left-info shadow h-100 py-2">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs font-weight-bold text-info text-uppercase mb-1">Réclamations</div>
+                            <div class="h5 mb-0 font-weight-bold text-gray-800">{{ reclamation_count }}</div>
+                        </div>
+                        <div class="col-auto">
+                            <i class="fas fa-exclamation-circle fa-2x text-gray-300"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="card border-left-warning shadow h-100 py-2">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">Contrats de sponsoring</div>
+                            <div class="h5 mb-0 font-weight-bold text-gray-800">{{ sponsoring_count }}</div>
+                        </div>
+                        <div class="col-auto">
+                            <i class="fas fa-handshake fa-2x text-gray-300"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="card border-left-danger shadow h-100 py-2">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs font-weight-bold text-danger text-uppercase mb-1">Demandes en attente</div>
+                            <div class="h5 mb-0 font-weight-bold text-gray-800">{{ pending_count }}</div>
+                        </div>
+                        <div class="col-auto">
+                            <i class="fas fa-hourglass-half fa-2x text-gray-300"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="card shadow mb-4">
+        <div class="card-header py-3">
+            <h6 class="m-0 font-weight-bold text-primary">Demandes de sponsoring en attente</h6>
+        </div>
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                    <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Nom</th>
+                        <th>Prénom</th>
+                        <th>E-mail</th>
+                        <th>Produit</th>
+                        <th>Montant Contrat</th>
+                        <th>Actions</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for demande in demandes %}
+                        <tr>
+                            <td>{{ demande.id }}</td>
+                            <td>{{ demande.nom }}</td>
+                            <td>{{ demande.prenom }}</td>
+                            <td>{{ demande.email }}</td>
+                            <td>{{ demande.produitNom }}</td>
+                            <td>{{ demande.contratMontant }} €</td>
+                            <td>
+                                <button class="btn btn-info btn-sm" data-toggle="modal" data-target="#detailsModal{{ demande.id }}">Détails</button>
+                                <form method="post" style="display: inline;" onsubmit="return confirm('Valider cette demande ?');">
+                                    <input type="hidden" name="id" value="{{ demande.id }}">
+                                    <input type="hidden" name="validate" value="1">
+                                    <button type="submit" class="btn btn-success btn-sm">Valider</button>
+                                </form>
+                                <form method="post" style="display: inline;" onsubmit="return confirm('Rejeter cette demande ?');">
+                                    <input type="hidden" name="id" value="{{ demande.id }}">
+                                    <input type="hidden" name="reject" value="1">
+                                    <button type="submit" class="btn btn-danger btn-sm">Rejeter</button>
+                                </form>
+                            </td>
+                        </tr>
+                    {% else %}
+                        <tr>
+                            <td colspan="7">Aucune demande en attente.</td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modales pour chaque demande -->
+    {% for demande in demandes %}
+        <div class="modal fade" id="detailsModal{{ demande.id }}" tabindex="-1" role="dialog" aria-labelledby="detailsModalLabel{{ demande.id }}" aria-hidden="true">
+            <div class="modal-dialog modal-lg" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="detailsModalLabel{{ demande.id }}">Détails de la demande #{{ demande.id }}</h5>
+                        <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">×</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <h5>Utilisateur</h5>
+                        <p><strong>Nom :</strong> {{ demande.nom }}</p>
+                        <p><strong>Prénom :</strong> {{ demande.prenom }}</p>
+                        <p><strong>E-mail :</strong> {{ demande.email }}</p>
+                        <p><strong>Nationalité :</strong> {{ demande.nationalite }}</p>
+                        <p><strong>Genre :</strong> {{ demande.genre }}</p>
+
+                        <h5>Produit</h5>
+                        <p><strong>Nom :</strong> {{ demande.produitNom }}</p>
+                        <p><strong>Description :</strong> {{ demande.produitDescription }}</p>
+                        <p><strong>Quantité :</strong> {{ demande.produitQuantite }}</p>
+                        <p><strong>Prix :</strong> {{ demande.produitPrix }} €</p>
+                        {% if demande.produitImage %}
+                            <p><strong>Image :</strong><br>
+                                <img src="{{ asset('Uploads/sponsor_pending/' ~ demande.produitImage) }}" alt="Produit" style="max-width: 200px;">
+                            </p>
+                        {% endif %}
+
+                        <h5>Contrat</h5>
+                        <p><strong>Montant :</strong> {{ demande.contratMontant }} €</p>
+                        <p><strong>Description :</strong> {{ demande.contratDescription }}</p>
+
+                        <p><strong>Statut :</strong> {{ demande.status }}</p>
+                    </div>
+                    <div class="modal-footer">
+                        <button class="btn btn-secondary" type="button" data-dismiss="modal">Fermer</button>
+                        <form method="post" style="display: inline;" onsubmit="return confirm('Valider cette demande ?');">
+                            <input type="hidden" name="id" value="{{ demande.id }}">
+                            <input type="hidden" name="validate" value="1">
+                            <button type="submit" class="btn btn-success">Valider</button>
+                        </form>
+                        <form method="post" style="display: inline;" onsubmit="return confirm('Rejeter cette demande ?');">
+                            <input type="hidden" name="id" value="{{ demande.id }}">
+                            <input type="hidden" name="reject" value="1">
+                            <button type="submit" class="btn btn-danger">Rejeter</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    {% endfor %}
+{% endblock %}
+
+{% block js %}
+    {{ parent() }}
+    <script src="{{ asset('assets/back/vendor/datatables/jquery.dataTables.min.js') }}"></script>
+    <script src="{{ asset('assets/back/vendor/datatables/dataTables.bootstrap4.min.js') }}"></script>
+    <script>
+        $(document).ready(function() {
+            $('#dataTable').DataTable({
+                "order": [[0, "desc"]], // Tri par ID décroissant
+                "language": {
+                    "url": "//cdn.datatables.net/plug-ins/1.10.25/i18n/French.json"
+                }
+            });
+
+            // Vérifier le paramètre openModal dans l'URL
+            const urlParams = new URLSearchParams(window.location.search);
+            const openModalId = urlParams.get('openModal');
+            if (openModalId) {
+                $(`#detailsModal${openModalId}`).modal('show');
+                // Nettoyer l'URL après ouverture
+                window.history.replaceState({}, document.title, "{{ path('app_admin_dashboard') }}");
+            }
+        });
+    </script>
+{% endblock %}

@@ -1,0 +1,44 @@
+{% extends 'admin.html.twig' %}
+
+{% block title %}Nouveau Feedback{% endblock %}
+
+{% block body %}
+    <div class="container-fluid">
+        <h1 class="h3 mb-4 text-gray-800">Créer un nouveau Feedback</h1>
+
+        {% for message in app.flashes('success') %}
+            <div class="alert alert-success">{{ message }}</div>
+        {% endfor %}
+        {% for message in app.flashes('error') %}
+            <div class="alert alert-danger">{{ message }}</div>
+        {% endfor %}
+
+        <div class="card shadow mb-4">
+            <div class="card-header py-3">
+                <h6 class="m-0 font-weight-bold text-primary">Formulaire de Feedback</h6>
+            </div>
+            <div class="card-body">
+                {{ form_start(form, {'attr': {'class': 'form'}}) }}
+                <div class="form-group">
+                    {{ form_label(form.message) }}
+                    {{ form_widget(form.message, {'attr': {'class': 'form-control'}}) }}
+                    {{ form_errors(form.message) }}
+                </div>
+                <div class="form-group">
+                    {{ form_label(form.note) }}
+                    {{ form_widget(form.note, {'attr': {'class': 'form-control'}}) }}
+                    {{ form_errors(form.note) }}
+                </div>
+                <div class="form-group">
+                    {{ form_label(form.pass) }}
+                    {{ form_widget(form.pass, {'attr': {'class': 'form-control'}}) }}
+                    {{ form_errors(form.pass) }}
+                </div>
+                <button type="submit" class="btn btn-primary btn-user btn-block">Créer</button>
+                {{ form_end(form) }}
+
+                <a href="{{ path('app_feedback_index') }}" class="btn btn-secondary btn-user btn-block mt-2">Retour à la liste</a>
+            </div>
+        </div>
+    </div>
+{% endblock %}

@@ -1,0 +1,104 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Ajouter un produit - Sahtek Event{% endblock %}
+
+{% block css %}
+    {{ parent() }}
+    <style>
+        .form-section {
+            padding: 50px 0;
+        }
+        .form-section h2 {
+            font-family: 'Poppins', sans-serif;
+            font-weight: 700;
+            margin-bottom: 30px;
+            color: #2a2a2a;
+        }
+        .form-group {
+            margin-bottom: 20px;
+        }
+        .form-group label {
+            font-family: 'Poppins', sans-serif;
+            font-weight: 500;
+            color: #2a2a2a;
+        }
+        .form-control {
+            border-radius: 10px;
+            padding: 12px;
+            font-family: 'Poppins', sans-serif;
+        }
+        .btn-primary {
+            background: linear-gradient(90deg, #1f91aa, #1a6f81);
+            border: none;
+            padding: 12px 30px;
+            border-radius: 25px;
+            font-family: 'Poppins', sans-serif;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+        .btn-primary:hover {
+            background: linear-gradient(90deg, #1a6f81, #1f91aa);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+        .alert {
+            border-radius: 10px;
+            font-family: 'Poppins', sans-serif;
+        }
+    </style>
+{% endblock %}
+
+{% block body %}
+    <section class="form-section">
+        <div class="container">
+            <h2>Ajouter un nouveau produit</h2>
+
+            {% for message in app.flashes('success') %}
+                <div class="alert alert-success">{{ message }}</div>
+            {% endfor %}
+            {% for message in app.flashes('error') %}
+                <div class="alert alert-danger">{{ message }}</div>
+            {% endfor %}
+
+            {{ form_start(form) }}
+            <div class="form-group">
+                {{ form_label(form.produitNom, 'Nom du produit') }}
+                {{ form_widget(form.produitNom, {'attr': {'class': 'form-control'}}) }}
+                {{ form_errors(form.produitNom) }}
+            </div>
+            <div class="form-group">
+                {{ form_label(form.produitDescription, 'Description du produit') }}
+                {{ form_widget(form.produitDescription, {'attr': {'class': 'form-control', 'rows': '5'}}) }}
+                {{ form_errors(form.produitDescription) }}
+            </div>
+            <div class="form-group">
+                {{ form_label(form.produitQuantite, 'Quantité') }}
+                {{ form_widget(form.produitQuantite, {'attr': {'class': 'form-control'}}) }}
+                {{ form_errors(form.produitQuantite) }}
+            </div>
+            <div class="form-group">
+                {{ form_label(form.produitPrix, 'Prix (€)') }}
+                {{ form_widget(form.produitPrix, {'attr': {'class': 'form-control'}}) }}
+                {{ form_errors(form.produitPrix) }}
+            </div>
+            <div class="form-group">
+                {{ form_label(form.produitImage, 'Image') }}
+                {{ form_widget(form.produitImage, {'attr': {'class': 'form-control-file'}}) }}
+                {{ form_errors(form.produitImage) }}
+            </div>
+            <div class="form-group">
+                {{ form_label(form.contratMontant, 'Montant du contrat (€)') }}
+                {{ form_widget(form.contratMontant, {'attr': {'class': 'form-control'}}) }}
+                {{ form_errors(form.contratMontant) }}
+            </div>
+            <div class="form-group">
+                {{ form_label(form.contratDescription, 'Description du contrat') }}
+                {{ form_widget(form.contratDescription, {'attr': {'class': 'form-control', 'rows': '5'}}) }}
+                {{ form_errors(form.contratDescription) }}
+            </div>
+            <div class="form-group">
+                <button type="submit" class="btn btn-primary">Soumettre</button>
+            </div>
+            {{ form_end(form) }}
+        </div>
+    </section>
+{% endblock %}

@@ -1,0 +1,54 @@
+{% extends 'admin.html.twig' %}
+
+{% block title %}Modifier le Contrat Sponsoring{% endblock %}
+
+{% block body %}
+    <div class="container-fluid">
+        <h1 class="h3 mb-4 text-gray-800">Modifier le Contrat Sponsoring</h1>
+
+        {% for message in app.flashes('success') %}
+            <div class="alert alert-success">{{ message }}</div>
+        {% endfor %}
+        {% for message in app.flashes('error') %}
+            <div class="alert alert-danger">{{ message }}</div>
+        {% endfor %}
+
+        <div class="card shadow mb-4">
+            <div class="card-header py-3">
+                <h6 class="m-0 font-weight-bold text-primary">Contrat Sponsoring</h6>
+            </div>
+            <div class="card-body">
+                {{ form_start(form, {'attr': {'class': 'form'}}) }}
+                <div class="form-group">
+                    {{ form_label(form.montant) }}
+                    {{ form_widget(form.montant, {'attr': {'class': 'form-control'}}) }}
+                    {{ form_errors(form.montant) }}
+                </div>
+                <div class="form-group">
+                    {{ form_label(form.description) }}
+                    {{ form_widget(form.description, {'attr': {'class': 'form-control'}}) }}
+                    {{ form_errors(form.description) }}
+                </div>
+                <div class="form-group">
+                    {{ form_label(form.utilisateur) }}
+                    {{ form_widget(form.utilisateur, {'attr': {'class': 'form-control'}}) }}
+                    {{ form_errors(form.utilisateur) }}
+                </div>
+                <div class="form-group">
+                    {{ form_label(form.evenement) }}
+                    {{ form_widget(form.evenement, {'attr': {'class': 'form-control'}}) }}
+                    {{ form_errors(form.evenement) }}
+                </div>
+                <div class="form-group">
+                    {{ form_label(form.produitsponsorings) }}
+                    {{ form_widget(form.produitsponsorings, {'attr': {'class': 'form-control'}}) }}
+                    {{ form_errors(form.produitsponsorings) }}
+                </div>
+                <button type="submit" class="btn btn-primary btn-user btn-block">Mettre à jour</button>
+                {{ form_end(form) }}
+
+                <a href="{{ path('app_contrat_sponsoring_index') }}" class="btn btn-secondary btn-user btn-block mt-2">Retour à la liste</a>
+            </div>
+        </div>
+    </div>
+{% endblock %}

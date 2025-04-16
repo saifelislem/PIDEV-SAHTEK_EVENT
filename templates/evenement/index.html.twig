@@ -1,0 +1,63 @@
+{% extends 'admin.html.twig' %}
+
+{% block title %}Événements{% endblock %}
+
+{% block body %}
+    <div class="container-fluid">
+        <h1 class="h3 mb-4 text-gray-800">Événements</h1>
+
+        {% for message in app.flashes('success') %}
+            <div class="alert alert-success">{{ message }}</div>
+        {% endfor %}
+        {% for message in app.flashes('error') %}
+            <div class="alert alert-danger">{{ message }}</div>
+        {% endfor %}
+
+        <div class="card shadow mb-4">
+            <div class="card-header py-3">
+                <h6 class="m-0 font-weight-bold text-primary">Liste des Événements</h6>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-bordered table-hover">
+                        <thead class="thead-light">
+                        <tr>
+                            <th>Nom</th>
+                            <th>Description</th>
+                            <th>Date</th>
+                            <th>Lieu</th>
+                            <th>Statut</th>
+                            <th>Capacité Max</th>
+                            <th>Image</th>
+                            <th>Type</th>
+                            <th>Actions</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {% for evenement in evenements %}
+                            <tr>
+                                <td>{{ evenement.nom }}</td>
+                                <td>{{ evenement.description }}</td>
+                                <td>{{ evenement.date ? evenement.date|date('Y-m-d H:i') : '' }}</td>
+                                <td>{{ evenement.lieu }}</td>
+                                <td>{{ evenement.statut }}</td>
+                                <td>{{ evenement.capaciteMax }}</td>
+                                <td>{{ evenement.image }}</td>
+                                <td>{{ evenement.type }}</td>
+                                <td>
+                                    <a href="{{ path('app_evenement_show', {'id': evenement.id}) }}" class="btn btn-sm btn-info">Voir</a>
+                                </td>
+                            </tr>
+                        {% else %}
+                            <tr>
+                                <td colspan="9" class="text-center">Aucun événement trouvé</td>
+                            </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                <a href="{{ path('app_evenement_new') }}" class="btn btn-primary btn-user mt-3">Créer un nouvel événement</a>
+            </div>
+        </div>
+    </div>
+{% endblock %}

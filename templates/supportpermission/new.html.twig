@@ -1,0 +1,54 @@
+{% extends 'admin.html.twig' %}
+
+{% block title %}Nouvelle Permission de Support{% endblock %}
+
+{% block body %}
+    <div class="container-fluid">
+        <h1 class="h3 mb-4 text-gray-800">Créer une nouvelle Permission de Support</h1>
+
+        {% for message in app.flashes('success') %}
+            <div class="alert alert-success">{{ message }}</div>
+        {% endfor %}
+        {% for message in app.flashes('error') %}
+            <div class="alert alert-danger">{{ message }}</div>
+        {% endfor %}
+
+        <div class="card shadow mb-4">
+            <div class="card-header py-3">
+                <h6 class="m-0 font-weight-bold text-primary">Formulaire de Permission</h6>
+            </div>
+            <div class="card-body">
+                {{ form_start(form, {'attr': {'class': 'form'}}) }}
+                <div class="form-group">
+                    {{ form_label(form.permission_type) }}
+                    {{ form_widget(form.permission_type, {'attr': {'class': 'form-control'}}) }}
+                    {{ form_errors(form.permission_type) }}
+                </div>
+                <div class="form-group">
+                    {{ form_label(form.role) }}
+                    {{ form_widget(form.role, {'attr': {'class': 'form-control'}}) }}
+                    {{ form_errors(form.role) }}
+                </div>
+                <div class="form-group">
+                    {{ form_label(form.startDate) }}
+                    {{ form_widget(form.startDate, {'attr': {'class': 'form-control'}}) }}
+                    {{ form_errors(form.startDate) }}
+                </div>
+                <div class="form-group">
+                    {{ form_label(form.endDate) }}
+                    {{ form_widget(form.endDate, {'attr': {'class': 'form-control'}}) }}
+                    {{ form_errors(form.endDate) }}
+                </div>
+                <div class="form-group">
+                    {{ form_label(form.support) }}
+                    {{ form_widget(form.support, {'attr': {'class': 'form-control'}}) }}
+                    {{ form_errors(form.support) }}
+                </div>
+                <button type="submit" class="btn btn-primary btn-user btn-block">Créer</button>
+                {{ form_end(form) }}
+
+                <a href="{{ path('app_supportpermission_index') }}" class="btn btn-secondary btn-user btn-block mt-2">Retour à la liste</a>
+            </div>
+        </div>
+    </div>
+{% endblock %}

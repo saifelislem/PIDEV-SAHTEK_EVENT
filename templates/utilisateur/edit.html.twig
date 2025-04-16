@@ -1,0 +1,85 @@
+{% extends 'admin.html.twig' %}
+
+{% block title %}Modifier l’Utilisateur{% endblock %}
+
+{% block body %}
+    <div class="container-fluid">
+        <h1 class="h3 mb-4 text-gray-800">Modifier l’Utilisateur</h1>
+
+        {% for message in app.flashes('success') %}
+            <div class="alert alert-success">{{ message }}</div>
+        {% endfor %}
+        {% for message in app.flashes('error') %}
+            <div class="alert alert-danger">{{ message }}</div>
+        {% endfor %}
+
+        <div class="card shadow mb-4">
+            <div class="card-header py-3">
+                <h6 class="m-0 font-weight-bold text-primary">Utilisateur #{{ utilisateur.id }}</h6>
+            </div>
+            <div class="card-body">
+                {{ form_start(form, {'attr': {'class': 'form'}}) }}
+                <div class="form-group">
+                    {{ form_label(form.nom) }}
+                    {{ form_widget(form.nom, {'attr': {'class': 'form-control'}}) }}
+                    {{ form_errors(form.nom) }}
+                </div>
+                <div class="form-group">
+                    {{ form_label(form.prenom) }}
+                    {{ form_widget(form.prenom, {'attr': {'class': 'form-control'}}) }}
+                    {{ form_errors(form.prenom) }}
+                </div>
+                <div class="form-group">
+                    {{ form_label(form.role) }}
+                    {{ form_widget(form.role, {'attr': {'class': 'form-control'}}) }}
+                    {{ form_errors(form.role) }}
+                </div>
+                <div class="form-group">
+                    {{ form_label(form.mot_de_passe) }}
+                    {{ form_widget(form.mot_de_passe, {'attr': {'class': 'form-control'}}) }}
+                    {{ form_errors(form.mot_de_passe) }}
+                    <small class="form-text text-muted">Laissez vide pour ne pas modifier le mot de passe.</small>
+                </div>
+                <div class="form-group">
+                    {{ form_label(form.nationalite) }}
+                    {{ form_widget(form.nationalite, {'attr': {'class': 'form-control'}}) }}
+                    {{ form_errors(form.nationalite) }}
+                </div>
+                <div class="form-group">
+                    {{ form_label(form.genre) }}
+                    {{ form_widget(form.genre, {'attr': {'class': 'form-control'}}) }}
+                    {{ form_errors(form.genre) }}
+                </div>
+                <div class="form-group">
+                    {{ form_label(form.email) }}
+                    {{ form_widget(form.email, {'attr': {'class': 'form-control'}}) }}
+                    {{ form_errors(form.email) }}
+                </div>
+                <div class="form-group">
+                    {{ form_label(form.permission) }}
+                    {{ form_widget(form.permission, {'attr': {'class': 'form-control'}}) }}
+                    {{ form_errors(form.permission) }}
+                </div>
+                <div class="form-group">
+                    {{ form_label(form.statut) }}
+                    {{ form_widget(form.statut, {'attr': {'class': 'form-control'}}) }}
+                    {{ form_errors(form.statut) }}
+                </div>
+                <div class="form-group">
+                    {{ form_label(form.verification_token) }}
+                    {{ form_widget(form.verification_token, {'attr': {'class': 'form-control'}}) }}
+                    {{ form_errors(form.verification_token) }}
+                </div>
+                <div class="form-group">
+                    {{ form_label(form.is_verified) }}
+                    {{ form_widget(form.is_verified, {'attr': {'class': 'form-control'}}) }}
+                    {{ form_errors(form.is_verified) }}
+                </div>
+                <button type="submit" class="btn btn-primary btn-user btn-block">Mettre à jour</button>
+                {{ form_end(form) }}
+
+                <a href="{{ path('app_utilisateur_index') }}" class="btn btn-secondary btn-user btn-block mt-2">Retour à la liste</a>
+            </div>
+        </div>
+    </div>
+{% endblock %}

@@ -1,0 +1,35 @@
+{% extends 'admin.html.twig' %}
+
+{% block title %}Détails du Suivi de Réclamation{% endblock %}
+
+{% block body %}
+    <div class="container-fluid">
+        <h1 class="h3 mb-4 text-gray-800">Détails du Suivi de Réclamation</h1>
+
+        {% for message in app.flashes('success') %}
+            <div class="alert alert-success">{{ message }}</div>
+        {% endfor %}
+        {% for message in app.flashes('error') %}
+            <div class="alert alert-danger">{{ message }}</div>
+        {% endfor %}
+
+        <div class="card shadow mb-4">
+            <div class="card-header py-3">
+                <h6 class="m-0 font-weight-bold text-primary">Suivi #{{ suivi_reclamation.id }}</h6>
+            </div>
+            <div class="card-body">
+                <p><strong>ID:</strong> {{ suivi_reclamation.id }}</p>
+                <p><strong>Statut:</strong> {{ suivi_reclamation.status }}</p>
+                <p><strong>Commentaire:</strong> {{ suivi_reclamation.commentaire }}</p>
+                <p><strong>Réclamation:</strong> {{ suivi_reclamation.reclamation ? ('#' ~ suivi_reclamation.reclamation.id ~ ' - ' ~ suivi_reclamation.reclamation.message) : 'N/A' }}</p>
+                <a href="{{ path('app_suivi_reclamation_index') }}" class="btn btn-secondary btn-user mt-3">Retour à la liste</a>
+                <a href="{{ path('app_suivi_reclamation_edit', {'id': suivi_reclamation.id}) }}" class="btn btn-primary btn-user mt-3">Modifier</a>
+                <form method="post" action="{{ path('app_suivi_reclamation_delete', {'id': suivi_reclamation.id}) }}" style="display:inline;" onsubmit="return confirm('Voulez-vous vraiment supprimer ce suivi ?');">
+                    <input type="hidden" name="_method" value="DELETE">
+                    <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ suivi_reclamation.id) }}">
+                    <button type="submit" class="btn btn-danger btn-user mt-3">Supprimer</button>
+                </form>
+            </div>
+        </div>
+    </div>
+{% endblock %}

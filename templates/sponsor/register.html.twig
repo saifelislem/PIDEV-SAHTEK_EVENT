@@ -1,0 +1,95 @@
+{# templates/sponsor/register.html.twig #}
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>Inscription Sponsor - WoOx Travel</title>
+    <link href="{{ asset('assets/back/vendor/fontawesome-free/css/all.min.css') }}" rel="stylesheet">
+    <link href="{{ asset('assets/back/css/sb-admin-2.min.css') }}" rel="stylesheet">
+</head>
+<body class="bg-gradient-primary">
+<div class="container">
+    <div class="card o-hidden border-0 shadow-lg my-5">
+        <div class="card-body p-0">
+            <div class="row">
+                <div class="col-lg-5 d-none d-lg-block bg-register-image"></div>
+                <div class="col-lg-7">
+                    <div class="p-5">
+                        <div class="text-center">
+                            <h1 class="h4 text-gray-900 mb-4">Inscription Sponsor</h1>
+                        </div>
+                        {% for flash_error in app.flashes('error') %}
+                            <div class="alert alert-danger" role="alert">{{ flash_error }}</div>
+                        {% endfor %}
+                        {% for flash_success in app.flashes('success') %}
+                            <div class="alert alert-success" role="alert">{{ flash_success }}</div>
+                        {% endfor %}
+                        {{ form_start(form, {'attr': {'class': 'user'}}) }}
+                        <div class="form-group row">
+                            <div class="col-sm-6 mb-3 mb-sm-0">
+                                {{ form_row(form.nom, {'attr': {'class': 'form-control form-control-user', 'placeholder': 'Nom'}}) }}
+                            </div>
+                            <div class="col-sm-6">
+                                {{ form_row(form.prenom, {'attr': {'class': 'form-control form-control-user', 'placeholder': 'Prénom'}}) }}
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            {{ form_row(form.email, {'attr': {'class': 'form-control form-control-user', 'placeholder': 'Adresse e-mail'}}) }}
+                        </div>
+                        <div class="form-group">
+                            {{ form_row(form.motDePasse, {'attr': {'class': 'form-control form-control-user', 'placeholder': 'Mot de passe'}}) }}
+                        </div>
+                        <div class="form-group row">
+                            <div class="col-sm-6 mb-3 mb-sm-0">
+                                {{ form_row(form.nationalite, {'attr': {'class': 'form-control form-control-user', 'placeholder': 'Nationalité'}}) }}
+                            </div>
+                            <div class="col-sm-6">
+                                {{ form_row(form.genre, {'attr': {'class': 'form-control form-control-user'}}) }}
+                            </div>
+                        </div>
+                        <hr>
+                        <h5 class="text-gray-900 mb-3">Produit de sponsoring</h5>
+                        <div class="form-group">
+                            {{ form_row(form.produitNom, {'attr': {'class': 'form-control form-control-user', 'placeholder': 'Nom du produit'}}) }}
+                        </div>
+                        <div class="form-group">
+                            {{ form_row(form.produitDescription, {'attr': {'class': 'form-control'}}) }}
+                        </div>
+                        <div class="form-group row">
+                            <div class="col-sm-6 mb-3 mb-sm-0">
+                                {{ form_row(form.produitQuantite, {'attr': {'class': 'form-control form-control-user', 'placeholder': 'Quantité'}}) }}
+                            </div>
+                            <div class="col-sm-6">
+                                {{ form_row(form.produitPrix, {'attr': {'class': 'form-control form-control-user', 'placeholder': 'Prix'}}) }}
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            {{ form_row(form.produitImage, {'attr': {'class': 'form-control'}}) }}
+                        </div>
+                        <hr>
+                        <h5 class="text-gray-900 mb-3">Contrat de sponsoring</h5>
+                        <div class="form-group">
+                            {{ form_row(form.contratMontant, {'attr': {'class': 'form-control form-control-user', 'placeholder': 'Montant'}}) }}
+                        </div>
+                        <div class="form-group">
+                            {{ form_row(form.contratDescription, {'attr': {'class': 'form-control'}}) }}
+                        </div>
+                        <button type="submit" class="btn btn-primary btn-user btn-block">Envoyer la demande</button>
+                        {{ form_end(form) }}
+                        <hr>
+                        <div class="text-center">
+                            <a class="small" href="{{ path('app_login') }}">Déjà un compte ? Connectez-vous</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="{{ asset('assets/back/vendor/jquery/jquery.min.js') }}"></script>
+<script src="{{ asset('assets/back/vendor/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
+<script src="{{ asset('assets/back/js/sb-admin-2.min.js') }}"></script>
+</body>
+</html>

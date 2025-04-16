@@ -1,0 +1,73 @@
+{% extends 'admin.html.twig' %}
+
+{% block title %}Détails de l'Événement{% endblock %}
+
+{% block body %}
+    <div class="container-fluid">
+        <h1 class="h3 mb-4 text-gray-800">Détails de l'Événement</h1>
+
+        {% for message in app.flashes('success') %}
+            <div class="alert alert-success">{{ message }}</div>
+        {% endfor %}
+        {% for message in app.flashes('error') %}
+            <div class="alert alert-danger">{{ message }}</div>
+        {% endfor %}
+
+        <div class="card shadow mb-4">
+            <div class="card-header py-3">
+                <h6 class="m-0 font-weight-bold text-primary">Événement #{{ evenement.id }} - {{ evenement.nom }}</h6>
+            </div>
+            <div class="card-body">
+                <table class="table table-bordered">
+                    <tbody>
+                    <tr>
+                        <th>Nom</th>
+                        <td>{{ evenement.nom }}</td>
+                    </tr>
+                    <tr>
+                        <th>Description</th>
+                        <td>{{ evenement.description|default('N/A') }}</td>
+                    </tr>
+                    <tr>
+                        <th>Date</th>
+                        <td>{{ evenement.date ? evenement.date|date('Y-m-d H:i') : 'N/A' }}</td>
+                    </tr>
+                    <tr>
+                        <th>Lieu</th>
+                        <td>{{ evenement.lieu|default('N/A') }}</td>
+                    </tr>
+                    <tr>
+                        <th>Statut</th>
+                        <td>{{ evenement.statut|default('N/A') }}</td>
+                    </tr>
+                    <tr>
+                        <th>Capacité Max</th>
+                        <td>{{ evenement.capaciteMax|default('N/A') }}</td>
+                    </tr>
+                    <tr>
+                        <th>Image</th>
+                        <td>
+                            {% if evenement.image %}
+                                <img src="{{ asset('Uploads/' ~ evenement.image) }}" alt="{{ evenement.nom }}" style="max-width: 200px;">
+                            {% else %}
+                                Pas d'image
+                            {% endif %}
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>Type</th>
+                        <td>{{ evenement.type|default('N/A') }}</td>
+                    </tr>
+                    </tbody>
+                </table>
+                <a href="{{ path('app_evenement_index') }}" class="btn btn-secondary btn-user mt-3">Retour à la liste</a>
+                <a href="{{ path('app_evenement_edit', {'id': evenement.id}) }}" class="btn btn-primary btn-user mt-3">Modifier</a>
+                <form method="post" action="{{ path('app_evenement_delete', {'id': evenement.id}) }}" style="display:inline;" onsubmit="return confirm('Voulez-vous vraiment supprimer cet événement ?');">
+                    <input type="hidden" name="_method" value="DELETE">
+                    <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ evenement.id) }}">
+                    <button type="submit" class="btn btn-danger btn-user mt-3">Supprimer</button>
+                </form>
+            </div>
+        </div>
+    </div>
+{% endblock %}

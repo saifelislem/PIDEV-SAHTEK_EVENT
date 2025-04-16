@@ -1,0 +1,55 @@
+{% extends 'admin.html.twig' %}
+
+{% block title %}Permissions de Support{% endblock %}
+
+{% block body %}
+    <div class="container-fluid">
+        <h1 class="h3 mb-4 text-gray-800">Permissions de Support</h1>
+
+        {% for message in app.flashes('success') %}
+            <div class="alert alert-success">{{ message }}</div>
+        {% endfor %}
+        {% for message in app.flashes('error') %}
+            <div class="alert alert-danger">{{ message }}</div>
+        {% endfor %}
+
+        <div class="card shadow mb-4">
+            <div class="card-header py-3">
+                <h6 class="m-0 font-weight-bold text-primary">Liste des Permissions</h6>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-bordered table-hover">
+                        <thead class="thead-light">
+                        <tr>
+                            <th>Type de Permission</th>
+                            <th>Rôle</th>
+                            <th>Date de Début</th>
+                            <th>Date de Fin</th>
+                            <th>Actions</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {% for supportpermission in supportpermissions %}
+                            <tr>
+                                <td>{{ supportpermission.permissionType }}</td>
+                                <td>{{ supportpermission.role }}</td>
+                                <td>{{ supportpermission.startDate ? supportpermission.startDate|date('Y-m-d') : 'N/A' }}</td>
+                                <td>{{ supportpermission.endDate ? supportpermission.endDate|date('Y-m-d') : 'N/A' }}</td>
+                                <td>
+                                    <a href="{{ path('app_supportpermission_show', {'id': supportpermission.id}) }}" class="btn btn-sm btn-info">Voir</a>
+                                </td>
+                            </tr>
+                        {% else %}
+                            <tr>
+                                <td colspan="5" class="text-center">Aucune permission trouvée</td>
+                            </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                <a href="{{ path('app_supportpermission_new') }}" class="btn btn-primary btn-user mt-3">Créer une nouvelle permission</a>
+            </div>
+        </div>
+    </div>
+{% endblock %}

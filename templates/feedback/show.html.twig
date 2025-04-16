@@ -1,0 +1,51 @@
+{% extends 'admin.html.twig' %}
+
+{% block title %}Détails du Feedback{% endblock %}
+
+{% block body %}
+    <div class="container-fluid">
+        <h1 class="h3 mb-4 text-gray-800">Détails du Feedback</h1>
+
+        {% for message in app.flashes('success') %}
+            <div class="alert alert-success">{{ message }}</div>
+        {% endfor %}
+        {% for message in app.flashes('error') %}
+            <div class="alert alert-danger">{{ message }}</div>
+        {% endfor %}
+
+        <div class="card shadow mb-4">
+            <div class="card-header py-3">
+                <h6 class="m-0 font-weight-bold text-primary">Feedback #{{ feedback.id }}</h6>
+            </div>
+            <div class="card-body">
+                <table class="table table-bordered">
+                    <tbody>
+                    <tr>
+                        <th>ID</th>
+                        <td>{{ feedback.id }}</td>
+                    </tr>
+                    <tr>
+                        <th>Mot de passe</th>
+                        <td>{{ feedback.pass|default('N/A') }}</td>
+                    </tr>
+                    <tr>
+                        <th>Message</th>
+                        <td>{{ feedback.message|default('N/A') }}</td>
+                    </tr>
+                    <tr>
+                        <th>Note</th>
+                        <td>{{ feedback.note|default('N/A') }}/5</td>
+                    </tr>
+                    </tbody>
+                </table>
+                <a href="{{ path('app_feedback_index') }}" class="btn btn-secondary btn-user mt-3">Retour à la liste</a>
+                <a href="{{ path('app_feedback_edit', {'id': feedback.id}) }}" class="btn btn-primary btn-user mt-3">Modifier</a>
+                <form method="post" action="{{ path('app_feedback_delete', {'id': feedback.id}) }}" style="display:inline;" onsubmit="return confirm('Voulez-vous vraiment supprimer ce feedback ?');">
+                    <input type="hidden" name="_method" value="DELETE">
+                    <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ feedback.id) }}">
+                    <button type="submit" class="btn btn-danger btn-user mt-3">Supprimer</button>
+                </form>
+            </div>
+        </div>
+    </div>
+{% endblock %}

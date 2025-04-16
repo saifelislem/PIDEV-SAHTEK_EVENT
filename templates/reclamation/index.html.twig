@@ -1,0 +1,65 @@
+{% extends 'admin.html.twig' %}
+
+{% block title %}Réclamations{% endblock %}
+
+{% block body %}
+    <div class="container-fluid">
+        <h1 class="h3 mb-4 text-gray-800">Réclamations</h1>
+
+        {% for message in app.flashes('success') %}
+            <div class="alert alert-success">{{ message }}</div>
+        {% endfor %}
+        {% for message in app.flashes('error') %}
+            <div class="alert alert-danger">{{ message }}</div>
+        {% endfor %}
+
+        <div class="card shadow mb-4">
+            <div class="card-header py-3">
+                <h6 class="m-0 font-weight-bold text-primary">Liste des Réclamations</h6>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-bordered table-hover">
+                        <thead class="thead-light">
+                        <tr>
+                            <th>Utilisateur</th>
+                            <th>Événement</th>
+                            <th>Message</th>
+                            <th>Image</th>
+                            <th>Mot de passe</th>
+                            <th>Statut</th>
+                            <th>Actions</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {% for reclamation in reclamations %}
+                            <tr>
+                                <td>{{ reclamation.utilisateur ? reclamation.utilisateur.nom ~ ' ' ~ reclamation.utilisateur.prenom : 'N/A' }}</td>
+                                <td>{{ reclamation.evenement ? reclamation.evenement.nom : 'N/A' }}</td>
+                                <td>{{ reclamation.message }}</td>
+                                <td>
+                                    {% if reclamation.image %}
+                                        <img src="{{ asset('Uploads/' ~ reclamation.image) }}" alt="Image" style="max-width: 100px;">
+                                    {% else %}
+                                        Pas d'image
+                                    {% endif %}
+                                </td>
+                                <td>{{ reclamation.pass }}</td>
+                                <td>{{ reclamation.statut|default('N/A') }}</td>
+                                <td>
+                                    <a href="{{ path('app_reclamation_show', {'id': reclamation.id}) }}" class="btn btn-sm btn-info">Voir</a>
+                                </td>
+                            </tr>
+                        {% else %}
+                            <tr>
+                                <td colspan="7" class="text-center">Aucune réclamation trouvée</td>
+                            </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                <a href="{{ path('app_reclamation_new') }}" class="btn btn-primary btn-user mt-3">Créer une nouvelle réclamation</a>
+            </div>
+        </div>
+    </div>
+{% endblock %}

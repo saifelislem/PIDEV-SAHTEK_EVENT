@@ -1,0 +1,25 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Compte Désactivé{% endblock %}
+
+{% block body %}
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-md-6">
+                <div class="card shadow-lg mt-5">
+                    <div class="card-header bg-danger text-white">
+                        <h3 class="mb-0">Compte Désactivé</h3>
+                    </div>
+                    <div class="card-body text-center">
+                        {% for message in app.flashes('error') %}
+                            <div class="alert alert-danger">{{ message }}</div>
+                        {% endfor %}
+                        <p>Votre compte est actuellement désactivé. Veuillez contacter l'administrateur pour plus d'informations.</p>
+                        <a href="{{ path('app_logout') }}" class="btn btn-primary">Se déconnecter</a>
+                        <a href="{{ path('app_login') }}" class="btn btn-secondary">Retour à la connexion</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
