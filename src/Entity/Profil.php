@@ -1,8 +1,9 @@
 <?php
 namespace App\Entity;
-
+///marwa 
 use Doctrine\ORM\Mapping as ORM;
 use App\Repository\ProfilRepository;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: ProfilRepository::class)]
 #[ORM\Table(name: 'profil')]
@@ -18,15 +19,29 @@ class Profil
     private ?Utilisateur $utilisateur = null;
 
     #[ORM\Column(type: 'string', nullable: false)]
+    #[Assert\NotBlank(message: "L'email ne peut pas être vide.")]
+    #[Assert\Email(message: "L'email fourni n'est pas valide.")]
     private ?string $email = null;
 
-    #[ORM\Column(type: 'string', nullable: true)]
+    #[ORM\Column(type: 'string', nullable: false)]
+    #[Assert\NotBlank(message: "Le numéro de téléphone est obligatoire.")]
+    #[Assert\Regex(
+        pattern: "/^\d{8}$/",
+        message: "Le numéro de téléphone doit contenir exactement 8 chiffres."
+    )]
     private ?string $num_tel = null;
+    
 
     #[ORM\Column(type: 'string', nullable: true)]
+    #[Assert\NotBlank(message: "L'adresse ne doit pas être vide.")]
+    #[Assert\Length(
+        min: 5,
+        minMessage: "L'adresse doit contenir au moins {{ limit }} caractères."
+    )]
     private ?string $adresse = null;
 
-    #[ORM\Column(type: 'boolean', nullable: true)] // Nouveau champ
+    #[ORM\Column(type: 'boolean', nullable: true)]
+    #[Assert\NotNull(message: "Le choix pour la newsletter doit être défini.")]
     private ?bool $newsletter = null;
 
     public function getId(): ?int
