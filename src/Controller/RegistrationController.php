@@ -14,7 +14,7 @@ use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 use Symfony\Component\Security\Core\Authentication\Token\UsernamePasswordToken;
 
-class RegistrationController extends AbstractController
+class RegistrationController            extends AbstractController
 {
     #[Route('/register', name: 'app_register')]
     public function register(
