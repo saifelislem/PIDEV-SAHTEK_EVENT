@@ -1,6 +1,3 @@
-
-Rachdi
-Rachdi Eya
 <?php
 
 namespace App\Entity;
@@ -45,12 +42,12 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface
     private ?string $mot_de_passe = null;
 
     #[ORM\Column(type: 'string', length: 255, nullable: false)]
-    #[Assert\NotBlank(message: 'La nationalité est aussi obligatoire.')]
+    #[Assert\NotBlank(message: 'La nationalité est obligatoire.')]
     private ?string $nationalite = null;
 
     #[ORM\Column(type: 'string', length: 255, nullable: false)]
     #[Assert\NotBlank(message: 'Le genre est obligatoire.')]
-    #[Assert\Choice(choices: ['Homme', 'Femme',], message: 'Choix de genre invalide.')]
+    #[Assert\Choice(choices: ['Homme', 'Femme'], message: 'Choix de genre invalide.')]
     private ?string $genre = null;
 
     #[ORM\Column(type: 'string', length: 255, nullable: false)]

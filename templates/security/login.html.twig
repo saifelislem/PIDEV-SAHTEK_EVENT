@@ -1,3 +1,4 @@
+Vous avez dit :
 <!DOCTYPE html>
 <html lang="fr">
 <head>
@@ -33,16 +34,19 @@
                                 <div class="text-center">
                                     <h1 class="h4 text-gray-900 mb-4">Bienvenue !</h1>
                                 </div>
+
                                 {% if error %}
                                     <div class="alert alert-danger">
                                         {{ error.messageKey|trans(error.messageData, 'security') }}
                                     </div>
                                 {% endif %}
+
                                 {% for message in app.flashes('error') %}
                                     <div class="alert alert-danger">
                                         {{ message }}
                                     </div>
                                 {% endfor %}
+
                                 <form class="user" method="post" action="{{ path('app_login') }}">
                                     <div class="form-group">
                                         <label for="email" class="sr-only">Adresse Email</label>
@@ -61,16 +65,32 @@
                                             <label class="custom-control-label" for="customCheck">Se souvenir de moi</label>
                                         </div>
                                     </div>
+
+                                    <!-- Ajout du reCAPTCHA -->
+                                    <div class="form-group text-center">
+                                        <div class="g-recaptcha" data-sitekey="6Le7VicrAAAAAH6_eahr1CqX__ylpl95o92agcGh"></div>
+                                    </div>
+
                                     <input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}">
+
                                     <button type="submit" class="btn btn-primary btn-user btn-block">Se connecter</button>
+                                    <button type="submit" class="btn btn-danger btn-user btn-block">
+                                        Se connecter avec <i class="fab fa-google fa-fw"></i>
+                                    </button>
                                 </form>
+
                                 <hr>
+
                                 <div class="text-center">
                                     <a href="{{ path('app_forgot_password') }}" class="small">Mot de passe oublié ?</a>
                                 </div>
                                 <div class="text-center">
                                     <a class="small" href="{{ path('app_register') }}">Créer un compte !</a>
                                 </div>
+                                <div class="text-center">
+                                    <a class="small" href="{{ path('app_register_sponsor') }}">Créer un compte Sponsor!</a>
+                                </div>
+
                             </div>
                         </div>
                     </div>
@@ -87,7 +107,10 @@
 <!-- Core plugin JavaScript -->
 <script src="{{ asset('assets/back/vendor/jquery-easing/jquery.easing.min.js') }}"></script>
 
+<!-- Google reCAPTCHA -->
+<script src="https://www.google.com/recaptcha/api.js" async defer></script>
+
 <!-- Custom scripts -->
 <script src="{{ asset('assets/back/js/sb-admin-2.min.js') }}"></script>
 </body>
-</html> 
+</html>
