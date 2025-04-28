@@ -25,11 +25,19 @@
                                     </div>
                                     <div class="col-lg-6 align-self-center">
                                         <div class="content">
-                                            <span class="info">*Type : {{ support.type|default('Non spécifié') }}</span>
+                                            <span class="info">Type : {{ support.type|default('Non spécifié') }}</span>
                                             <h4>{{ support.titre }}</h4>
                                             <p>Lien vers le support associé.</p>
                                             <div class="main-button">
                                                 <a href="{{ support.url }}" target="_blank">Consulter</a>
+            
+            {# Vérification de la permission DOWNLOAD #}
+            {% for permission in support.supportpermissions %}
+                {% if permission.permission_type == 'DOWNLOAD' %}
+                    <a href="{{ support.url }}" download class="btn btn-primary">Télécharger</a>
+                    {# Affiche le bouton de téléchargement si la permission est "DOWNLOAD" #}
+                {% endif %}
+            {% endfor %}
                                             </div>
                                         </div>
                                     </div>

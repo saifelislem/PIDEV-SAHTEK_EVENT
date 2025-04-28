@@ -97,6 +97,24 @@ class EvenementController extends AbstractController
         ]);
     }
 
+    #[Route('/admin/evenement/{id}/delete', name: 'app_evenement_delete', methods: ['POST'])]
+public function delete(Evenement $evenement, EntityManagerInterface $entityManager): Response
+{
+    $this->denyAccessUnlessGranted('ROLE_ADMIN');
+
+    if (!$evenement) {
+        $this->addFlash('error', 'Événement non trouvé.');
+        return $this->redirectToRoute('app_evenement_index');
+    }
+
+    // Supprimer l'événement de la base de données
+    $entityManager->remove($evenement);
+    $entityManager->flush();
+
+    $this->addFlash('success', 'Événement supprimé avec succès !');
+    return $this->redirectToRoute('app_evenement_index');
+}
+
     // Note: You’re missing the show action entirely in this version! Adding it back.
     #[Route('/admin/evenement/{id}', name: 'app_evenement_show', methods: ['GET'])]
     public function show(?Evenement $evenement): Response

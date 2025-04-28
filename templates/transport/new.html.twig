@@ -18,7 +18,8 @@
                 <h6 class="m-0 font-weight-bold text-primary">Formulaire de Transport</h6>
             </div>
             <div class="card-body">
-                {{ form_start(form, {'attr': {'class': 'form'}}) }}
+                {{ form_start(form, {'attr': {'class': 'form', 'novalidate': 'novalidate'}}) }}
+
                 <div class="form-group">
                     {{ form_label(form.date) }}
                     {{ form_widget(form.date, {'attr': {'class': 'form-control'}}) }}

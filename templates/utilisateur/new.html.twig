@@ -18,7 +18,8 @@
                 <h6 class="m-0 font-weight-bold text-primary">Formulaire d’Utilisateur</h6>
             </div>
             <div class="card-body">
-                {{ form_start(form, {'attr': {'class': 'form'}}) }}
+                {{ form_start(form, {'attr': {'class': 'form', 'novalidate': 'novalidate' }}) }}
+
                 <div class="form-group">
                     {{ form_label(form.nom) }}
                     {{ form_widget(form.nom, {'attr': {'class': 'form-control'}}) }}
@@ -46,7 +47,7 @@
                 </div>
                 <div class="form-group">
                     {{ form_label(form.genre) }}
-                    {{ form_widget(form.genre, {'attr': {'class': 'form-control'}}) }}
+                    {{ form_widget(form.genre, {'attr': {'class': 'form-control selectpicker'}}) }}
                     {{ form_errors(form.genre) }}
                 </div>
                 <div class="form-group">

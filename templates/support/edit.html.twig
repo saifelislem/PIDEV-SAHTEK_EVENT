@@ -18,27 +18,32 @@
                 <h6 class="m-0 font-weight-bold text-primary">{{ support.titre }}</h6>
             </div>
             <div class="card-body">
-                {{ form_start(form, {'attr': {'class': 'form'}}) }}
+                {{ form_start(form, {'attr': {'novalidate': 'novalidate', 'class': 'form'}}) }}
+
+                
+            {# Champ fichier #}
+            <div class="form-group">
+                {{ form_widget(form.fichier) }}
+                {{ form_errors(form.fichier, {'attr': {'class': 'text-danger'}}) }}
+            </div>
+
+               
                 <div class="form-group">
-                    {{ form_label(form.url) }}
-                    {{ form_widget(form.url, {'attr': {'class': 'form-control'}}) }}
-                    {{ form_errors(form.url) }}
+                    {{ form_label(form.type, null, {'label_attr': {'class': 'font-weight-bold text-gray-700'}}) }}
+                    {{ form_widget(form.type) }}
+                    {{ form_errors(form.type, {'attr': {'class': 'text-danger'}}) }}
                 </div>
                 <div class="form-group">
-                    {{ form_label(form.type) }}
-                    {{ form_widget(form.type, {'attr': {'class': 'form-control'}}) }}
-                    {{ form_errors(form.type) }}
+                    {{ form_label(form.evenement, null, {'label_attr': {'class': 'font-weight-bold text-gray-700'}}) }}
+                    {{ form_widget(form.evenement) }}
+                    {{ form_errors(form.evenement, {'attr': {'class': 'text-danger'}}) }}
                 </div>
                 <div class="form-group">
-                    {{ form_label(form.evenement) }}
-                    {{ form_widget(form.evenement, {'attr': {'class': 'form-control'}}) }}
-                    {{ form_errors(form.evenement) }}
+                    {{ form_label(form.titre, null, {'label_attr': {'class': 'font-weight-bold text-gray-700'}}) }}
+                    {{ form_widget(form.titre) }}
+                    {{ form_errors(form.titre, {'attr': {'class': 'text-danger'}}) }}
                 </div>
-                <div class="form-group">
-                    {{ form_label(form.titre) }}
-                    {{ form_widget(form.titre, {'attr': {'class': 'form-control'}}) }}
-                    {{ form_errors(form.titre) }}
-                </div>
+
                 <button type="submit" class="btn btn-primary btn-user btn-block">Mettre à jour</button>
                 {{ form_end(form) }}
 

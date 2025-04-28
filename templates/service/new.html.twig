@@ -18,7 +18,9 @@
                 <h6 class="m-0 font-weight-bold text-primary">Formulaire de Service</h6>
             </div>
             <div class="card-body">
-                {{ form_start(form, {'attr': {'class': 'form'}}) }}
+                {{ form_start(form, {'attr': {'class': 'form', 'novalidate': 'novalidate'}}) }}
+ 
+                
                 <div class="form-group">
                     {{ form_label(form.type) }}
                     {{ form_widget(form.type, {'attr': {'class': 'form-control'}}) }}

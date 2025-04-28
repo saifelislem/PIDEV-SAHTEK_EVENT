@@ -15,18 +15,20 @@
 
         <div class="card shadow mb-4">
             <div class="card-header py-3">
-                <h6 class="m-0 font-weight-bold text-primary">{{ support.titre }}</h6>
+                <h6 class="m-0 font-weight-bold text-primary">Titre : {{ support.titre }}</h6>
             </div>
             <div class="card-body">
-                <table class="table table-bordered">
+                <table class="table">
                     <tbody>
                     <tr>
-                        <th>ID</th>
-                        <td>{{ support.id }}</td>
-                    </tr>
-                    <tr>
                         <th>URL</th>
-                        <td>{{ support.url ? support.url : 'N/A' }}</td>
+                        <td>
+                            {% if support.url %}
+                                <a href="{{ support.url }}" target="_blank">{{ support.url }}</a>
+                            {% else %}
+                                N/A
+                            {% endif %}
+                        </td>
                     </tr>
                     <tr>
                         <th>Type</th>
@@ -42,14 +44,46 @@
                     </tr>
                     </tbody>
                 </table>
-                <a href="{{ path('app_support_index') }}" class="btn btn-secondary btn-user mt-3">Retour à la liste</a>
-                <a href="{{ path('app_support_edit', {'id': support.id}) }}" class="btn btn-primary btn-user mt-3">Modifier</a>
-                <form method="post" action="{{ path('app_support_delete', {'id': support.id}) }}" style="display:inline;" onsubmit="return confirm('Voulez-vous vraiment supprimer ce support ?');">
-                    <input type="hidden" name="_method" value="DELETE">
+
+                <a href="{{ path('app_support_index') }}" class="btn btn-secondary btn-user mt-3" title="Retour à la liste">
+                    <i class="fas fa-arrow-left"></i>
+                </a>
+                <a href="{{ path('app_support_edit', {'id': support.id}) }}" class="btn btn-primary btn-user mt-3" title="Modifier le support">
+                    <i class="fas fa-edit"></i>
+                </a>
+
+                <form id="delete-form-{{ support.id }}" method="post" action="{{ path('app_support_delete', {'id': support.id}) }}" style="display:inline;">
                     <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ support.id) }}">
-                    <button type="submit" class="btn btn-danger btn-user mt-3">Supprimer</button>
+                    <button type="button" class="btn btn-danger btn-user mt-3" title="Supprimer" onclick="confirmDelete({{ support.id }}, '{{ support.titre|e('js') }}')">
+                        <i class="fas fa-trash-alt"></i>
+                    </button>
                 </form>
             </div>
         </div>
     </div>
+
+    {# Font Awesome #}
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" integrity="sha512-..." crossorigin="anonymous" referrerpolicy="no-referrer" />
+
+    {# SweetAlert2 #}
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    <script>
+        function confirmDelete(id, titre) {
+            Swal.fire({
+                title: 'Confirmer la suppression',
+                html: 'Voulez-vous vraiment supprimer le support <strong>' + titre + '</strong> ?',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#d33',
+                cancelButtonColor: '#6c757d',
+                confirmButtonText: 'Oui, supprimer',
+                cancelButtonText: 'Annuler'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    document.getElementById('delete-form-' + id).submit();
+                }
+            });
+        }
+    </script>
 {% endblock %}

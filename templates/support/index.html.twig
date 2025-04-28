@@ -37,7 +37,25 @@
                                 <td>{{ support.evenement ? support.evenement.nom : 'N/A' }}</td>
                                 <td>{{ support.titre }}</td>
                                 <td>
-                                    <a href="{{ path('app_support_show', {'id': support.id}) }}" class="btn btn-sm btn-info">Voir</a>
+                                    <a href="{{ path('app_support_show', {'id': support.id}) }}" class="btn btn-sm btn-info" title="Voir">
+                                        <i class="fas fa-eye"></i>
+                                    </a>
+                                    <a href="{{ path('app_support_edit', {'id': support.id}) }}" class="btn btn-sm btn-primary" title="Modifier">
+                                        <i class="fas fa-edit"></i>
+                                    </a>
+
+                                    <form id="delete-form-{{ support.id }}"
+                                          method="post"
+                                          action="{{ path('app_support_delete', {'id': support.id}) }}"
+                                          style="display:inline;">
+                                        <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ support.id) }}">
+                                        <button type="button"
+                                                class="btn btn-sm btn-danger"
+                                                title="Supprimer"
+                                                onclick="confirmDelete({{ support.id }}, '{{ support.titre|e('js') }}')">
+                                            <i class="fas fa-trash-alt"></i>
+                                        </button>
+                                    </form>
                                 </td>
                             </tr>
                         {% else %}
@@ -48,8 +66,35 @@
                         </tbody>
                     </table>
                 </div>
-                <a href="{{ path('app_support_new') }}" class="btn btn-primary btn-user mt-3">Créer un nouveau support</a>
+                <a href="{{ path('app_support_new') }}" class="btn btn-primary btn-user mt-3">
+                    <i class="fas fa-plus"></i> Créer un nouveau support
+                </a>
             </div>
         </div>
     </div>
+
+    {# Font Awesome #}
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" integrity="sha512-..." crossorigin="anonymous" referrerpolicy="no-referrer" />
+
+    {# SweetAlert2 #}
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    <script>
+        function confirmDelete(id, titre) {
+            Swal.fire({
+                title: 'Confirmer la suppression',
+                html: 'Voulez-vous vraiment supprimer le support <strong>' + titre + '</strong> ?',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#d33',
+                cancelButtonColor: '#6c757d',
+                confirmButtonText: 'Oui, supprimer',
+                cancelButtonText: 'Annuler'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    document.getElementById('delete-form-' + id).submit();
+                }
+            });
+        }
+    </script>
 {% endblock %}

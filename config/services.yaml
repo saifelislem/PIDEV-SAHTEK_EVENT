@@ -6,6 +6,8 @@
 parameters:
     images_directory: '%kernel.project_dir%/public/uploads'
     uploads_directory: '%kernel.project_dir%/public/uploads/sponsor_pending'
+    supports_directory: '%kernel.project_dir%/public/uploads/supports'
+
 
 services:
     App\Service\NotificationService:

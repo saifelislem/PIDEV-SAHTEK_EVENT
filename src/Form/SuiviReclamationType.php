@@ -10,9 +10,6 @@ use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
-use Symfony\Component\Validator\Constraints\NotBlank;
-use Symfony\Component\Validator\Constraints\Length;
-use Symfony\Component\Validator\Constraints\Choice;
 
 class SuiviReclamationType extends AbstractType
 {
@@ -21,30 +18,17 @@ class SuiviReclamationType extends AbstractType
         $builder
             ->add('status', TextType::class, [
                 'label' => 'Statut',
-                'attr' => ['placeholder' => 'Entrez le statut', 'class' => 'form-control'],
-                'constraints' => [
-                    new NotBlank(['message' => 'Le statut est obligatoire.']),
-                    new Length([
-                        'max' => 50,
-                        'maxMessage' => 'Le statut ne peut pas dépasser {{ limit }} caractères.',
-                    ]),
-                    new Choice([
-                        'choices' => ['en attente', 'en cours', 'résolu'],
-                        'message' => 'Le statut doit être "en attente", "en cours" ou "résolu".',
-                    ]),
+                'attr' => [
+                    'placeholder' => 'Entrez le statut',
+                    'class' => 'form-control',
                 ],
             ])
             ->add('commentaire', TextareaType::class, [
                 'label' => 'Commentaire',
-                'attr' => ['placeholder' => 'Ajoutez un commentaire', 'class' => 'form-control', 'rows' => 4],
-                'constraints' => [
-                    new NotBlank(['message' => 'Le commentaire est obligatoire.']),
-                    new Length([
-                        'min' => 5,
-                        'max' => 1000,
-                        'minMessage' => 'Le commentaire doit contenir au moins {{ limit }} caractères.',
-                        'maxMessage' => 'Le commentaire ne peut pas dépasser {{ limit }} caractères.',
-                    ]),
+                'attr' => [
+                    'placeholder' => 'Ajoutez un commentaire',
+                    'class' => 'form-control',
+                    'rows' => 4,
                 ],
             ])
             ->add('reclamation', EntityType::class, [
@@ -55,9 +39,6 @@ class SuiviReclamationType extends AbstractType
                 'label' => 'Réclamation associée',
                 'placeholder' => 'Choisir une réclamation',
                 'attr' => ['class' => 'form-control'],
-                'constraints' => [
-                    new NotBlank(['message' => 'La réclamation est obligatoire.']),
-                ],
             ])
         ;
     }

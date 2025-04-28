@@ -8,6 +8,11 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use App\Repository\EvenementRepository;
 use Symfony\Component\Validator\Constraints as Assert;
+use App\Entity\Participation;
+use App\Entity\Reclamation;
+use App\Entity\Service;
+use App\Entity\Transport;
+use App\Entity\Support;
 
 #[ORM\Entity(repositoryClass: EvenementRepository::class)]
 #[ORM\Table(name: 'evenement')]
@@ -27,7 +32,7 @@ class Evenement
     #[Assert\Length(min: 10, minMessage: "La description doit contenir au moins {{ limit }} caractères.")]
     private ?string $description = null;
 
-    #[ORM\Column(type: 'datetime_immutable', nullable: false)]
+    #[ORM\Column(type: Types::DATETIME_IMMUTABLE, nullable: false)]
     #[Assert\NotBlank(message: "La date est obligatoire.")]
     private ?\DateTimeImmutable $date = null;
 
