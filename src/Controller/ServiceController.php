@@ -15,11 +15,21 @@ use Symfony\Component\Routing\Attribute\Route;
 final class ServiceController extends AbstractController
 {
     #[Route(name: 'app_service_index', methods: ['GET'])]
-    public function index(ServiceRepository $serviceRepository): Response
+    public function index(ServiceRepository $serviceRepository, Request $request): Response
     {
         $this->denyAccessUnlessGranted('ROLE_ADMIN');
+
+        // Get sort and order from query parameters
+        $sort = $request->query->get('sort', 'default');
+        $order = $request->query->get('order', 'asc');
+
+        // Fetch services with sorting
+        $services = $serviceRepository->findAllSorted($sort, $order);
+
         return $this->render('service/index.html.twig', [
-            'services' => $serviceRepository->findAll(),
+            'services' => $services,
+            'current_sort' => $sort,
+            'current_order' => $order,
         ]);
     }
 

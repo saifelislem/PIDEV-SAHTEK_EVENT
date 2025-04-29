@@ -16,28 +16,33 @@ class ParticipationRepository extends ServiceEntityRepository
         parent::__construct($registry, Participation::class);
     }
 
-    //    /**
-    //     * @return Participation[] Returns an array of Participation objects
-    //     */
-    //    public function findByExampleField($value): array
-    //    {
-    //        return $this->createQueryBuilder('p')
-    //            ->andWhere('p.exampleField = :val')
-    //            ->setParameter('val', $value)
-    //            ->orderBy('p.id', 'ASC')
-    //            ->setMaxResults(10)
-    //            ->getQuery()
-    //            ->getResult()
-    //        ;
-    //    }
+    /**
+     * @return Participation[] Returns an array of Participation objects sorted by the specified field and direction
+     */
+    public function findAllSorted(string $sort, string $order): array
+    {
+        $queryBuilder = $this->createQueryBuilder('p')
+            ->leftJoin('p.utilisateur', 'u');
 
-    //    public function findOneBySomeField($value): ?Participation
-    //    {
-    //        return $this->createQueryBuilder('p')
-    //            ->andWhere('p.exampleField = :val')
-    //            ->setParameter('val', $value)
-    //            ->getQuery()
-    //            ->getOneOrNullResult()
-    //        ;
-    //    }
+        switch ($sort) {
+            case 'id':
+                $queryBuilder->orderBy('p.id', $order);
+                break;
+            case 'nom':
+                $queryBuilder->orderBy('u.nom', $order)
+                    ->addOrderBy('u.prenom', $order);
+                break;
+            case 'dateInscription':
+                $queryBuilder->orderBy('p.date_inscription', $order);
+                break;
+            case 'moyenPaiement':
+                $queryBuilder->orderBy('p.moyen_paiement', $order);
+                break;
+            default:
+                $queryBuilder->orderBy('u.nom', 'ASC')
+                    ->addOrderBy('u.prenom', 'ASC');
+        }
+
+        return $queryBuilder->getQuery()->getResult();
+    }
 }

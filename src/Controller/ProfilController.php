@@ -107,20 +107,4 @@ class ProfilController extends AbstractController
         ]);
     }
 
-    #[Route('/test-email', name: 'test_email')]
-    public function testEmail(MailerInterface $mailer): Response
-    {
-        $email = (new Email())
-            ->from('amine69souib@gmail.com')
-            ->to('amine69souib@gmail.com')
-            ->subject('Test depuis contrôleur')
-            ->text('Ceci est un test.');
-        try {
-            $mailer->send($email);
-            return new Response('E-mail envoyé avec succès !');
-        } catch (\Exception $e) {
-            return new Response('Erreur : ' . $e->getMessage());
-        }
-    }
-
 }

@@ -1,10 +1,10 @@
 {% extends 'admin.html.twig' %}
 
-{% block title %}Transports{% endblock %}
+{% block title %}Liste des Transports{% endblock %}
 
 {% block body %}
     <div class="container-fluid">
-        <h1 class="h3 mb-4 text-gray-800">Transports</h1>
+        <h1 class="h3 mb-4 text-gray-800"></h1>
 
         {% for message in app.flashes('success') %}
             <div class="alert alert-success">{{ message }}</div>
@@ -14,44 +14,100 @@
         {% endfor %}
 
         <div class="card shadow mb-4">
-            <div class="card-header py-3">
+            <div class="card-header py-3 d-flex align-items-center">
                 <h6 class="m-0 font-weight-bold text-primary">Liste des Transports</h6>
+                <div class="ml-auto">
+                    <form method="get" action="{{ path('app_transport_index') }}" class="form-inline">
+                        <div class="dropdown">
+                            <button class="btn btn-primary btn-user dropdown-toggle" type="button" id="sortDropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                Trier
+                            </button>
+                            <div class="dropdown-menu dropdown-menu-right" aria-labelledby="sortDropdown">
+                                <a class="dropdown-item {{ current_sort == 'id' ? 'active' : '' }}" href="{{ path('app_transport_index', {'sort': 'id', 'order': current_order}) }}">Par défaut</a>
+                                <a class="dropdown-item {{ current_sort == 'vehicule' ? 'active' : '' }}" href="{{ path('app_transport_index', {'sort': 'vehicule', 'order': current_order}) }}">Véhicule</a>
+                                <a class="dropdown-item {{ current_sort == 'date' ? 'active' : '' }}" href="{{ path('app_transport_index', {'sort': 'date', 'order': current_order}) }}">Date</a>
+                            </div>
+                        </div>
+                        <button type="submit" name="order" value="{{ current_order == 'asc' ? 'desc' : 'asc' }}" class="btn btn-primary btn-user ml-2">
+                            {{ current_order == 'asc' ? '↓' : '↑' }}
+                        </button>
+                    </form>
+                </div>
             </div>
             <div class="card-body">
                 <div class="table-responsive">
-                    <table class="table table-bordered table-hover">
+                    <table class="table table-bordered table-hover" id="transportTable">
                         <thead class="thead-light">
                         <tr>
                             <th>Date</th>
-                            <th>Heure de Départ</th>
-                            <th>Point de Départ</th>
+                            <th>Heure de départ</th>
+                            <th>Point de départ</th>
                             <th>Destination</th>
                             <th>Véhicule</th>
-                            <th>Actions</th>
+                            <th>Événement</th>
+                            <th>Service</th>
+                            <th></th>
                         </tr>
                         </thead>
                         <tbody>
                         {% for transport in transports %}
                             <tr>
-                                <td>{{ transport.date ? transport.date|date('Y-m-d') : 'N/A' }}</td>
-                                <td>{{ transport.heureDepart ? transport.heureDepart|date('H:i') : 'N/A' }}</td>
+                                <td>{{ transport.date ? transport.date|date('Y-m-d') : '' }}</td>
+                                <td>{{ transport.heureDepart ? transport.heureDepart|date('H:i') : '' }}</td>
                                 <td>{{ transport.pointDepart }}</td>
                                 <td>{{ transport.destination }}</td>
-                                <td>{{ transport.vehicule }}</td>
                                 <td>
-                                    <a href="{{ path('app_transport_show', {'id': transport.id}) }}" class="btn btn-sm btn-info">Voir</a>
+                                    {% if transport.vehicule == 'voiture' %}
+                                        <span class="badge badge-primary">Voiture</span>
+                                    {% elseif transport.vehicule == 'bus' %}
+                                        <span class="badge badge-success">Bus</span>
+                                    {% elseif transport.vehicule == 'avion' %}
+                                        <span class="badge badge-info">Avion</span>
+                                    {% elseif transport.vehicule == 'train' %}
+                                        <span class="badge badge-warning">Train</span>
+                                    {% elseif transport.vehicule == 'bateau' %}
+                                        <span class="badge badge-secondary">Bateau</span>
+                                    {% else %}
+                                        <span class="badge badge-dark">N/A</span>
+                                    {% endif %}
+                                </td>
+                                <td>{{ transport.evenement ? transport.evenement.nom : '' }}</td>
+                                <td>{{ transport.service ? transport.service.type : '' }}</td>
+                                <td>
+                                    <a href="{{ path('app_transport_show', {'id': transport.id}) }}" class="btn btn-sm btn-info" title="Voir">
+                                        <i class="fas fa-eye"></i>
+                                    </a>
                                 </td>
                             </tr>
                         {% else %}
                             <tr>
-                                <td colspan="6" class="text-center">Aucun transport trouvé</td>
+                                <td colspan="9" class="text-center">Aucun transport trouvé</td>
                             </tr>
                         {% endfor %}
                         </tbody>
                     </table>
                 </div>
-                <a href="{{ path('app_transport_new') }}" class="btn btn-primary btn-user mt-3">Créer un nouveau transport</a>
+                <a href="{{ path('app_transport_new') }}" class="btn btn-primary btn-user mt-3">
+                    <i class="fas fa-plus"></i> Créer un nouveau transport
+                </a>
             </div>
         </div>
     </div>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" integrity="sha512-Avb2QiuDEEvB4bZJYdft2mNjVShBftLdPG8FJ0V7irTLQ8Uo0qcPxh4Plq7G5tGm0rU+1SPhVotteLpBERet7svw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+{% endblock %}
+
+{% block js %}
+    {{ parent() }}
+    <script src="{{ asset('assets/back/vendor/datatables/jquery.dataTables.min.js') }}"></script>
+    <script src="{{ asset('assets/back/vendor/datatables/dataTables.bootstrap4.min.js') }}"></script>
+    <script>
+        $(document).ready(function() {
+            $('#transportTable').DataTable({
+                "ordering": false, // Désactiver le tri côté client
+                "language": {
+                    "url": "//cdn.datatables.net/plug-ins/1.10.25/i18n/French.json"
+                }
+            });
+        });
+    </script>
 {% endblock %}

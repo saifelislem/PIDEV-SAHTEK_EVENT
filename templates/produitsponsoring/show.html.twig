@@ -15,29 +15,104 @@
 
         <div class="card shadow mb-4">
             <div class="card-header py-3">
-                <h6 class="m-0 font-weight-bold text-primary">{{ produitsponsoring.nom }}</h6>
+                <h6 class="m-0 font-weight-bold text-primary">Produit #{{ produitsponsoring.id }} - {{ produitsponsoring.nom }}</h6>
             </div>
             <div class="card-body">
-                <p><strong>ID:</strong> {{ produitsponsoring.id }}</p>
-                <p><strong>Nom:</strong> {{ produitsponsoring.nom }}</p>
-                <p><strong>Description:</strong> {{ produitsponsoring.description }}</p>
-                <p><strong>Quantité:</strong> {{ produitsponsoring.quantite }}</p>
-                <p><strong>Prix:</strong> {{ produitsponsoring.prix|number_format(2, ',', ' ') }} €</p>
-                <p><strong>Image:</strong>
-                    {% if produitsponsoring.image %}
-                        <img src="{{ asset('Uploads/produits/' ~ produitsponsoring.image) }}" alt="{{ produitsponsoring.nom }}" style="max-width: 200px;">
-                    {% else %}
-                        Pas d'image
-                    {% endif %}
-                </p>
-                <a href="{{ path('app_produitsponsoring_index') }}" class="btn btn-secondary btn-user mt-3">Retour à la liste</a>
-                <a href="{{ path('app_produitsponsoring_edit', {'id': produitsponsoring.id}) }}" class="btn btn-primary btn-user mt-3">Modifier</a>
-                <form method="post" action="{{ path('app_produitsponsoring_delete', {'id': produitsponsoring.id}) }}" style="display:inline;" onsubmit="return confirm('Voulez-vous vraiment supprimer ce produit ?');">
-                    <input type="hidden" name="_method" value="DELETE">
-                    <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ produitsponsoring.id) }}">
-                    <button type="submit" class="btn btn-danger btn-user mt-3">Supprimer</button>
-                </form>
+                <table class="table table-bordered">
+                    <tbody>
+                    <tr>
+                        <th>Nom</th>
+                        <td>{{ produitsponsoring.nom|default('N/A') }}</td>
+                    </tr>
+                    <tr>
+                        <th>Description</th>
+                        <td>{{ produitsponsoring.description|default('N/A') }}</td>
+                    </tr>
+                    <tr>
+                        <th>Quantité</th>
+                        <td>
+                            {% if produitsponsoring.quantite > 0 %}
+                                <span class="badge badge-success">{{ produitsponsoring.quantite }}</span>
+                            {% else %}
+                                <span class="badge badge-danger">{{ produitsponsoring.quantite }}</span>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>Prix</th>
+                        <td>{{ produitsponsoring.prix|number_format(2, ',', ' ')|default('N/A') }} €</td>
+                    </tr>
+                    <tr>
+                        <th>Image</th>
+                        <td>
+                            {% if produitsponsoring.image %}
+                                <img src="{{ asset('Uploads/produits/' ~ produitsponsoring.image) }}" alt="{{ produitsponsoring.nom }}" style="max-width: 200px;">
+                            {% else %}
+                                Pas d'image
+                            {% endif %}
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>Utilisateur</th>
+                        <td>{{ produitsponsoring.utilisateur ? produitsponsoring.utilisateur.nom : 'N/A' }}</td>
+                    </tr>
+                    <tr>
+                        <th>Contrats de Sponsoring</th>
+                        <td>
+                            {% if produitsponsoring.contratSponsorings|length > 0 %}
+                                <ul>
+                                    {% for contrat in produitsponsoring.contratSponsorings %}
+                                        <li>{{ contrat.id }}</li>
+                                    {% endfor %}
+                                </ul>
+                            {% else %}
+                                Aucun contrat
+                            {% endif %}
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+                <div class="mt-3">
+                    <a href="{{ path('app_produitsponsoring_index') }}" class="btn btn-sm btn-secondary" title="Retour à la liste">
+                        <i class="fas fa-arrow-left"></i>
+                    </a>
+                    <a href="{{ path('app_produitsponsoring_edit', {'id': produitsponsoring.id}) }}" class="btn btn-sm btn-primary" title="Modifier">
+                        <i class="fas fa-edit"></i>
+                    </a>
+                    <form id="delete-form-{{ produitsponsoring.id }}"
+                          method="post"
+                          action="{{ path('app_produitsponsoring_delete', {'id': produitsponsoring.id}) }}"
+                          style="display:inline;">
+                        <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ produitsponsoring.id) }}">
+                        <button type="button"
+                                class="btn btn-sm btn-danger"
+                                title="Supprimer"
+                                onclick="confirmDelete({{ produitsponsoring.id }}, '{{ produitsponsoring.nom|e('js') }}')">
+                            <i class="fas fa-trash-alt"></i>
+                        </button>
+                    </form>
+                </div>
             </div>
         </div>
     </div>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" integrity="sha512-Avb2QiuDEEvB4bZJYdft2mNjVShBftLdPG8FJ0V7irTLQ8Uo0qcPxh4Plq7G5tGm0rU+1SPhVotteLpBERet7svw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script>
+        function confirmDelete(id, nom) {
+            Swal.fire({
+                title: 'Confirmer la suppression',
+                html: 'Voulez-vous vraiment supprimer le produit <strong>' + nom + '</strong> ?',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#d33',
+                cancelButtonColor: '#6c757d',
+                confirmButtonText: 'Oui, supprimer',
+                cancelButtonText: 'Annuler'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    document.getElementById('delete-form-' + id).submit();
+                }
+            });
+        }
+    </script>
 {% endblock %}

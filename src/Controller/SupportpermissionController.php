@@ -15,11 +15,18 @@ use Symfony\Component\Routing\Attribute\Route;
 final class SupportpermissionController extends AbstractController
 {
     #[Route(name: 'app_supportpermission_index', methods: ['GET'])]
-    public function index(SupportpermissionRepository $supportpermissionRepository): Response
+    public function index(SupportpermissionRepository $supportpermissionRepository, Request $request): Response
     {
         $this->denyAccessUnlessGranted('ROLE_ADMIN');
+        // Get sort and order from query parameters
+        $sort = $request->query->get('sort', 'permissionType');
+        $order = $request->query->get('order', 'asc');
+        // Fetch support permissions with sorting
+        $supportpermissions = $supportpermissionRepository->findAllWithSort($sort, $order);
         return $this->render('supportpermission/index.html.twig', [
-            'supportpermissions' => $supportpermissionRepository->findAll(),
+            'supportpermissions' => $supportpermissions,
+            'current_sort' => $sort,
+            'current_order' => $order,
         ]);
     }
 

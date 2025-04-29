@@ -16,11 +16,23 @@ use Symfony\Component\HttpFoundation\File\Exception\FileException;
 final class ProduitsponsoringController extends AbstractController
 {
     #[Route(name: 'app_produitsponsoring_index', methods: ['GET'])]
-    public function index(ProduitsponsoringRepository $produitsponsoringRepository): Response
+    public function index(Request $request, ProduitsponsoringRepository $produitsponsoringRepository): Response
     {
         $this->denyAccessUnlessGranted('ROLE_ADMIN');
+
+        // Gestion du tri
+        $sort = $request->query->get('sort', 'id');
+        $order = $request->query->get('order', 'asc');
+        $validSorts = ['id', 'nom', 'quantite', 'prix'];
+        $sort = in_array($sort, $validSorts) ? $sort : 'id';
+        $order = in_array(strtolower($order), ['asc', 'desc']) ? $order : 'asc';
+
+        $produitsponsorings = $produitsponsoringRepository->findAllSorted($sort, $order);
+
         return $this->render('produitsponsoring/index.html.twig', [
-            'produitsponsorings' => $produitsponsoringRepository->findAll(),
+            'produitsponsorings' => $produitsponsorings,
+            'current_sort' => $sort,
+            'current_order' => $order,
         ]);
     }
 

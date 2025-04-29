@@ -42,11 +42,7 @@
                             <div class="alert alert-danger" role="alert">{{ message }}</div>
                         {% endfor %}
 
-                        <!-- Formulaire -->
                         {{ form_start(form, {'attr': {'class': 'user'}}) }}
-                        <!-- Erreurs globales du formulaire -->
-                        {{ form_errors(form) }}
-
                         <div class="form-group">
                             <label for="profil_email" class="sr-only">Email</label>
                             {{ form_widget(form.email, {'attr': {'class': 'form-control form-control-user', 'placeholder': 'Email'}}) }}

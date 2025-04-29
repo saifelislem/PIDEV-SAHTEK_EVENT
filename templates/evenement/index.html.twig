@@ -4,7 +4,7 @@
 
 {% block body %}
     <div class="container-fluid">
-        <h1 class="h3 mb-4 text-gray-800">Événements</h1>
+        <h1 class="h3 mb-4 text-gray-800"></h1>
 
         {% for message in app.flashes('success') %}
             <div class="alert alert-success">{{ message }}</div>
@@ -14,12 +14,31 @@
         {% endfor %}
 
         <div class="card shadow mb-4">
-            <div class="card-header py-3">
+            <div class="card-header py-3 d-flex align-items-center">
                 <h6 class="m-0 font-weight-bold text-primary">Liste des Événements</h6>
+                <div class="ml-auto">
+                    <form method="get" action="{{ path('app_evenement_index') }}" class="form-inline">
+                        <div class="dropdown">
+                            <button class="btn btn-primary btn-user dropdown-toggle" type="button" id="sortDropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                Trier
+                            </button>
+                            <div class="dropdown-menu dropdown-menu-right" aria-labelledby="sortDropdown">
+                                <a class="dropdown-item {{ current_sort == 'id' ? 'active' : '' }}" href="{{ path('app_evenement_index', {'sort': 'id', 'order': current_order}) }}">Par défaut</a>
+                                <a class="dropdown-item {{ current_sort == 'nom' ? 'active' : '' }}" href="{{ path('app_evenement_index', {'sort': 'nom', 'order': current_order}) }}">Nom</a>
+                                <a class="dropdown-item {{ current_sort == 'date' ? 'active' : '' }}" href="{{ path('app_evenement_index', {'sort': 'date', 'order': current_order}) }}">Date</a>
+                                <a class="dropdown-item {{ current_sort == 'statut' ? 'active' : '' }}" href="{{ path('app_evenement_index', {'sort': 'statut', 'order': current_order}) }}">Statut</a>
+                                <a class="dropdown-item {{ current_sort == 'type' ? 'active' : '' }}" href="{{ path('app_evenement_index', {'sort': 'type', 'order': current_order}) }}">Type</a>
+                            </div>
+                        </div>
+                        <button type="submit" name="order" value="{{ current_order == 'asc' ? 'desc' : 'asc' }}" class="btn btn-primary btn-user ml-2">
+                            {{ current_order == 'asc' ? '↓' : '↑' }}
+                        </button>
+                    </form>
+                </div>
             </div>
             <div class="card-body">
                 <div class="table-responsive">
-                    <table class="table table-bordered table-hover">
+                    <table class="table table-bordered table-hover" id="eventstable">
                         <thead class="thead-light">
                         <tr>
                             <th>Nom</th>
@@ -27,25 +46,51 @@
                             <th>Date</th>
                             <th>Lieu</th>
                             <th>Statut</th>
-                            <th>Capacité Max</th>
+                            <th>Capacité</th>
                             <th>Image</th>
                             <th>Type</th>
-                            <th>Actions</th>
+                            <th></th>
                         </tr>
                         </thead>
                         <tbody>
                         {% for evenement in evenements %}
                             <tr>
                                 <td>{{ evenement.nom }}</td>
-                                <td>{{ evenement.description }}</td>
+                                <td>{{ evenement.description|slice(0, 10) }}{% if evenement.description|length > 10 %}...{% endif %}</td>
                                 <td>{{ evenement.date ? evenement.date|date('Y-m-d H:i') : '' }}</td>
                                 <td>{{ evenement.lieu }}</td>
-                                <td>{{ evenement.statut }}</td>
-                                <td>{{ evenement.capaciteMax }}</td>
-                                <td>{{ evenement.image }}</td>
-                                <td>{{ evenement.type }}</td>
                                 <td>
-                                    <a href="{{ path('app_evenement_show', {'id': evenement.id}) }}" class="btn btn-sm btn-info">Voir</a>
+                                    {% if evenement.statut == 'Actif' %}
+                                        <span class="badge badge-success">Actif</span>
+                                    {% elseif evenement.statut == 'Annulé' %}
+                                        <span class="badge badge-danger">Annulé</span>
+                                    {% elseif evenement.statut == 'Terminé' %}
+                                        <span class="badge badge-secondary">Terminé</span>
+                                    {% endif %}
+                                </td>
+                                <td>{{ evenement.capaciteMax }}</td>
+                                <td>
+                                    {% if evenement.image %}
+                                        <img src="{{ asset('Uploads/' ~ evenement.image) }}" alt="Image" style="max-width: 70px;">
+                                    {% else %}
+                                        Pas d'image
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    {% if evenement.type == 'Conferences' %}
+                                        <span class="badge badge-primary">Conférences</span>
+                                    {% elseif evenement.type == 'Seminaires' %}
+                                        <span class="badge badge-info">Séminaires</span>
+                                    {% elseif evenement.type == 'Ateliers Pratiques' %}
+                                        <span class="badge badge-warning">Ateliers Pratiques</span>
+                                    {% elseif evenement.type == 'Competitions' %}
+                                        <span class="badge badge-dark">Compétitions</span>
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    <a href="{{ path('app_evenement_show', {'id': evenement.id}) }}" class="btn btn-sm btn-info" title="Voir">
+                                        <i class="fas fa-eye"></i>
+                                    </a>
                                 </td>
                             </tr>
                         {% else %}
@@ -56,8 +101,25 @@
                         </tbody>
                     </table>
                 </div>
-                <a href="{{ path('app_evenement_new') }}" class="btn btn-primary btn-user mt-3">Créer un nouvel événement</a>
+                <a href="{{ path('app_evenement_new') }}" class="btn btn-primary btn-user mt-3"><i class="fas fa-plus"></i> Créer un nouvel événement</a>
             </div>
         </div>
     </div>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" integrity="sha512-..." crossorigin="anonymous" referrerpolicy="no-referrer" />
+{% endblock %}
+
+{% block js %}
+    {{ parent() }}
+    <script src="{{ asset('assets/back/vendor/datatables/jquery.dataTables.min.js') }}"></script>
+    <script src="{{ asset('assets/back/vendor/datatables/dataTables.bootstrap4.min.js') }}"></script>
+    <script>
+        $(document).ready(function() {
+            $('#eventstable').DataTable({
+                "ordering": false, // Désactiver le tri côté client
+                "language": {
+                    "url": "//cdn.datatables.net/plug-ins/1.10.25/i18n/French.json"
+                }
+            });
+        });
+    </script>
 {% endblock %}

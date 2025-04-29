@@ -16,28 +16,32 @@ class ServiceRepository extends ServiceEntityRepository
         parent::__construct($registry, Service::class);
     }
 
-    //    /**
-    //     * @return Service[] Returns an array of Service objects
-    //     */
-    //    public function findByExampleField($value): array
-    //    {
-    //        return $this->createQueryBuilder('s')
-    //            ->andWhere('s.exampleField = :val')
-    //            ->setParameter('val', $value)
-    //            ->orderBy('s.id', 'ASC')
-    //            ->setMaxResults(10)
-    //            ->getQuery()
-    //            ->getResult()
-    //        ;
-    //    }
+    /**
+     * Find all services with sorting.
+     *
+     * @param string $sort Field to sort by (default, type, cout)
+     * @param string $order Sort order (asc, desc)
+     * @return Service[]
+     */
+    public function findAllSorted(string $sort = 'default', string $order = 'asc'): array
+    {
+        $qb = $this->createQueryBuilder('s');
 
-    //    public function findOneBySomeField($value): ?Service
-    //    {
-    //        return $this->createQueryBuilder('s')
-    //            ->andWhere('s.exampleField = :val')
-    //            ->setParameter('val', $value)
-    //            ->getQuery()
-    //            ->getOneOrNullResult()
-    //        ;
-    //    }
+        // Validate sort field
+        $allowedSorts = ['default', 'type', 'cout'];
+        if (!in_array($sort, $allowedSorts, true)) {
+            $sort = 'default';
+        }
+
+        // Map 'default' to 'type'
+        $sortField = $sort === 'default' ? 'type' : $sort;
+
+        // Validate order
+        $order = strtolower($order) === 'desc' ? 'desc' : 'asc';
+
+        // Apply sorting
+        $qb->orderBy('s.' . $sortField, $order);
+
+        return $qb->getQuery()->getResult();
+    }
 }

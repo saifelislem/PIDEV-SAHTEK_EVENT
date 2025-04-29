@@ -46,7 +46,7 @@
                             <p><strong>Nationalité:</strong> {{ user.nationalite }}</p>
                             <p><strong>Genre:</strong> {{ user.genre }}</p>
                             <div class="mt-3">
-                                <a href="{{ path('app_profil_edit', {'id': profil.id}) }}" class="btn btn-primary btn-user btn-block">Modifier</a>
+                                <a href="{{ path('app_profil_edit') }}" class="btn btn-primary btn-user btn-block">Modifier</a>
                             </div>
                             {% if not is_granted('ROLE_ADMIN') %}
                                 <div class="mt-3">

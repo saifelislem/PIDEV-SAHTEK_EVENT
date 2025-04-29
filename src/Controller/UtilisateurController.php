@@ -42,8 +42,19 @@ final class UtilisateurController extends AbstractController
             return $this->redirectToRoute('app_utilisateur_index', [], Response::HTTP_SEE_OTHER);
         }
 
+        // Gestion du tri
+        $sort = $request->query->get('sort', 'nom');
+        $order = $request->query->get('order', 'asc');
+        $validSorts = ['id', 'nom', 'role', 'statut'];
+        $sort = in_array($sort, $validSorts) ? $sort : 'nom';
+        $order = in_array(strtolower($order), ['asc', 'desc']) ? $order : 'asc';
+
+        $utilisateurs = $utilisateurRepository->findAllSorted($sort, $order);
+
         return $this->render('utilisateur/index.html.twig', [
-            'utilisateurs' => $utilisateurRepository->findAll(),
+            'utilisateurs' => $utilisateurs,
+            'current_sort' => $sort,
+            'current_order' => $order,
         ]);
     }
 

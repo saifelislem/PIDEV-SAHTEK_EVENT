@@ -16,6 +16,8 @@ class SponsorRegistrationController extends AbstractController
     public function register(Request $request, EntityManagerInterface $entityManager): Response
     {
         $sponsorPending = new SponsorPending();
+        $sponsorPending->setStatus('pending');
+
         $form = $this->createForm(SponsorRegistrationType::class, $sponsorPending);
         $form->handleRequest($request);
 
@@ -35,6 +37,7 @@ class SponsorRegistrationController extends AbstractController
                     return $this->redirectToRoute('app_register_sponsor');
                 }
             }
+
 
             // Enregistrer dans SponsorPending
             $entityManager->persist($sponsorPending);

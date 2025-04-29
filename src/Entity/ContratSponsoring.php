@@ -39,6 +39,11 @@ class ContratSponsoring
     )]
     private Collection $produitsponsorings;
 
+    // Ajout de la relation ManyToOne avec Evenement
+    #[ORM\ManyToOne(targetEntity: Evenement::class)]
+    #[ORM\JoinColumn(name: 'id_evenement', referencedColumnName: 'id')]
+    private ?Evenement $evenement = null;
+
     public function __construct()
     {
         $this->produitsponsorings = new ArrayCollection();
@@ -49,21 +54,15 @@ class ContratSponsoring
         return $this->id;
     }
 
-    public function setId(int $id): self
+    public function setMontant(?float $montant): self
     {
-        $this->id = $id;
+        $this->montant = $montant;
         return $this;
     }
 
     public function getMontant(): ?float
     {
         return $this->montant;
-    }
-
-    public function setMontant(?float $montant): self
-    {
-        $this->montant = $montant;
-        return $this;
     }
 
     public function getDescription(): ?string
@@ -110,6 +109,18 @@ class ContratSponsoring
         if ($this->produitsponsorings->removeElement($produitsponsoring)) {
             $produitsponsoring->removeContratSponsoring($this);
         }
+        return $this;
+    }
+
+    // Méthode pour accéder à la propriété evenement
+    public function getEvenement(): ?Evenement
+    {
+        return $this->evenement;
+    }
+
+    public function setEvenement(?Evenement $evenement): self
+    {
+        $this->evenement = $evenement;
         return $this;
     }
 }

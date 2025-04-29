@@ -63,6 +63,8 @@
                                     </div>
                                     <input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}">
                                     <button type="submit" class="btn btn-primary btn-user btn-block">Se connecter</button>
+                                    <button type="submit" class="btn btn-danger btn-user btn-block"> Se connecter avec <i class="fab fa-google fa-fw"></i></button>
+
                                 </form>
                                 <hr>
                                 <div class="text-center">
@@ -70,6 +72,9 @@
                                 </div>
                                 <div class="text-center">
                                     <a class="small" href="{{ path('app_register') }}">Créer un compte !</a>
+                                </div>
+                                <div class="text-center">
+                                    <a class="small" href="{{ path('app_register_sponsor') }}">Créer un compte Sponsor!</a>
                                 </div>
                             </div>
                         </div>

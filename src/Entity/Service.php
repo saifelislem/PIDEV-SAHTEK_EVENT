@@ -5,6 +5,8 @@ namespace App\Entity;
 use Doctrine\ORM\Mapping as ORM;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
+use Symfony\Component\Validator\Constraints as Assert;
+
 
 use App\Repository\ServiceRepository;
 
@@ -43,6 +45,10 @@ class Service
     }
 
     #[ORM\Column(type: 'string', nullable: true)]
+    #[Assert\Length(
+        max: 255,
+        maxMessage: 'La description ne doit pas dépasser {{ limit }} caractères'
+    )]
     private ?string $description = null;
 
     public function getDescription(): ?string
@@ -57,6 +63,11 @@ class Service
     }
 
     #[ORM\Column(type: 'float', nullable: true)]
+    #[Assert\PositiveOrZero(message: 'Le coût doit être positif ou zéro')]
+      #[Assert\LessThan(
+    value: 1000000,
+    message: 'Le coût ne peut excéder 1 000 000'
+)]
     private ?float $cout = null;
 
     public function getCout(): ?float

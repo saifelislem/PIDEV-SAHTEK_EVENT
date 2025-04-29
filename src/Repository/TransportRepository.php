@@ -1,5 +1,4 @@
 <?php
-
 namespace App\Repository;
 
 use App\Entity\Transport;
@@ -16,28 +15,26 @@ class TransportRepository extends ServiceEntityRepository
         parent::__construct($registry, Transport::class);
     }
 
-    //    /**
-    //     * @return Transport[] Returns an array of Transport objects
-    //     */
-    //    public function findByExampleField($value): array
-    //    {
-    //        return $this->createQueryBuilder('t')
-    //            ->andWhere('t.exampleField = :val')
-    //            ->setParameter('val', $value)
-    //            ->orderBy('t.id', 'ASC')
-    //            ->setMaxResults(10)
-    //            ->getQuery()
-    //            ->getResult()
-    //        ;
-    //    }
+    /**
+     * @return Transport[] Returns an array of Transport objects sorted by the specified field and direction
+     */
+    public function findAllSorted(string $sort, string $order): array
+    {
+        $queryBuilder = $this->createQueryBuilder('t')
+            ->leftJoin('t.evenement', 'e')
+            ->leftJoin('t.service', 's');
 
-    //    public function findOneBySomeField($value): ?Transport
-    //    {
-    //        return $this->createQueryBuilder('t')
-    //            ->andWhere('t.exampleField = :val')
-    //            ->setParameter('val', $value)
-    //            ->getQuery()
-    //            ->getOneOrNullResult()
-    //        ;
-    //    }
+        switch ($sort) {
+            case 'vehicule':
+                $queryBuilder->orderBy('t.vehicule', $order);
+                break;
+            case 'date':
+                $queryBuilder->orderBy('t.date', $order);
+                break;
+            default:
+                $queryBuilder->orderBy('t.vehicule', 'ASC');
+        }
+
+        return $queryBuilder->getQuery()->getResult();
+    }
 }
