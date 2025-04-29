@@ -1,0 +1,57 @@
+{% extends 'admin.html.twig' %}
+
+{% block title %}Produits de Sponsoring{% endblock %}
+
+{% block body %}
+    <div class="container-fluid">
+        <h1 class="h3 mb-4 text-gray-800">Produits de Sponsoring</h1>
+
+        <div class="card shadow mb-4">
+            <div class="card-header py-3">
+                <h6 class="m-0 font-weight-bold text-primary">Liste des Produits</h6>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-bordered table-hover">
+                        <thead class="thead-light">
+                        <tr>
+                            <th>Nom</th>
+                            <th>Description</th>
+                            <th>Quantité</th>
+                            <th>Prix</th>
+                            <th>Image</th>
+                            <th>Actions</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {% for produitsponsoring in produitsponsorings %}
+                            <tr>
+                                <td>{{ produitsponsoring.nom }}</td>
+                                <td>{{ produitsponsoring.description }}</td>
+                                <td>{{ produitsponsoring.quantite }}</td>
+                                <td>{{ produitsponsoring.prix|number_format(2, ',', ' ') }} €</td>
+                                <td>
+                                    {% if produitsponsoring.image %}
+                                        <img src="{{ asset('uploads/produits/' ~ produitsponsoring.image) }}" alt="{{ produitsponsoring.nom }}" style="max-width: 100px;">
+                                    {% else %}
+                                        Pas d'image
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    <a href="{{ path('app_produitsponsoring_show', {'id': produitsponsoring.id}) }}" class="btn btn-sm btn-info">Voir</a>
+                                    <a href="{{ path('app_produitsponsoring_edit', {'id': produitsponsoring.id}) }}" class="btn btn-sm btn-primary">Modifier</a>
+                                </td>
+                            </tr>
+                        {% else %}
+                            <tr>
+                                <td colspan="6" class="text-center">Aucun produit trouvé</td>
+                            </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                <a href="{{ path('app_produitsponsoring_new') }}" class="btn btn-primary btn-user mt-3">Créer un nouveau produit</a>
+            </div>
+        </div>
+    </div>
+{% endblock %}

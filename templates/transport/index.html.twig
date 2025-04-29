@@ -1,0 +1,58 @@
+{% extends 'admin.html.twig' %}
+
+{% block title %}Transports{% endblock %}
+
+{% block body %}
+    <div class="container-fluid">
+        <h1 class="h3 mb-4 text-gray-800">Transports</h1>
+
+        {% for message in app.flashes('success') %}
+            <div class="alert alert-success">{{ message }}</div>
+        {% endfor %}
+        {% for message in app.flashes('error') %}
+            <div class="alert alert-danger">{{ message }}</div>
+        {% endfor %}
+
+        <div class="card shadow mb-4">
+            <div class="card-header py-3">
+                <h6 class="m-0 font-weight-bold text-primary">Liste des Transports</h6>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-bordered table-hover">
+                        <thead class="thead-light">
+                        <tr>
+                            <th>Date</th>
+                            <th>Heure de Départ</th>
+                            <th>Point de Départ</th>
+                            <th>Destination</th>
+                            <th>Véhicule</th>
+                            <th>Actions</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {% for transport in transports %}
+                            <tr>
+                                <td>{{ transport.date ? transport.date|date('Y-m-d') : 'N/A' }}</td>
+                                <td>{{ transport.heureDepart ? transport.heureDepart|date('H:i') : 'N/A' }}</td>
+                                <td>{{ transport.pointDepart }}</td>
+                                <td>{{ transport.destination }}</td>
+                                <td>{{ transport.vehicule }}</td>
+                                <td>
+                                    <a href="{{ path('app_transport_show', {'id': transport.id}) }}" class="btn btn-sm btn-info">Voir</a>
+                                    <a href="{{ path('app_transport_edit', {'id': transport.id}) }}" class="btn btn-sm btn-primary">Modifier</a>
+                                </td>
+                            </tr>
+                        {% else %}
+                            <tr>
+                                <td colspan="6" class="text-center">Aucun transport trouvé</td>
+                            </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                <a href="{{ path('app_transport_new') }}" class="btn btn-primary btn-user mt-3">Créer un nouveau transport</a>
+            </div>
+        </div>
+    </div>
+{% endblock %}

@@ -1,0 +1,63 @@
+{% extends 'admin.html.twig' %}
+
+{% block title %}Nouvel Événement{% endblock %}
+
+{% block body %}
+    <div class="container-fluid">
+        <h1 class="h3 mb-4 text-gray-800">Ajouter un nouvel événement</h1>
+
+        <div class="card shadow mb-4">
+            <div class="card-header py-3">
+                <h6 class="m-0 font-weight-bold text-primary">Formulaire d'événement</h6>
+            </div>
+            <div class="card-body">
+                {{ form_start(form, {'attr': {'novalidate': 'novalidate', 'class': 'form'}}) }}
+                <div class="form-group">
+                    {{ form_label(form.nom, "Nom de l'événement", {'label_attr': {'class': 'font-weight-bold text-gray-700'}}) }}
+                    {{ form_widget(form.nom, {'attr': {'class': 'form-control'}}) }}
+                    {{ form_errors(form.nom, {'attr': {'class': 'text-danger'}}) }}
+                </div>
+                <div class="form-group">
+                    {{ form_label(form.description, "Description", {'label_attr': {'class': 'font-weight-bold text-gray-700'}}) }}
+                    {{ form_widget(form.description, {'attr': {'class': 'form-control', 'rows': '3'}}) }}
+                    {{ form_errors(form.description, {'attr': {'class': 'text-danger'}}) }}
+                </div>
+                <div class="form-group">
+                    {{ form_label(form.date, "Date", {'label_attr': {'class': 'font-weight-bold text-gray-700'}}) }}
+                    {{ form_widget(form.date, {'attr': {'class': 'form-control'}}) }}
+                    {{ form_errors(form.date, {'attr': {'class': 'text-danger'}}) }}
+                </div>
+                <div class="form-group">
+                    {{ form_label(form.lieu, "Lieu", {'label_attr': {'class': 'font-weight-bold text-gray-700'}}) }}
+                    {{ form_widget(form.lieu, {'attr': {'class': 'form-control'}}) }}
+                    {{ form_errors(form.lieu, {'attr': {'class': 'text-danger'}}) }}
+                </div>
+                <div class="form-group">
+                    {{ form_label(form.statut, "Statut", {'label_attr': {'class': 'font-weight-bold text-gray-700'}}) }}
+                    {{ form_widget(form.statut, {'attr': {'class': 'form-control'}}) }}
+                    {{ form_errors(form.statut, {'attr': {'class': 'text-danger'}}) }}
+                </div>
+                <div class="form-group">
+                    {{ form_label(form.capacite_max, "Capacité maximale", {'label_attr': {'class': 'font-weight-bold text-gray-700'}}) }}
+                    {{ form_widget(form.capacite_max, {'attr': {'class': 'form-control'}}) }}
+                    {{ form_errors(form.capacite_max, {'attr': {'class': 'text-danger'}}) }}
+                </div>
+                <div class="form-group">
+                    {{ form_label(form.image, "Image (JPG, PNG)", {'label_attr': {'class': 'font-weight-bold text-gray-700'}}) }}
+                    {{ form_widget(form.image, {'attr': {'class': 'form-control-file'}}) }}
+                    {{ form_errors(form.image, {'attr': {'class': 'text-danger'}}) }}
+                </div>
+                <div class="form-group">
+                    {{ form_label(form.type, "Type", {'label_attr': {'class': 'font-weight-bold text-gray-700'}}) }}
+                    {{ form_widget(form.type, {'attr': {'class': 'form-control'}}) }}
+                    {{ form_errors(form.type, {'attr': {'class': 'text-danger'}}) }}
+                </div>
+
+                <button type="submit" class="btn btn-primary btn-user btn-block">Créer</button>
+                {{ form_end(form) }}
+
+                <a href="{{ path('app_evenement_index') }}" class="btn btn-secondary btn-user btn-block mt-2">Retour à la liste</a>
+            </div>
+        </div>
+    </div>
+{% endblock %}

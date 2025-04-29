@@ -1,0 +1,60 @@
+{% extends 'admin.html.twig' %}
+
+{% block title %}Modifier l'Événement{% endblock %}
+
+{% block body %}
+    <div class="container-fluid">
+        <h1 class="h3 mb-4 text-gray-800">Modifier l'événement</h1>
+
+        <div class="card shadow mb-4">
+            <div class="card-header py-3">
+                <h6 class="m-0 font-weight-bold text-primary">{{ evenement.nom }}</h6>
+            </div>
+            <div class="card-body">
+                {{ form_start(form) }}
+                <div class="form-group">
+                    <label for="evenement_nom" class="font-weight-bold text-gray-700">Nom</label>
+                    {{ form_widget(form.nom, {'attr': {'class': 'form-control'}}) }}
+                </div>
+                <div class="form-group">
+                    <label for="evenement_description" class="font-weight-bold text-gray-700">Description</label>
+                    {{ form_widget(form.description, {'attr': {'class': 'form-control', 'rows': '3'}}) }}
+                </div>
+                <div class="form-group">
+                    <label for="evenement_date" class="font-weight-bold text-gray-700">Date</label>
+                    {{ form_widget(form.date, {'attr': {'class': 'form-control'}}) }}
+                </div>
+                <div class="form-group">
+                    <label for="evenement_lieu" class="font-weight-bold text-gray-700">Lieu</label>
+                    {{ form_widget(form.lieu, {'attr': {'class': 'form-control'}}) }}
+                </div>
+                <div class="form-group">
+                    <label for="evenement_statut" class="font-weight-bold text-gray-700">Statut</label>
+                    {{ form_widget(form.statut, {'attr': {'class': 'form-control'}}) }}
+                </div>
+                <div class="form-group">
+                    <label for="evenement_capacite_max" class="font-weight-bold text-gray-700">Capacité Max</label>
+                    {{ form_widget(form.capacite_max, {'attr': {'class': 'form-control'}}) }}
+                </div>
+                <div class="form-group">
+                    <label for="evenement_image" class="font-weight-bold text-gray-700">Image (JPG, PNG)</label>
+                    {{ form_widget(form.image, {'attr': {'class': 'form-control-file'}}) }}
+                    {{ form_errors(form.image, {'attr': {'class': 'text-danger'}}) }}
+                    {% if evenement.image %}
+                        <p>Image actuelle : <img src="{{ asset('uploads/evenements/' ~ evenement.image) }}" alt="{{ evenement.nom }}" style="max-width: 100px;"></p>
+                    {% endif %}
+                </div>
+                <div class="form-group">
+                    <label for="evenement_type" class="font-weight-bold text-gray-700">Type</label>
+                    {{ form_widget(form.type, {'attr': {'class': 'form-control'}}) }}
+                </div>
+
+
+                <button type="submit" class="btn btn-primary btn-user btn-block">Enregistrer</button>
+                {{ form_end(form) }}
+
+                <a href="{{ path('app_evenement_index') }}" class="btn btn-secondary btn-user btn-block mt-2">Retour à la liste</a>
+            </div>
+        </div>
+    </div>
+{% endblock %}

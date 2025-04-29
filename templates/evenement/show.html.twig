@@ -1,0 +1,34 @@
+{% extends 'admin.html.twig' %}
+
+{% block title %}Détails de l'Événement{% endblock %}
+
+{% block body %}
+    <div class="container-fluid">
+        <h1 class="h3 mb-4 text-gray-800">Détails de l'Événement</h1>
+
+        <div class="card shadow mb-4">
+            <div class="card-header py-3">
+                <h6 class="m-0 font-weight-bold text-primary">{{ evenement.nom }}</h6>
+            </div>
+            <div class="card-body">
+                <p><strong>Nom:</strong> {{ evenement.nom }}</p>
+                <p><strong>Description:</strong> {{ evenement.description }}</p>
+                <p><strong>Date:</strong> {{ evenement.date ? evenement.date|date('Y-m-d H:i') : 'N/A' }}</p>
+                <p><strong>Lieu:</strong> {{ evenement.lieu }}</p>
+                <p><strong>Statut:</strong> {{ evenement.statut }}</p>
+                <p><strong>Capacité Max:</strong> {{ evenement.capaciteMax }}</p>
+                <p><strong>Image:</strong>
+                    {% if evenement.image %}
+                        <img src="{{ asset('uploads/evenements/' ~ evenement.image) }}" alt="{{ evenement.nom }}" style="max-width: 200px;">
+                    {% else %}
+                        Pas d'image
+                    {% endif %}
+                </p>
+                <p><strong>Type:</strong> {{ evenement.type }}</p>
+
+                <a href="{{ path('app_evenement_index') }}" class="btn btn-secondary btn-user mt-3">Retour</a>
+                <a href="{{ path('app_evenement_edit', {'id': evenement.id}) }}" class="btn btn-primary btn-user mt-3">Modifier</a>
+            </div>
+        </div>
+    </div>
+{% endblock %}

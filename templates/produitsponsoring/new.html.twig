@@ -1,0 +1,58 @@
+{% extends 'admin.html.twig' %}
+
+{% block title %}Nouveau Produit Sponsoring{% endblock %}
+
+{% block body %}
+    <div class="container-fluid">
+        <h1 class="h3 mb-4 text-gray-800">Ajouter un nouveau produit de sponsoring</h1>
+
+        <div class="card shadow mb-4">
+            <div class="card-header py-3">
+                <h6 class="m-0 font-weight-bold text-primary">Formulaire de produit</h6>
+            </div>
+            <div class="card-body">
+                {{ form_start(form, {'attr': {'novalidate': 'novalidate', 'class': 'form'}}) }}
+                <div class="form-group">
+                    {{ form_label(form.nom, "Nom du produit", {'label_attr': {'class': 'font-weight-bold text-gray-700'}}) }}
+                    {{ form_widget(form.nom, {'attr': {'class': 'form-control'}}) }}
+                    {{ form_errors(form.nom, {'attr': {'class': 'text-danger'}}) }}
+                </div>
+                <div class="form-group">
+                    {{ form_label(form.description, "Description", {'label_attr': {'class': 'font-weight-bold text-gray-700'}}) }}
+                    {{ form_widget(form.description, {'attr': {'class': 'form-control', 'rows': '3'}}) }}
+                    {{ form_errors(form.description, {'attr': {'class': 'text-danger'}}) }}
+                </div>
+                <div class="form-group">
+                    {{ form_label(form.quantite, "Quantité", {'label_attr': {'class': 'font-weight-bold text-gray-700'}}) }}
+                    {{ form_widget(form.quantite, {'attr': {'class': 'form-control'}}) }}
+                    {{ form_errors(form.quantite, {'attr': {'class': 'text-danger'}}) }}
+                </div>
+                <div class="form-group">
+                    {{ form_label(form.prix, "Prix", {'label_attr': {'class': 'font-weight-bold text-gray-700'}}) }}
+                    {{ form_widget(form.prix, {'attr': {'class': 'form-control'}}) }}
+                    {{ form_errors(form.prix, {'attr': {'class': 'text-danger'}}) }}
+                </div>
+                <div class="form-group">
+                    {{ form_label(form.image, "Image (JPG, PNG)", {'label_attr': {'class': 'font-weight-bold text-gray-700'}}) }}
+                    {{ form_widget(form.image, {'attr': {'class': 'form-control-file'}}) }}
+                    {{ form_errors(form.image, {'attr': {'class': 'text-danger'}}) }}
+                </div>
+                <div class="form-group">
+                    {{ form_label(form.utilisateur, "Utilisateur", {'label_attr': {'class': 'font-weight-bold text-gray-700'}}) }}
+                    {{ form_widget(form.utilisateur, {'attr': {'class': 'form-control'}}) }}
+                    {{ form_errors(form.utilisateur, {'attr': {'class': 'text-danger'}}) }}
+                </div>
+                <div class="form-group">
+                    {{ form_label(form.contratSponsorings, "Contrats de sponsoring", {'label_attr': {'class': 'font-weight-bold text-gray-700'}}) }}
+                    {{ form_widget(form.contratSponsorings, {'attr': {'class': 'form-control'}}) }}
+                    {{ form_errors(form.contratSponsorings, {'attr': {'class': 'text-danger'}}) }}
+                </div>
+
+                <button type="submit" class="btn btn-primary btn-user btn-block">Créer</button>
+                {{ form_end(form) }}
+
+                <a href="{{ path('app_produitsponsoring_index') }}" class="btn btn-secondary btn-user btn-block mt-2">Retour à la liste</a>
+            </div>
+        </div>
+    </div>
+{% endblock %}

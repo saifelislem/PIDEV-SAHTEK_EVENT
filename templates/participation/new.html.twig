@@ -1,0 +1,43 @@
+{% extends 'admin.html.twig' %}
+
+{% block title %}Nouvelle Participation{% endblock %}
+
+{% block body %}
+    <div class="container-fluid">
+        <h1 class="h3 mb-4 text-gray-800">Ajouter une nouvelle participation</h1>
+
+        <div class="card shadow mb-4">
+            <div class="card-header py-3">
+                <h6 class="m-0 font-weight-bold text-primary">Formulaire de participation</h6>
+            </div>
+            <div class="card-body">
+                {{ form_start(form, {'attr': {'novalidate': 'novalidate', 'class': 'form'}}) }}
+                <div class="form-group">
+                    {{ form_label(form.utilisateur, "Utilisateur", {'label_attr': {'class': 'font-weight-bold text-gray-700'}}) }}
+                    {{ form_widget(form.utilisateur, {'attr': {'class': 'form-control'}}) }}
+                    {{ form_errors(form.utilisateur, {'attr': {'class': 'text-danger'}}) }}
+                </div>
+                <div class="form-group">
+                    {{ form_label(form.evenement, "Événement", {'label_attr': {'class': 'font-weight-bold text-gray-700'}}) }}
+                    {{ form_widget(form.evenement, {'attr': {'class': 'form-control'}}) }}
+                    {{ form_errors(form.evenement, {'attr': {'class': 'text-danger'}}) }}
+                </div>
+                <div class="form-group">
+                    {{ form_label(form.date_inscription, "Date d'inscription", {'label_attr': {'class': 'font-weight-bold text-gray-700'}}) }}
+                    {{ form_widget(form.date_inscription, {'attr': {'class': 'form-control'}}) }}
+                    {{ form_errors(form.date_inscription, {'attr': {'class': 'text-danger'}}) }}
+                </div>
+                <div class="form-group">
+                    {{ form_label(form.moyenPaiement, "Moyen de Paiement", {'label_attr': {'class': 'font-weight-bold text-gray-700'}}) }}
+                    {{ form_widget(form.moyenPaiement, {'attr': {'class': 'form-control'}}) }}
+                    {{ form_errors(form.moyenPaiement, {'attr': {'class': 'text-danger'}}) }}
+                </div>
+
+                <button type="submit" class="btn btn-primary btn-user btn-block">Créer</button>
+                {{ form_end(form) }}
+
+                <a href="{{ path('app_participation_index') }}" class="btn btn-secondary btn-user btn-block mt-2">Retour à la liste</a>
+            </div>
+        </div>
+    </div>
+{% endblock %}

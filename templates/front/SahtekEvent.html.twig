@@ -1,0 +1,157 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Accueil - Sahtek Event{% endblock %}
+
+{% block body %}
+    <!-- Main Banner Area -->
+    <section id="section-1" class="banner-section">
+        <div class="content-slider">
+            {% set bannerIndex = 1 %}
+            {% for location, data in events_by_location %}
+                <input type="radio" id="banner{{ bannerIndex }}" class="sec-1-input" name="banner" {{ bannerIndex == 1 ? 'checked' : '' }}>
+                {% set bannerIndex = bannerIndex + 1 %}
+            {% endfor %}
+
+            <div class="slider">
+                {% set bannerIndex = 1 %}
+                {% for location, data in events_by_location %}
+                    <div id="top-banner-{{ bannerIndex }}" class="banner">
+                        <div class="banner-inner-wrapper header-text">
+                            <div class="main-caption">
+                                <h2>Découvrez les événements à:</h2>
+                                <h1>{{ location }}</h1>
+                                <div class="border-button"><a href="{{ path('app_evenement_index_front') }}#events">Explorer</a></div>
+                            </div>
+                            <div class="container">
+                                <div class="row">
+                                    <div class="col-lg-12">
+                                        <div class="more-info">
+                                            <div class="row">
+                                                <div class="col-lg-4 col-sm-6 col-6">
+                                                    <i class="fa fa-user"></i>
+                                                    <h4><span>Participants:</span><br>{{ data.participantCount }}</h4>
+                                                </div>
+                                                <div class="col-lg-4 col-sm-6 col-6">
+                                                    <i class="fa fa-calendar"></i>
+                                                    <h4><span>Événements:</span><br>{{ data.eventCount }}</h4>
+                                                </div>
+                                                <div class="col-lg-4 col-sm-6 col-6">
+                                                    <div class="main-button">
+                                                        <a href="#events">En savoir plus</a>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    {% set bannerIndex = bannerIndex + 1 %}
+                {% endfor %}
+            </div>
+
+            <nav>
+                <div class="controls">
+                    {% set bannerIndex = 1 %}
+                    {% for location, data in events_by_location %}
+                        <label for="banner{{ bannerIndex }}">
+                            <span class="progressbar"><span class="progressbar-fill"></span></span>
+                            <span class="text">{{ bannerIndex }}</span>
+                        </label>
+                        {% set bannerIndex = bannerIndex + 1 %}
+                    {% endfor %}
+                </div>
+            </nav>
+        </div>
+    </section>
+
+    <!-- Events Section -->
+    <div id="events" class="visit-country">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-5">
+                    <div class="section-heading">
+                        <h2>Nos Événements</h2>
+                        <p>Découvrez et participez à nos événements uniques.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-lg-8">
+                    <div class="items">
+                        <div class="row">
+                            {% for location, data in events_by_location %}
+                                {% for evenement in data.events %}
+                                    <div class="col-lg-12">
+                                        <div class="item">
+                                            <div class="row">
+                                                <div class="col-lg-4 col-sm-5">
+                                                    <div class="image">
+                                                        <img src="{{ evenement.image ? asset('uploads/' ~ evenement.image) : asset('assets/front/images/country-01.jpg') }}"
+                                                             alt="{{ evenement.nom }}"
+                                                             onerror="this.src='{{ asset('assets/front/images/country-01.jpg') }}'">
+                                                    </div>
+                                                </div>
+                                                <div class="col-lg-8 col-sm-7">
+                                                    <div class="right-content">
+                                                        <h4>{{ evenement.nom }}</h4>
+                                                        <span>{{ evenement.lieu|default('Lieu non spécifié') }}</span>
+                                                        <div class="main-button">
+                                                            <a href="{{ path('app_evenement_participate', {'id': evenement.id}) }}">Réserver</a>
+                                                        </div>
+                                                        <p>{{ evenement.date ? 'Prévu le ' ~ evenement.date|date('d M Y à H:i') : 'Date à confirmer' }}</p>
+                                                        <ul class="info">
+                                                            <li><i class="fa fa-user"></i> {{ evenement.getParticipations().count() }} Participants</li>
+                                                            <li><i class="fa fa-calendar"></i> {{ data.eventCount }} Événements à {{ location }}</li>
+                                                        </ul>
+                                                        <div class="text-button">
+                                                            <a href="{{ path('app_evenement_details', {'id': evenement.id}) }}">Plus d’infos ? <i class="fa fa-arrow-right"></i></a>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                {% endfor %}
+                            {% else %}
+                                <div class="col-lg-12">
+                                    <p>Aucun événement disponible pour le moment.</p>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-4">
+                    <div class="side-bar-map">
+                        <div class="row">
+                            <div class="col-lg-12">
+                                <div id="map">
+                                    <iframe src="https://www.google.com/maps/embed?pb=!1m18!m12!1m3!1d3193.228073135614!2d10.16507931531666!3d36.80649497994702!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x12fd337f5e7b32e5%3A0x2eabf43feda9e43f!2sTunis%2C%20Tunisia!5e0!3m2!1sen!2stn!4v1698765432100!5m2!1sen!2stn"
+                                            width="100%" height="550px" style="border:0; border-radius: 23px;" allowfullscreen="" loading="lazy"></iframe>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Call to Action -->
+    <div class="call-to-action">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-8">
+                    <h2>Prêt à participer ?</h2>
+                    <h4>Inscrivez-vous à un événement maintenant</h4>
+                </div>
+                <div class="col-lg-4">
+                    <div class="border-button">
+                        <a href="{{ path('app_evenement_index_front') }}#events">Découvrir</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

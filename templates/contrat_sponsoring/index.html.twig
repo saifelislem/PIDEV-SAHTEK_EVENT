@@ -1,0 +1,45 @@
+{% extends 'admin.html.twig' %}
+
+{% block title %}Contrats de Sponsoring{% endblock %}
+
+{% block body %}
+    <div class="container-fluid">
+        <h1 class="h3 mb-4 text-gray-800">Contrats de Sponsoring</h1>
+
+        <div class="card shadow mb-4">
+            <div class="card-header py-3">
+                <h6 class="m-0 font-weight-bold text-primary">Liste des Contrats</h6>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-bordered table-hover">
+                        <thead class="thead-light">
+                        <tr>
+                            <th>Montant</th>
+                            <th>Description</th>
+                            <th>Actions</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {% for contrat_sponsoring in contrat_sponsorings %}
+                            <tr>
+                                <td>{{ contrat_sponsoring.montant|number_format(2, ',', ' ') }} €</td>
+                                <td>{{ contrat_sponsoring.description }}</td>
+                                <td>
+                                    <a href="{{ path('app_contrat_sponsoring_show', {'id': contrat_sponsoring.id}) }}" class="btn btn-sm btn-info">Voir</a>
+                                    <a href="{{ path('app_contrat_sponsoring_edit', {'id': contrat_sponsoring.id}) }}" class="btn btn-sm btn-primary">Modifier</a>
+                                </td>
+                            </tr>
+                        {% else %}
+                            <tr>
+                                <td colspan="3" class="text-center">Aucun contrat trouvé</td>
+                            </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                <a href="{{ path('app_contrat_sponsoring_new') }}" class="btn btn-primary btn-user mt-3">Créer un nouveau contrat</a>
+            </div>
+        </div>
+    </div>
+{% endblock %}

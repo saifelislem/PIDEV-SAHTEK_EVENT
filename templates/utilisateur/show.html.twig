@@ -1,0 +1,76 @@
+{% extends 'admin.html.twig' %}
+
+{% block title %}Détails de l’Utilisateur{% endblock %}
+
+{% block body %}
+    <div class="container-fluid">
+        <h1 class="h3 mb-4 text-gray-800">Détails de l’Utilisateur</h1>
+
+        {% for message in app.flashes('success') %}
+            <div class="alert alert-success">{{ message }}</div>
+        {% endfor %}
+        {% for message in app.flashes('error') %}
+            <div class="alert alert-danger">{{ message }}</div>
+        {% endfor %}
+
+        <div class="card shadow mb-4">
+            <div class="card-header py-3">
+                <h6 class="m-0 font-weight-bold text-primary">Utilisateur #{{ utilisateur.id }}</h6>
+            </div>
+            <div class="card-body">
+                <table class="table">
+                    <tbody>
+                    <tr>
+                        <th>ID</th>
+                        <td>{{ utilisateur.id }}</td>
+                    </tr>
+                    <tr>
+                        <th>Nom</th>
+                        <td>{{ utilisateur.nom }}</td>
+                    </tr>
+                    <tr>
+                        <th>Prénom</th>
+                        <td>{{ utilisateur.prenom }}</td>
+                    </tr>
+                    <tr>
+                        <th>Rôle</th>
+                        <td>{{ utilisateur.role ? utilisateur.role|json_encode|raw : 'N/A' }}</td>
+                    </tr>
+                    <tr>
+                        <th>Nationalité</th>
+                        <td>{{ utilisateur.nationalite }}</td>
+                    </tr>
+                    <tr>
+                        <th>Genre</th>
+                        <td>{{ utilisateur.genre }}</td>
+                    </tr>
+                    <tr>
+                        <th>Email</th>
+                        <td>{{ utilisateur.email }}</td>
+                    </tr>
+                    <tr>
+                        <th>Permission</th>
+                        <td>{{ utilisateur.permission ? 'Oui' : 'Non' }}</td>
+                    </tr>
+                    <tr>
+                        <th>Statut</th>
+                        <td>{{ utilisateur.statut ? 'Actif' : 'Inactif' }}</td>
+                    </tr>
+                    <tr>
+                        <th>Vérifié</th>
+                        <td>{{ utilisateur.isVerified ? 'Oui' : 'Non' }}</td>
+                    </tr>
+                    <tr>
+                        <th>Token de vérification</th>
+                        <td>{{ utilisateur.verificationToken ?: 'N/A' }}</td>
+                    </tr>
+                    </tbody>
+                </table>
+
+                <a href="{{ path('app_utilisateur_index') }}" class="btn btn-secondary btn-user mt-3">Retour à la liste</a>
+                <a href="{{ path('app_utilisateur_edit', {'id': utilisateur.id}) }}" class="btn btn-primary btn-user mt-3">Modifier</a>
+                {{ include('utilisateur/_delete_form.html.twig') }}
+            </div>
+        </div>
+    </div>
+{% endblock %}

@@ -1,0 +1,48 @@
+{% extends 'admin.html.twig' %}
+
+{% block title %}Nouveau Contrat de Sponsoring{% endblock %}
+
+{% block body %}
+    <div class="container-fluid">
+        <h1 class="h3 mb-4 text-gray-800">Ajouter un nouveau contrat de sponsoring</h1>
+
+        <div class="card shadow mb-4">
+            <div class="card-header py-3">
+                <h6 class="m-0 font-weight-bold text-primary">Formulaire de contrat de sponsoring</h6>
+            </div>
+            <div class="card-body">
+                {{ form_start(form, {'attr': {'novalidate': 'novalidate', 'class': 'form'}}) }}
+                <div class="form-group">
+                    {{ form_label(form.montant, "Montant", {'label_attr': {'class': 'font-weight-bold text-gray-700'}}) }}
+                    {{ form_widget(form.montant, {'attr': {'class': 'form-control'}}) }}
+                    {{ form_errors(form.montant, {'attr': {'class': 'text-danger'}}) }}
+                </div>
+                <div class="form-group">
+                    {{ form_label(form.description, "Description", {'label_attr': {'class': 'font-weight-bold text-gray-700'}}) }}
+                    {{ form_widget(form.description, {'attr': {'class': 'form-control'}}) }}
+                    {{ form_errors(form.description, {'attr': {'class': 'text-danger'}}) }}
+                </div>
+                <div class="form-group">
+                    {{ form_label(form.utilisateur, "Utilisateur", {'label_attr': {'class': 'font-weight-bold text-gray-700'}}) }}
+                    {{ form_widget(form.utilisateur, {'attr': {'class': 'form-control'}}) }}
+                    {{ form_errors(form.utilisateur, {'attr': {'class': 'text-danger'}}) }}
+                </div>
+                <div class="form-group">
+                    {{ form_label(form.evenement, "Événement", {'label_attr': {'class': 'font-weight-bold text-gray-700'}}) }}
+                    {{ form_widget(form.evenement, {'attr': {'class': 'form-control'}}) }}
+                    {{ form_errors(form.evenement, {'attr': {'class': 'text-danger'}}) }}
+                </div>
+                <div class="form-group">
+                    {{ form_label(form.produitsponsorings, "Produits de sponsoring", {'label_attr': {'class': 'font-weight-bold text-gray-700'}}) }}
+                    {{ form_widget(form.produitsponsorings, {'attr': {'class': 'form-control'}}) }}
+                    {{ form_errors(form.produitsponsorings, {'attr': {'class': 'text-danger'}}) }}
+                </div>
+
+                <button type="submit" class="btn btn-primary btn-user btn-block">Créer</button>
+                {{ form_end(form) }}
+
+                <a href="{{ path('app_contrat_sponsoring_index') }}" class="btn btn-secondary btn-user btn-block mt-2">Retour à la liste</a>
+            </div>
+        </div>
+    </div>
+{% endblock %}

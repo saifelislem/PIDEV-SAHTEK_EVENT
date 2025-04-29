@@ -1,0 +1,13 @@
+{% extends 'admin.html.twig' %}
+
+{% block title %}Edit Produitsponsoring{% endblock %}
+
+{% block body %}
+    <h1>Edit Produitsponsoring</h1>
+
+    {{ include('produitsponsoring/_form.html.twig', {'button_label': 'Update'}) }}
+
+    <a href="{{ path('app_produitsponsoring_index') }}">back to list</a>
+
+    {{ include('produitsponsoring/_delete_form.html.twig') }}
+{% endblock %}
