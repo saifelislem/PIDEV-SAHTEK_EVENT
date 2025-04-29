@@ -4,6 +4,7 @@ namespace App\Controller;
 use App\Entity\Utilisateur;
 use App\Entity\Profil;
 use App\Form\RegistrationFormType;
+use App\Service\FaceAuthService;  // Importation du service FaceAuthService
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -14,7 +15,7 @@ use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 use Symfony\Component\Security\Core\Authentication\Token\UsernamePasswordToken;
 
-class RegistrationController            extends AbstractController
+class RegistrationController extends AbstractController
 {
     #[Route('/register', name: 'app_register')]
     public function register(
@@ -22,7 +23,8 @@ class RegistrationController            extends AbstractController
         UserPasswordHasherInterface $passwordHasher,
         EntityManagerInterface $entityManager,
         TokenStorageInterface $tokenStorage,
-        SessionInterface $session
+        SessionInterface $session,
+        FaceAuthService $faceAuthService  // Injection du service FaceAuthService
     ): Response {
         $user = new Utilisateur();
         $form = $this->createForm(RegistrationFormType::class, $user);
@@ -32,6 +34,24 @@ class RegistrationController            extends AbstractController
             // Hacher le mot de passe
             $hashedPassword = $passwordHasher->hashPassword($user, $form->get('mot_de_passe')->getData());
             $user->setMotDePasse($hashedPassword);
+
+            // Traitement des données faciales
+            $faceData = $form->get('faceData')->getData();  // Récupérer les données faciales (base64 ou fichier)
+            if ($faceData) {
+                try {
+                    // Trouver les utilisateurs correspondants via le service de reconnaissance faciale
+                    $matchingUsers = $faceAuthService->findMatchingUsers($faceData);
+                    if (!empty($matchingUsers)) {
+                        // Si une correspondance est trouvée, afficher un message ou gérer autrement
+                        $this->addFlash('warning', 'Cette face correspond à un autre utilisateur.');
+                    } else {
+                        // Enregistrer les données faciales pour l'utilisateur
+                        $user->setFaceData($faceData);
+                    }
+                } catch (\Exception $e) {
+                    $this->addFlash('error', 'Erreur lors du traitement des données faciales.');
+                }
+            }
 
             // Créer un profil vide avec l'email
             $profil = new Profil();

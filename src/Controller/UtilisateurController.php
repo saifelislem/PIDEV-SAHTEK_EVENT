@@ -7,19 +7,24 @@ use App\Form\UtilisateurType;
 use App\Repository\UtilisateurRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\File\Exception\FileException;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
-use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\String\Slugger\SluggerInterface;
 
 #[Route('/utilisateur')]
 final class UtilisateurController extends AbstractController
 {
     private $passwordHasher;
+    private $slugger;
 
-    public function __construct(UserPasswordHasherInterface $passwordHasher)
+    public function __construct(UserPasswordHasherInterface $passwordHasher, SluggerInterface $slugger)
     {
         $this->passwordHasher = $passwordHasher;
+        $this->slugger = $slugger;
     }
 
     #[Route(name: 'app_utilisateur_index', methods: ['GET', 'POST'])]
@@ -27,7 +32,6 @@ final class UtilisateurController extends AbstractController
     {
         $this->denyAccessUnlessGranted('ROLE_ADMIN');
 
-        // Gestion de l'activation/désactivation
         if ($request->isMethod('POST') && $request->request->has('toggle_status')) {
             $id = $request->request->get('id');
             $user = $utilisateurRepository->find($id);
@@ -39,7 +43,7 @@ final class UtilisateurController extends AbstractController
             } else {
                 $this->addFlash('error', 'Utilisateur non trouvé.');
             }
-            return $this->redirectToRoute('app_utilisateur_index', [], Response::HTTP_SEE_OTHER);
+            return $this->redirectToRoute('app_utilisateur_index');
         }
 
         return $this->render('utilisateur/index.html.twig', [
@@ -62,11 +66,29 @@ final class UtilisateurController extends AbstractController
                 $utilisateur->setMotDePasse($hashedPassword);
             }
 
+            /** @var UploadedFile $photoFile */
+            $photoFile = $form->get('photo')->getData();
+            if ($photoFile) {
+                $originalFilename = pathinfo($photoFile->getClientOriginalName(), PATHINFO_FILENAME);
+                $safeFilename = $this->slugger->slug($originalFilename);
+                $newFilename = $safeFilename.'-'.uniqid().'.'.$photoFile->guessExtension();
+
+                try {
+                    $photoFile->move(
+                        $this->getParameter('photo_directory'),
+                        $newFilename
+                    );
+                    $utilisateur->setPhotoPath($newFilename);
+                } catch (FileException $e) {
+                    $this->addFlash('error', 'Erreur lors de l\'upload de la photo: '.$e->getMessage());
+                }
+            }
+
             $entityManager->persist($utilisateur);
             $entityManager->flush();
 
             $this->addFlash('success', 'Utilisateur créé avec succès.');
-            return $this->redirectToRoute('app_utilisateur_index', [], Response::HTTP_SEE_OTHER);
+            return $this->redirectToRoute('app_utilisateur_index');
         }
 
         return $this->render('utilisateur/new.html.twig', [
@@ -81,7 +103,7 @@ final class UtilisateurController extends AbstractController
         $this->denyAccessUnlessGranted('ROLE_ADMIN');
         if (!$utilisateur) {
             $this->addFlash('error', 'Utilisateur non trouvé.');
-            return $this->redirectToRoute('app_utilisateur_index', [], Response::HTTP_SEE_OTHER);
+            return $this->redirectToRoute('app_utilisateur_index');
         }
 
         return $this->render('utilisateur/show.html.twig', [
@@ -95,7 +117,7 @@ final class UtilisateurController extends AbstractController
         $this->denyAccessUnlessGranted('ROLE_ADMIN');
         if (!$utilisateur) {
             $this->addFlash('error', 'Utilisateur non trouvé.');
-            return $this->redirectToRoute('app_utilisateur_index', [], Response::HTTP_SEE_OTHER);
+            return $this->redirectToRoute('app_utilisateur_index');
         }
 
         $form = $this->createForm(UtilisateurType::class, $utilisateur);
@@ -108,10 +130,27 @@ final class UtilisateurController extends AbstractController
                 $utilisateur->setMotDePasse($hashedPassword);
             }
 
-            $entityManager->flush();
+            /** @var UploadedFile $photoFile */
+            $photoFile = $form->get('photo')->getData();
+            if ($photoFile) {
+                $originalFilename = pathinfo($photoFile->getClientOriginalName(), PATHINFO_FILENAME);
+                $safeFilename = $this->slugger->slug($originalFilename);
+                $newFilename = $safeFilename.'-'.uniqid().'.'.$photoFile->guessExtension();
 
+                try {
+                    $photoFile->move(
+                        $this->getParameter('photo_directory'),
+                        $newFilename
+                    );
+                    $utilisateur->setPhotoPath($newFilename);
+                } catch (FileException $e) {
+                    $this->addFlash('error', 'Erreur lors de l\'upload de la photo: '.$e->getMessage());
+                }
+            }
+
+            $entityManager->flush();
             $this->addFlash('success', 'Utilisateur mis à jour avec succès.');
-            return $this->redirectToRoute('app_utilisateur_index', [], Response::HTTP_SEE_OTHER);
+            return $this->redirectToRoute('app_utilisateur_index');
         }
 
         return $this->render('utilisateur/edit.html.twig', [
@@ -126,10 +165,11 @@ final class UtilisateurController extends AbstractController
         $this->denyAccessUnlessGranted('ROLE_ADMIN');
         if (!$utilisateur) {
             $this->addFlash('error', 'Utilisateur non trouvé.');
-            return $this->redirectToRoute('app_utilisateur_index', [], Response::HTTP_SEE_OTHER);
+            return $this->redirectToRoute('app_utilisateur_index');
         }
 
-        if ($this->isCsrfTokenValid('delete'.$utilisateur->getId(), $request->getPayload()->getString('_token'))) {
+        // Vérification du token CSRF avec la méthode correcte
+        if ($this->isCsrfTokenValid('delete'.$utilisateur->getId(), $request->request->get('_token'))) {
             $entityManager->remove($utilisateur);
             $entityManager->flush();
             $this->addFlash('success', 'Utilisateur supprimé avec succès.');
@@ -137,6 +177,6 @@ final class UtilisateurController extends AbstractController
             $this->addFlash('error', 'Token CSRF invalide.');
         }
 
-        return $this->redirectToRoute('app_utilisateur_index', [], Response::HTTP_SEE_OTHER);
+        return $this->redirectToRoute('app_utilisateur_index');
     }
 }

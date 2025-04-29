@@ -20,37 +20,34 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(type: 'integer')]
     private ?int $id = null;
 
-    #[ORM\Column(type: 'string', length: 255, nullable: false)]
+    #[ORM\Column(type: 'string', length: 255)]
     #[Assert\NotBlank(message: 'Le nom est obligatoire.')]
     #[Assert\Length(max: 255, maxMessage: 'Le nom ne peut pas dépasser {{ limit }} caractères.')]
     private ?string $nom = null;
 
-    #[ORM\Column(type: 'string', length: 255, nullable: false)]
+    #[ORM\Column(type: 'string', length: 255)]
     #[Assert\NotBlank(message: 'Le prénom est obligatoire.')]
     #[Assert\Length(max: 255, maxMessage: 'Le prénom ne peut pas dépasser {{ limit }} caractères.')]
     private ?string $prenom = null;
 
-    #[ORM\Column(type: 'json', nullable: false)]
-    private array $role = ['ROLE_USER'];
+    #[ORM\Column(type: 'json')]
+    private array $roles = ['ROLE_USER'];
 
-    #[ORM\Column(type: 'string', length: 255, nullable: false)]
+    #[ORM\Column(type: 'string', length: 255)]
     #[Assert\NotBlank(message: 'Le mot de passe est obligatoire.')]
-    #[Assert\Length(
-        min: 8,
-        minMessage: 'Le mot de passe doit contenir au moins {{ limit }} caractères.'
-    )]
-    private ?string $mot_de_passe = null;
+    #[Assert\Length(min: 8, minMessage: 'Le mot de passe doit contenir au moins {{ limit }} caractères.')]
+    private ?string $password = null;
 
-    #[ORM\Column(type: 'string', length: 255, nullable: false)]
-    #[Assert\NotBlank(message: 'La nationalité est obligatoire.')]
+    #[ORM\Column(type: 'string', length: 255)]
+    #[Assert\NotBlank(message: 'La nationalité est aussi obligatoire.')]
     private ?string $nationalite = null;
 
-    #[ORM\Column(type: 'string', length: 255, nullable: false)]
+    #[ORM\Column(type: 'string', length: 255)]
     #[Assert\NotBlank(message: 'Le genre est obligatoire.')]
     #[Assert\Choice(choices: ['Homme', 'Femme'], message: 'Choix de genre invalide.')]
     private ?string $genre = null;
 
-    #[ORM\Column(type: 'string', length: 255, nullable: false)]
+    #[ORM\Column(type: 'string', length: 255)]
     #[Assert\NotBlank(message: 'L\'email est obligatoire.')]
     #[Assert\Email(message: 'L\'adresse email "{{ value }}" n\'est pas valide.')]
     private ?string $email = null;
@@ -58,15 +55,15 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(type: 'boolean', nullable: true)]
     private ?bool $permission = null;
 
-    #[ORM\Column(type: 'boolean', nullable: false, options: ['default' => true])]
+    #[ORM\Column(type: 'boolean', options: ['default' => true])]
     private bool $statut = true;
 
     #[ORM\Column(type: 'string', length: 255, nullable: true)]
     #[Assert\Length(max: 255, maxMessage: 'Le token de vérification ne peut pas dépasser {{ limit }} caractères.')]
-    private ?string $verification_token = null;
+    private ?string $verificationToken = null;
 
     #[ORM\Column(type: 'boolean', nullable: true)]
-    private ?bool $is_verified = null;
+    private ?bool $isVerified = null;
 
     #[ORM\Column(type: 'string', length: 255, nullable: true)]
     #[Assert\Length(max: 255, maxMessage: 'Le token de réinitialisation ne peut pas dépasser {{ limit }} caractères.')]
@@ -102,11 +99,19 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface
     public function getPrenom(): ?string { return $this->prenom; }
     public function setPrenom(string $prenom): self { $this->prenom = $prenom; return $this; }
 
-    public function getRole(): array { return $this->role; }
-    public function setRole(array $role): self { $this->role = $role; return $this; }
+    public function getRoles(): array
+    {
+        $roles = $this->roles;
+        if (!in_array('ROLE_USER', $roles, true)) {
+            $roles[] = 'ROLE_USER';
+        }
+        return array_unique($roles);
+    }
 
-    public function getMotDePasse(): ?string { return $this->mot_de_passe; }
-    public function setMotDePasse(string $mot_de_passe): self { $this->mot_de_passe = $mot_de_passe; return $this; }
+    public function setRoles(array $roles): self { $this->roles = $roles; return $this; }
+
+    public function getPassword(): ?string { return $this->password; }
+    public function setPassword(string $password): self { $this->password = $password; return $this; }
 
     public function getNationalite(): ?string { return $this->nationalite; }
     public function setNationalite(string $nationalite): self { $this->nationalite = $nationalite; return $this; }
@@ -123,24 +128,24 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface
     public function getStatut(): bool { return $this->statut; }
     public function setStatut(bool $statut): self { $this->statut = $statut; return $this; }
 
-    public function getVerificationToken(): ?string { return $this->verification_token; }
-    public function setVerificationToken(?string $verification_token): self { $this->verification_token = $verification_token; return $this; }
+    public function getVerificationToken(): ?string { return $this->verificationToken; }
+    public function setVerificationToken(?string $verificationToken): self { $this->verificationToken = $verificationToken; return $this; }
 
-    public function isVerified(): ?bool { return $this->is_verified; }
-    public function setIsVerified(?bool $is_verified): self { $this->is_verified = $is_verified; return $this; }
+    public function isVerified(): ?bool { return $this->isVerified; }
+    public function setIsVerified(?bool $isVerified): self { $this->isVerified = $isVerified; return $this; }
 
     public function getResetToken(): ?string { return $this->resetToken; }
     public function setResetToken(?string $resetToken): self { $this->resetToken = $resetToken; return $this; }
 
     public function getContratSponsorings(): Collection { return $this->contratSponsorings; }
-    public function addContratSponsoring(ContratSponsoring $contratSponsoring): self {
-        if (!$this->contratSponsorings->contains($contratSponsoring)) {
-            $this->contratSponsorings->add($contratSponsoring);
+    public function addContratSponsoring(ContratSponsoring $contrat): self {
+        if (!$this->contratSponsorings->contains($contrat)) {
+            $this->contratSponsorings->add($contrat);
         }
         return $this;
     }
-    public function removeContratSponsoring(ContratSponsoring $contratSponsoring): self {
-        $this->contratSponsorings->removeElement($contratSponsoring);
+    public function removeContratSponsoring(ContratSponsoring $contrat): self {
+        $this->contratSponsorings->removeElement($contrat);
         return $this;
     }
 
@@ -157,14 +162,14 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface
     }
 
     public function getProduitsponsorings(): Collection { return $this->produitsponsorings; }
-    public function addProduitsponsoring(Produitsponsoring $produitsponsoring): self {
-        if (!$this->produitsponsorings->contains($produitsponsoring)) {
-            $this->produitsponsorings->add($produitsponsoring);
+    public function addProduitsponsoring(Produitsponsoring $produit): self {
+        if (!$this->produitsponsorings->contains($produit)) {
+            $this->produitsponsorings->add($produit);
         }
         return $this;
     }
-    public function removeProduitsponsoring(Produitsponsoring $produitsponsoring): self {
-        $this->produitsponsorings->removeElement($produitsponsoring);
+    public function removeProduitsponsoring(Produitsponsoring $produit): self {
+        $this->produitsponsorings->removeElement($produit);
         return $this;
     }
 
@@ -187,20 +192,6 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface
             $profil->setUtilisateur($this);
         }
         return $this;
-    }
-
-    public function getRoles(): array
-    {
-        $roles = $this->role;
-        if (empty($roles)) {
-            $roles[] = 'ROLE_USER';
-        }
-        return array_unique($roles);
-    }
-
-    public function getPassword(): ?string
-    {
-        return $this->mot_de_passe;
     }
 
     public function getUserIdentifier(): string
