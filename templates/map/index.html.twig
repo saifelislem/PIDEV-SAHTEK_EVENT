@@ -1,0 +1,38 @@
+{# templates/map/index.html.twig #}
+
+{% extends 'base.html.twig' %}
+
+{% block title %}Carte Interactive{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.3/dist/leaflet.css"
+          integrity="sha256-sA+e2b65Tf2jJvYxZaZ4D7G1SZUnx2nP6m1Rj9z4k6g="
+          crossorigin=""/>
+{% endblock %}
+
+{% block body %}
+    <h1>Carte Interactive 🗺️</h1>
+
+    <div id="map" style="height: 600px; width: 100%; margin-top: 20px;"></div>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script src="https://unpkg.com/leaflet@1.9.3/dist/leaflet.js"
+            integrity="sha256-nPLb9k0M0PzEDc50ryq0TT4nHqTQ2XpH5+v1HhwF0kE="
+            crossorigin=""></script>
+
+    <script>
+        var map = L.map('map').setView([33.8439408, 9.400138], 6);
+
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            maxZoom: 19,
+            attribution: '&copy; OpenStreetMap contributors'
+        }).addTo(map);
+
+        L.marker([33.8439408, 9.400138]).addTo(map)
+            .bindPopup('Bienvenue en Tunisie 🇹🇳')
+            .openPopup();
+    </script>
+{% endblock %}

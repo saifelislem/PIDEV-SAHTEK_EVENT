@@ -6,6 +6,7 @@ use App\Entity\Utilisateur;
 use App\Entity\Evenement;
 use App\Entity\Reclamation;
 use App\Entity\ContratSponsoring;
+use App\Repository\EvenementRepository;
 use App\Service\SponsorValidationService;
 use App\Service\NotificationService;
 use Doctrine\ORM\EntityManagerInterface;
@@ -210,6 +211,35 @@ class SecurityController extends AbstractController
             'pending_count' => $pendingCount,
             'pending_products' => $pendingProducts,
             'demandes' => $demandes,
+        ]);
+    }
+
+
+    #[Route('/calendrier', name: 'app_dashboard_calendar', methods: ['GET'])]
+    public function calendar(EvenementRepository $evenementRepository): Response
+    {
+        $this->denyAccessUnlessGranted('ROLE_ADMIN');
+
+        $events = $evenementRepository->findAll();
+
+        $rdvs = [];
+        foreach ($events as $event) {
+            $rdvs[] = [
+                'id' => $event->getId(),
+                'start' => $event->getDate()->format('Y-m-d'),
+                'title' => $event->getNom(),
+                'lieu' => $event->getLieu(),
+                'type' => $event->getType(),
+                'backgroundColor' => '#2C3E50',
+                'borderColor' => '#2C3E50',
+                'textColor' => '#ffffff',
+            ];
+        }
+
+        $data = json_encode($rdvs);
+
+        return $this->render('security/calendrier.html.twig', [
+            'data' => $data,
         ]);
     }
 }

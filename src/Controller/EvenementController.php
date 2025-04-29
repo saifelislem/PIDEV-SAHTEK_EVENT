@@ -21,6 +21,13 @@ use Symfony\Component\HttpFoundation\File\Exception\FileException;
 
 class EvenementController extends AbstractController
 {
+    private $logger;
+
+    public function __construct(LoggerInterface $logger)
+    {
+        $this->logger = $logger;
+    }
+
     #[Route('/', name: 'app_evenement_index_front')]
     public function frontIndex(EntityManagerInterface $entityManager): Response
     {
@@ -47,11 +54,23 @@ class EvenementController extends AbstractController
     }
 
     #[Route('/admin/evenement', name: 'app_evenement_index', methods: ['GET'])]
-    public function index(EntityManagerInterface $entityManager): Response
+    public function index(Request $request, EntityManagerInterface $entityManager): Response
     {
-        $this->denyAccessUnlessGranted('ROLE_ADMIN');
-        $evenements = $entityManager->getRepository(Evenement::class)->findAll();
-        return $this->render('evenement/index.html.twig', ['evenements' => $evenements]);
+        $sort = $request->query->get('sort', 'id');
+        $order = $request->query->get('order', 'asc');
+
+        $validSortFields = ['id', 'nom', 'date', 'statut', 'type'];
+        $sort = in_array($sort, $validSortFields) ? $sort : 'id';
+        $order = in_array(strtolower($order), ['asc', 'desc']) ? $order : 'asc';
+
+        $evenements = $entityManager->getRepository(Evenement::class)
+            ->findBy([], [$sort => $order]);
+
+        return $this->render('evenement/index.html.twig', [
+            'evenements' => $evenements,
+            'current_sort' => $sort,
+            'current_order' => $order,
+        ]);
     }
 
     #[Route('/admin/evenement/new', name: 'app_evenement_new', methods: ['GET', 'POST'])]
@@ -60,7 +79,8 @@ class EvenementController extends AbstractController
         $this->denyAccessUnlessGranted('ROLE_ADMIN');
         $evenement = new Evenement();
         $form = $this->createForm(EvenementType::class, $evenement, [
-            'attr' => ['novalidate' => 'novalidate']
+            'is_edit' => false, // Exclude statut field for create
+             'attr' => ['novalidate' => 'novalidate'] // Optional: uncomment to disable client-side validation
         ]);
         $form->handleRequest($request);
 
@@ -99,14 +119,18 @@ class EvenementController extends AbstractController
 
     // Note: You’re missing the show action entirely in this version! Adding it back.
     #[Route('/admin/evenement/{id}', name: 'app_evenement_show', methods: ['GET'])]
-    public function show(?Evenement $evenement): Response
+    public function show(?Evenement $evenement, EntityManagerInterface $entityManager): Response
     {
         $this->denyAccessUnlessGranted('ROLE_ADMIN');
 
         if (!$evenement) {
-            $this->addFlash('error', 'Événement non trouvé, connard.');
+            $this->addFlash('error', 'Événement non trouvé.');
             return $this->redirectToRoute('app_evenement_index');
         }
+
+        // Update statut based on date
+        $evenement->updateStatut();
+        $entityManager->flush();
 
         return $this->render('evenement/show.html.twig', [
             'evenement' => $evenement,
@@ -116,39 +140,55 @@ class EvenementController extends AbstractController
     #[Route('/admin/evenement/{id}/edit', name: 'app_evenement_edit', methods: ['GET', 'POST'])]
     public function edit(Request $request, ?Evenement $evenement, EntityManagerInterface $entityManager): Response
     {
-        $this->denyAccessUnlessGranted('ROLE_ADMIN');
-
         if (!$evenement) {
             $this->addFlash('error', 'Événement non trouvé.');
             return $this->redirectToRoute('app_evenement_index');
         }
 
-        $form = $this->createForm(EvenementType::class, $evenement);
+        $evenement->updateStatut();
+        $form = $this->createForm(EvenementType::class, $evenement, [
+            'is_edit' => true, // Include statut field for edit
+            // 'attr' => ['novalidate' => 'novalidate'] // Uncomment to disable client-side validation
+        ]);
         $form->handleRequest($request);
 
-        if ($form->isSubmitted() && $form->isValid()) {
-            $imageFile = $form->get('image')->getData();
-            if ($imageFile) {
-                $newFilename = uniqid() . '.' . $imageFile->guessExtension();
-                try {
-                    $imageFile->move(
-                        $this->getParameter('images_directory'),
-                        $newFilename
-                    );
-                    $evenement->setImage($newFilename);
-                    $this->addFlash('success', 'Image updated: ' . $newFilename);
-                } catch (FileException $e) {
-                    $this->addFlash('error', 'Erreur lors de l\'upload de l\'image : ' . $e->getMessage());
-                    return $this->render('evenement/edit.html.twig', [
-                        'evenement' => $evenement,
-                        'form' => $form->createView(),
-                    ]);
+        if ($form->isSubmitted()) {
+            $this->logger->debug('Edit form submitted for event ID: ' . $evenement->getId());
+            if ($form->isValid()) {
+                $this->logger->debug('Edit form is valid');
+                $imageFile = $form->get('image')->getData();
+                if ($imageFile) {
+                    $newFilename = uniqid() . '.' . $imageFile->guessExtension();
+                    try {
+                        $imageFile->move(
+                            $this->getParameter('images_directory'),
+                            $newFilename
+                        );
+                        $evenement->setImage($newFilename);
+                        $this->addFlash('success', 'Image updated: ' . $newFilename);
+                    } catch (FileException $e) {
+                        $this->logger->error('Image upload failed: ' . $e->getMessage());
+                        $this->addFlash('error', 'Erreur lors de l\'upload de l\'image : ' . $e->getMessage());
+                        return $this->render('evenement/edit.html.twig', [
+                            'evenement' => $evenement,
+                            'form' => $form->createView(),
+                        ]);
+                    }
                 }
-            }
 
-            $entityManager->flush();
-            $this->addFlash('success', 'Événement mis à jour avec succès !');
-            return $this->redirectToRoute('app_evenement_index');
+                $entityManager->flush();
+                $this->addFlash('success', 'Événement mis à jour avec succès !');
+                $this->logger->info('Event updated successfully: ID ' . $evenement->getId());
+                return $this->redirectToRoute('app_evenement_index');
+            } else {
+                $errors = $form->getErrors(true);
+                $errorMessages = [];
+                foreach ($errors as $error) {
+                    $errorMessages[] = $error->getMessage();
+                }
+                $this->logger->error('Edit form validation failed: ' . implode(', ', $errorMessages));
+                $this->addFlash('error', 'Erreur lors de la mise à jour : ' . implode(', ', $errorMessages));
+            }
         }
 
         return $this->render('evenement/edit.html.twig', [
@@ -316,4 +356,28 @@ class EvenementController extends AbstractController
             'supports' => $supports,
         ]);
     }
+
+
+    #[Route('/admin/evenement/{id}/delete', name: 'app_evenement_delete', methods: ['POST'])]
+    public function delete(Request $request, ?Evenement $evenement, EntityManagerInterface $entityManager): Response
+    {
+        $this->denyAccessUnlessGranted('ROLE_ADMIN');
+
+        if (!$evenement) {
+            $this->addFlash('error', 'Événement non trouvé.');
+            return $this->redirectToRoute('app_evenement_index', [], Response::HTTP_SEE_OTHER);
+        }
+
+        if ($this->isCsrfTokenValid('delete' . $evenement->getId(), $request->getPayload()->getString('_token'))) {
+            $entityManager->remove($evenement);
+            $entityManager->flush();
+            $this->addFlash('success', 'Événement supprimé avec succès.');
+        } else {
+            $this->addFlash('error', 'Token CSRF invalide.');
+        }
+
+        return $this->redirectToRoute('app_evenement_index', [], Response::HTTP_SEE_OTHER);
+    }
+
+
 }

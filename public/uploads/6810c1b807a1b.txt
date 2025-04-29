@@ -1,0 +1,5 @@
+This is a simple example file with some inappropriate words.
+The quick brown fox jumps over the lazy dog.
+But sometimes people say damn, shit, or even fuck.
+It's a crazy world out there, and not everyone cares.
+Let's test how well the system can detect those bad words!

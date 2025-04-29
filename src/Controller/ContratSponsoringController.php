@@ -14,11 +14,23 @@ use Symfony\Component\Routing\Attribute\Route;
 final class ContratSponsoringController extends AbstractController
 {
     #[Route(name: 'app_contrat_sponsoring_index', methods: ['GET'])]
-    public function index(ContratSponsoringRepository $contratSponsoringRepository): Response
+    public function index(Request $request, ContratSponsoringRepository $contratSponsoringRepository): Response
     {
         $this->denyAccessUnlessGranted('ROLE_ADMIN');
+
+        // Gestion du tri
+        $sort = $request->query->get('sort', 'id');
+        $order = $request->query->get('order', 'asc');
+        $validSorts = ['id', 'montant', 'description'];
+        $sort = in_array($sort, $validSorts) ? $sort : 'id';
+        $order = in_array(strtolower($order), ['asc', 'desc']) ? $order : 'asc';
+
+        $contratSponsorings = $contratSponsoringRepository->findAllSorted($sort, $order);
+
         return $this->render('contrat_sponsoring/index.html.twig', [
-            'contrat_sponsorings' => $contratSponsoringRepository->findAll(),
+            'contrat_sponsorings' => $contratSponsorings,
+            'current_sort' => $sort,
+            'current_order' => $order,
         ]);
     }
 

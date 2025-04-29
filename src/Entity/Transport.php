@@ -4,9 +4,7 @@ namespace App\Entity;
 
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
-use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\Common\Collections\Collection;
-
+use Symfony\Component\Validator\Constraints as Assert;
 use App\Repository\TransportRepository;
 
 #[ORM\Entity(repositoryClass: TransportRepository::class)]
@@ -17,7 +15,40 @@ class Transport
     #[ORM\GeneratedValue]
     #[ORM\Column(type: 'integer')]
     private ?int $id = null;
+///////////////////////
+    /**
+     * @ORM\Column(type="float", nullable=true)
+     */
+    private $latitude;
 
+    /**
+     * @ORM\Column(type="float", nullable=true)
+     */
+    private $longitude;
+
+    public function getLatitude(): ?float
+    {
+        return $this->latitude;
+    }
+
+    public function setLatitude(?float $latitude): self
+    {
+        $this->latitude = $latitude;
+
+        return $this;
+    }
+
+    public function getLongitude(): ?float
+    {
+        return $this->longitude;
+    }
+
+    public function setLongitude(?float $longitude): self
+    {
+        $this->longitude = $longitude;
+
+        return $this;
+    }
     public function getId(): ?int
     {
         return $this->id;
@@ -30,6 +61,11 @@ class Transport
     }
 
     #[ORM\Column(type: 'date', nullable: true)]
+    #[Assert\NotNull(message: "La date est obligatoire")]
+    #[Assert\GreaterThanOrEqual(
+        "today",
+        message: "La date ne peut pas être dans le passé"
+    )]
     private ?\DateTimeInterface $date = null;
 
     public function getDate(): ?\DateTimeInterface
@@ -44,20 +80,31 @@ class Transport
     }
 
     #[ORM\Column(type: 'time', nullable: true)]
+    #[Assert\NotNull(message: "L'heure de départ est obligatoire")]
     private ?\DateTime $heureDepart = null;
-
+    
     public function getHeureDepart(): ?\DateTime
     {
         return $this->heureDepart;
     }
-
+    
     public function setHeureDepart(?\DateTime $heureDepart): self
     {
         $this->heureDepart = $heureDepart;
         return $this;
     }
+    
+
+ 
+
+
 
     #[ORM\Column(type: 'string', nullable: true)]
+    #[Assert\NotBlank(message: "Le point de départ est obligatoire")]
+    #[Assert\Length(
+        max: 255,
+        maxMessage: "Le point de départ ne peut dépasser {{ limit }} caractères"
+    )]
     private ?string $pointDepart = null;
 
     public function getPointDepart(): ?string
@@ -72,6 +119,11 @@ class Transport
     }
 
     #[ORM\Column(type: 'string', nullable: true)]
+    #[Assert\NotBlank(message: "La destination est obligatoire")]
+    #[Assert\Length(
+        max: 255,
+        maxMessage: "La destination ne peut dépasser {{ limit }} caractères"
+    )]
     private ?string $destination = null;
 
     public function getDestination(): ?string
@@ -86,6 +138,11 @@ class Transport
     }
 
     #[ORM\Column(type: 'string', nullable: true)]
+    #[Assert\NotBlank(message: "Le véhicule est obligatoire")]
+    #[Assert\Choice(
+        choices: ["voiture", "bus", "avion", "train", "bateau"],
+        message: "Le véhicule doit être parmi: voiture, bus, avion, train ou bateau"
+    )]
     private ?string $vehicule = null;
 
     public function getVehicule(): ?string
@@ -101,6 +158,7 @@ class Transport
 
     #[ORM\ManyToOne(targetEntity: Evenement::class, inversedBy: 'transports')]
     #[ORM\JoinColumn(name: 'id_evenementAssocie', referencedColumnName: 'id')]
+    #[Assert\NotNull(message: "L'événement associé est obligatoire")]
     private ?Evenement $evenement = null;
 
     public function getEvenement(): ?Evenement
@@ -116,6 +174,7 @@ class Transport
 
     #[ORM\ManyToOne(targetEntity: Service::class, inversedBy: 'transports')]
     #[ORM\JoinColumn(name: 'id_service', referencedColumnName: 'id')]
+    #[Assert\NotNull(message: "Le service associé est obligatoire")]
     private ?Service $service = null;
 
     public function getService(): ?Service
@@ -129,4 +188,12 @@ class Transport
         return $this;
     }
 
+    // Exemple de méthode pour obtenir la date sous forme de chaîne formatée
+    public function getFormattedDate(): ?string
+    {
+        if ($this->date instanceof \DateTimeInterface) {
+            return $this->date->format('Y-m-d');  // Formater la date au format 'YYYY-MM-DD'
+        }
+        return null;
+    }
 }

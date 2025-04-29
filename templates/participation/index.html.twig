@@ -4,7 +4,7 @@
 
 {% block body %}
     <div class="container-fluid">
-        <h1 class="h3 mb-4 text-gray-800">Liste des Participations</h1>
+        <h1 class="h3 mb-4 text-gray-800"></h1>
 
         {% for message in app.flashes('success') %}
             <div class="alert alert-success">{{ message }}</div>
@@ -14,19 +14,37 @@
         {% endfor %}
 
         <div class="card shadow mb-4">
-            <div class="card-header py-3">
+            <div class="card-header py-3 d-flex align-items-center">
                 <h6 class="m-0 font-weight-bold text-primary">Participations</h6>
+                <div class="ml-auto">
+                    <form method="get" action="{{ path('app_participation_index') }}" class="form-inline">
+                        <div class="dropdown">
+                            <button class="btn btn-primary btn-user dropdown-toggle" type="button" id="sortDropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                Trier
+                            </button>
+                            <div class="dropdown-menu dropdown-menu-right" aria-labelledby="sortDropdown">
+                                <a class="dropdown-item {{ current_sort == 'id' ? 'active' : '' }}" href="{{ path('app_participation_index', {'sort': 'id', 'order': current_order}) }}">Par défaut</a>
+                                <a class="dropdown-item {{ current_sort == 'nom' ? 'active' : '' }}" href="{{ path('app_participation_index', {'sort': 'nom', 'order': current_order}) }}">Nom d'utilisateur</a>
+                                <a class="dropdown-item {{ current_sort == 'dateInscription' ? 'active' : '' }}" href="{{ path('app_participation_index', {'sort': 'dateInscription', 'order': current_order}) }}">Date d'inscription</a>
+                                <a class="dropdown-item {{ current_sort == 'moyenPaiement' ? 'active' : '' }}" href="{{ path('app_participation_index', {'sort': 'moyenPaiement', 'order': current_order}) }}">Moyen de paiement</a>
+                            </div>
+                        </div>
+                        <button type="submit" name="order" value="{{ current_order == 'asc' ? 'desc' : 'asc' }}" class="btn btn-primary btn-user ml-2">
+                            {{ current_order == 'asc' ? '↓' : '↑' }}
+                        </button>
+                    </form>
+                </div>
             </div>
             <div class="card-body">
                 <div class="table-responsive">
-                    <table class="table table-bordered table-hover">
+                    <table class="table table-bordered table-hover" id="participationsTable">
                         <thead class="thead-light">
                         <tr>
                             <th>Utilisateur</th>
                             <th>Événement</th>
                             <th>Date d'inscription</th>
                             <th>Moyen de paiement</th>
-                            <th>Actions</th>
+                            <th></th>
                         </tr>
                         </thead>
                         <tbody>
@@ -37,7 +55,9 @@
                                 <td>{{ participation.dateInscription ? participation.dateInscription|date('d/m/Y H:i') : '' }}</td>
                                 <td>{{ participation.moyenPaiement ?: 'Non défini' }}</td>
                                 <td>
-                                    <a href="{{ path('app_participation_show', {'id': participation.id}) }}" class="btn btn-sm btn-info">Voir</a>
+                                    <a href="{{ path('app_participation_show', {'id': participation.id}) }}" class="btn btn-sm btn-info" title="Voir">
+                                        <i class="fas fa-eye"></i>
+                                    </a>
                                 </td>
                             </tr>
                         {% else %}
@@ -48,8 +68,25 @@
                         </tbody>
                     </table>
                 </div>
-                <a href="{{ path('app_participation_new') }}" class="btn btn-primary btn-user mt-3">Créer une nouvelle participation</a>
+                <a href="{{ path('app_participation_new') }}" class="btn btn-primary btn-user mt-3"><i class="fas fa-plus"></i> Créer une nouvelle participation</a>
             </div>
         </div>
     </div>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" integrity="sha512-..." crossorigin="anonymous" referrerpolicy="no-referrer" />
+{% endblock %}
+
+{% block js %}
+    {{ parent() }}
+    <script src="{{ asset('assets/back/vendor/datatables/jquery.dataTables.min.js') }}"></script>
+    <script src="{{ asset('assets/back/vendor/datatables/dataTables.bootstrap4.min.js') }}"></script>
+    <script>
+        $(document).ready(function() {
+            $('#participationsTable').DataTable({
+                "ordering": false, // Désactiver le tri côté client
+                "language": {
+                    "url": "//cdn.datatables.net/plug-ins/1.10.25/i18n/French.json"
+                }
+            });
+        });
+    </script>
 {% endblock %}

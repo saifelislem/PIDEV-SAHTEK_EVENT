@@ -4,7 +4,7 @@
 
 {% block body %}
     <div class="container-fluid">
-        <h1 class="h3 mb-4 text-gray-800">Utilisateurs</h1>
+        <h1 class="h3 mb-4 text-gray-800"></h1>
 
         {% for message in app.flashes('success') %}
             <div class="alert alert-success">{{ message }}</div>
@@ -14,8 +14,26 @@
         {% endfor %}
 
         <div class="card shadow mb-4">
-            <div class="card-header py-3">
+            <div class="card-header py-3 d-flex align-items-center">
                 <h6 class="m-0 font-weight-bold text-primary">Liste des Utilisateurs</h6>
+                <div class="ml-auto">
+                    <form method="get" action="{{ path('app_utilisateur_index') }}" class="form-inline">
+                        <div class="dropdown">
+                            <button class="btn btn-primary btn-user dropdown-toggle" type="button" id="sortDropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                Trier
+                            </button>
+                            <div class="dropdown-menu dropdown-menu-right" aria-labelledby="sortDropdown">
+                                <a class="dropdown-item {{ current_sort == 'id' ? 'active' : '' }}" href="{{ path('app_utilisateur_index', {'sort': 'id', 'order': current_order}) }}">Par défaut</a>
+                                <a class="dropdown-item {{ current_sort == 'nom' ? 'active' : '' }}" href="{{ path('app_utilisateur_index', {'sort': 'nom', 'order': current_order}) }}">Nom</a>
+                                <a class="dropdown-item {{ current_sort == 'role' ? 'active' : '' }}" href="{{ path('app_utilisateur_index', {'sort': 'role', 'order': current_order}) }}">Rôle</a>
+                                <a class="dropdown-item {{ current_sort == 'statut' ? 'active' : '' }}" href="{{ path('app_utilisateur_index', {'sort': 'statut', 'order': current_order}) }}">Statut</a>
+                            </div>
+                        </div>
+                        <button type="submit" name="order" value="{{ current_order == 'asc' ? 'desc' : 'asc' }}" class="btn btn-primary btn-user ml-2">
+                            {{ current_order == 'asc' ? '↓' : '↑' }}
+                        </button>
+                    </form>
+                </div>
             </div>
             <div class="card-body">
                 <div class="table-responsive">
@@ -28,10 +46,8 @@
                             <th>Nationalité</th>
                             <th>Genre</th>
                             <th>Email</th>
-                            <th>Permission</th>
                             <th>Statut</th>
-                            <th>Vérifié</th>
-                            <th>Actions</th>
+                            <th></th>
                         </tr>
                         </thead>
                         <tbody>
@@ -39,11 +55,20 @@
                             <tr>
                                 <td>{{ utilisateur.nom }}</td>
                                 <td>{{ utilisateur.prenom }}</td>
-                                <td>{{ utilisateur.role ? utilisateur.role|join(', ') : 'N/A' }}</td>
+                                <td>
+                                    {% if utilisateur.role|length > 0 %}
+                                        {% for role in utilisateur.role %}
+                                            <span class="badge mr-1 {% if role == 'ROLE_ADMIN' %}badge-primary{% elseif role == 'ROLE_USER' %}badge-info{% else %}badge-secondary{% endif %}">
+                                                {{ role|replace({'ROLE_': ''})|capitalize }}
+                                            </span>
+                                        {% endfor %}
+                                    {% else %}
+                                        N/A
+                                    {% endif %}
+                                </td>
                                 <td>{{ utilisateur.nationalite }}</td>
                                 <td>{{ utilisateur.genre }}</td>
                                 <td>{{ utilisateur.email }}</td>
-                                <td>{{ utilisateur.permission ? 'Oui' : 'Non' }}</td>
                                 <td>
                                     {% if utilisateur.statut %}
                                         <span class="badge badge-success">Actif</span>
@@ -51,23 +76,25 @@
                                         <span class="badge badge-danger">Inactif</span>
                                     {% endif %}
                                 </td>
-                                <td>{{ utilisateur.isVerified ? 'Oui' : 'Non' }}</td>
                                 <td>
-                                    <a href="{{ path('app_utilisateur_show', {'id': utilisateur.id}) }}" class="btn btn-sm btn-info">Voir</a>
+                                    <a href="{{ path('app_utilisateur_show', {'id': utilisateur.id}) }}" class="btn btn-sm btn-info" title="Voir">
+                                        <i class="fas fa-eye"></i>
+                                    </a>
                                 </td>
                             </tr>
                         {% else %}
                             <tr>
-                                <td colspan="10" class="text-center">Aucun utilisateur trouvé</td>
+                                <td colspan="8" class="text-center">Aucun utilisateur trouvé</td>
                             </tr>
                         {% endfor %}
                         </tbody>
                     </table>
                 </div>
-                <a href="{{ path('app_utilisateur_new') }}" class="btn btn-primary btn-user mt-3">Créer un nouvel utilisateur</a>
+                <a href="{{ path('app_utilisateur_new') }}" class="btn btn-primary btn-user mt-3"><i class="fas fa-plus"></i> Créer un nouvel utilisateur</a>
             </div>
         </div>
     </div>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" integrity="sha512-..." crossorigin="anonymous" referrerpolicy="no-referrer" />
 {% endblock %}
 
 {% block js %}
@@ -77,7 +104,7 @@
     <script>
         $(document).ready(function() {
             $('#usersTable').DataTable({
-                "order": [[0, "asc"]],
+                "ordering": false, // Désactiver le tri côté client
                 "language": {
                     "url": "//cdn.datatables.net/plug-ins/1.10.25/i18n/French.json"
                 }

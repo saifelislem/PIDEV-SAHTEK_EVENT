@@ -1,5 +1,4 @@
 <?php
-
 namespace App\Repository;
 
 use App\Entity\ContratSponsoring;
@@ -16,28 +15,30 @@ class ContratSponsoringRepository extends ServiceEntityRepository
         parent::__construct($registry, ContratSponsoring::class);
     }
 
-    //    /**
-    //     * @return ContratSponsoring[] Returns an array of ContratSponsoring objects
-    //     */
-    //    public function findByExampleField($value): array
-    //    {
-    //        return $this->createQueryBuilder('c')
-    //            ->andWhere('c.exampleField = :val')
-    //            ->setParameter('val', $value)
-    //            ->orderBy('c.id', 'ASC')
-    //            ->setMaxResults(10)
-    //            ->getQuery()
-    //            ->getResult()
-    //        ;
-    //    }
+    /**
+     * @return ContratSponsoring[] Returns an array of ContratSponsoring objects sorted by the specified field and direction
+     */
+    public function findAllSorted(string $sort, string $order): array
+    {
+        $queryBuilder = $this->createQueryBuilder('c')
+            ->leftJoin('c.utilisateur', 'u')
+            ->leftJoin('c.evenement', 'e')
+            ->leftJoin('c.produitsponsorings', 'p');
 
-    //    public function findOneBySomeField($value): ?ContratSponsoring
-    //    {
-    //        return $this->createQueryBuilder('c')
-    //            ->andWhere('c.exampleField = :val')
-    //            ->setParameter('val', $value)
-    //            ->getQuery()
-    //            ->getOneOrNullResult()
-    //        ;
-    //    }
+        switch ($sort) {
+            case 'id':
+                $queryBuilder->orderBy('c.id', $order);
+                break;
+            case 'montant':
+                $queryBuilder->orderBy('c.montant', $order);
+                break;
+            case 'description':
+                $queryBuilder->orderBy('c.description', $order);
+                break;
+            default:
+                $queryBuilder->orderBy('c.id', 'ASC');
+        }
+
+        return $queryBuilder->getQuery()->getResult();
+    }
 }

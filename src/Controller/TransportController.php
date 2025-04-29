@@ -6,6 +6,7 @@ use App\Entity\Transport;
 use App\Form\TransportType;
 use App\Repository\TransportRepository;
 use Doctrine\ORM\EntityManagerInterface;
+use Knp\Component\Pager\PaginatorInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -15,11 +16,23 @@ use Symfony\Component\Routing\Attribute\Route;
 final class TransportController extends AbstractController
 {
     #[Route(name: 'app_transport_index', methods: ['GET'])]
-    public function index(TransportRepository $transportRepository): Response
+    public function index(Request $request, TransportRepository $transportRepository): Response
     {
         $this->denyAccessUnlessGranted('ROLE_ADMIN');
+
+        // Gestion du tri
+        $sort = $request->query->get('sort', 'vehicule');
+        $order = $request->query->get('order', 'asc');
+        $validSorts = ['vehicule', 'date'];
+        $sort = in_array($sort, $validSorts) ? $sort : 'vehicule';
+        $order = in_array(strtolower($order), ['asc', 'desc']) ? $order : 'asc';
+
+        $transports = $transportRepository->findAllSorted($sort, $order);
+
         return $this->render('transport/index.html.twig', [
-            'transports' => $transportRepository->findAll(),
+            'transports' => $transports,
+            'current_sort' => $sort,
+            'current_order' => $order,
         ]);
     }
 

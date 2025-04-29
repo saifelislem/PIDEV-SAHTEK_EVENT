@@ -16,28 +16,29 @@ class SupportRepository extends ServiceEntityRepository
         parent::__construct($registry, Support::class);
     }
 
-    //    /**
-    //     * @return Support[] Returns an array of Support objects
-    //     */
-    //    public function findByExampleField($value): array
-    //    {
-    //        return $this->createQueryBuilder('s')
-    //            ->andWhere('s.exampleField = :val')
-    //            ->setParameter('val', $value)
-    //            ->orderBy('s.id', 'ASC')
-    //            ->setMaxResults(10)
-    //            ->getQuery()
-    //            ->getResult()
-    //        ;
-    //    }
+    /**
+     * Find all supports with sorting.
+     *
+     * @param string $sort Field to sort by (id, titre, type)
+     * @param string $order Sort order (asc, desc)
+     * @return Support[]
+     */
+    public function findAllWithSort(string $sort = 'titre', string $order = 'asc'): array
+    {
+        $qb = $this->createQueryBuilder('s');
 
-    //    public function findOneBySomeField($value): ?Support
-    //    {
-    //        return $this->createQueryBuilder('s')
-    //            ->andWhere('s.exampleField = :val')
-    //            ->setParameter('val', $value)
-    //            ->getQuery()
-    //            ->getOneOrNullResult()
-    //        ;
-    //    }
+        // Validate sort field
+        $allowedSorts = ['id', 'titre', 'type'];
+        if (!in_array($sort, $allowedSorts, true)) {
+            $sort = 'titre'; // Default
+        }
+
+        // Validate order
+        $order = strtolower($order) === 'desc' ? 'desc' : 'asc';
+
+        // Apply sorting
+        $qb->orderBy('s.' . $sort, $order);
+
+        return $qb->getQuery()->getResult();
+    }
 }

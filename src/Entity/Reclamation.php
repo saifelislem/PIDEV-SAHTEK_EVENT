@@ -7,6 +7,8 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 
 use App\Repository\ReclamationRepository;
+use Symfony\Component\Validator\Constraints as Assert;
+
 
 #[ORM\Entity(repositoryClass: ReclamationRepository::class)]
 #[ORM\Table(name: 'reclamation')]
@@ -29,6 +31,11 @@ class Reclamation
     }
 
     #[ORM\Column(type: 'string', nullable: false)]
+    #[Assert\NotBlank(message: "Le message ne peut pas être vide.")]
+    #[Assert\Length(
+        min: 10,
+        minMessage: "Le message doit contenir au moins {{ limit }} caractères."
+    )]
     private ?string $message = null;
 
     public function getMessage(): ?string
@@ -43,6 +50,10 @@ class Reclamation
     }
 
     #[ORM\Column(type: 'string', nullable: false)]
+    #[Assert\NotBlank(message: "L'image est requise.")]
+    #[Assert\Regex(
+        pattern: "/\.(jpg|jpeg|png|gif)$/i",
+        message: "Le fichier image doit être de type JPG, PNG ou GIF.")]
     private ?string $image = null;
 
     public function getImage(): ?string
@@ -57,6 +68,11 @@ class Reclamation
     }
 
     #[ORM\Column(type: 'string', nullable: false)]
+    #[Assert\NotBlank(message: "Le mot de passe est requis.")]
+    #[Assert\Length(
+        min: 6,
+        minMessage: "Le mot de passe doit contenir au moins {{ limit }} caractères."
+    )]
     private ?string $pass = null;
 
     public function getPass(): ?string

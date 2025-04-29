@@ -18,55 +18,88 @@
                 <h6 class="m-0 font-weight-bold text-primary">{{ evenement.nom }}</h6>
             </div>
             <div class="card-body">
-                {{ form_start(form, {'attr': {'class': 'form'}}) }}
-                <div class="form-group">
-                    {{ form_label(form.nom) }}
-                    {{ form_widget(form.nom, {'attr': {'class': 'form-control'}}) }}
-                    {{ form_errors(form.nom) }}
+                {{ form_start(form, {'attr': {'class': 'form', 'novalidate': 'novalidate'}}) }}
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group mb-3">
+                            {{ form_label(form.nom, null, {'label_attr': {'class': 'font-weight-bold text-primary'}}) }}
+                            {{ form_widget(form.nom, {'attr': {'class': 'form-control shadow-sm'}}) }}
+                            {{ form_errors(form.nom, {'attr': {'class': 'text-danger small'}}) }}
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group mb-3">
+                            {{ form_label(form.lieu, null, {'label_attr': {'class': 'font-weight-bold text-primary'}}) }}
+                            {{ form_widget(form.lieu, {'attr': {'class': 'form-control shadow-sm'}}) }}
+                            {{ form_errors(form.lieu, {'attr': {'class': 'text-danger small'}}) }}
+                        </div>
+                    </div>
+                    <div class="col-md-12">
+                        <div class="form-group mb-3">
+                            {{ form_label(form.description, null, {'label_attr': {'class': 'font-weight-bold text-primary'}}) }}
+                            {{ form_widget(form.description, {'attr': {'class': 'form-control shadow-sm', 'rows': '3'}}) }}
+                            {{ form_errors(form.description, {'attr': {'class': 'text-danger small'}}) }}
+                        </div>
+                    </div>
+                    <div class="col-md-12">
+                        <div class="form-group mb-3">
+                            {{ form_label(form.date, null, {'label_attr': {'class': 'font-weight-bold text-primary'}}) }}
+                            {{ form_widget(form.date, {'attr': {'class': 'form-control shadow-sm'}}) }}
+                            {{ form_errors(form.date, {'attr': {'class': 'text-danger small'}}) }}
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group mb-3">
+                            {{ form_label(form.capacite_max, null, {'label_attr': {'class': 'font-weight-bold text-primary'}}) }}
+                            {{ form_widget(form.capacite_max, {'attr': {'class': 'form-control shadow-sm'}}) }}
+                            {{ form_errors(form.capacite_max, {'attr': {'class': 'text-danger small'}}) }}
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group mb-3">
+                            {{ form_label(form.statut, null, {'label_attr': {'class': 'font-weight-bold text-primary'}}) }}
+                            {{ form_widget(form.statut, {'attr': {'class': 'form-control shadow-sm selectpicker'}}) }}
+                            {{ form_errors(form.statut, {'attr': {'class': 'text-danger small'}}) }}
+
+                        </div>
+                    </div>
+                    <div class="col-md-12">
+                        <div class="form-group mb-3">
+                            {{ form_label(form.image, null, {'label_attr': {'class': 'font-weight-bold text-primary'}}) }}
+                            <div class="custom-file">
+                                {{ form_widget(form.image, {'attr': {'class': 'form-control-file custom-file-input'}}) }}
+                                <label class="custom-file-label" for="{{ form.image.vars.id }}">Choisir un fichier</label>
+                            </div>
+                            {{ form_errors(form.image, {'attr': {'class': 'text-danger small'}}) }}
+                            {% if evenement.image %}
+                                <p class="mt-2">Image actuelle : <img src="{{ asset('Uploads/' ~ evenement.image) }}" alt="{{ evenement.nom }}" style="max-width: 100px;"></p>
+                            {% endif %}
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group mb-3">
+                            {{ form_label(form.type, null, {'label_attr': {'class': 'font-weight-bold text-primary'}}) }}
+                            {{ form_widget(form.type, {'attr': {'class': 'form-control shadow-sm selectpicker'}}) }}
+                            {{ form_errors(form.type, {'attr': {'class': 'text-danger small'}}) }}
+                        </div>
+                    </div>
                 </div>
-                <div class="form-group">
-                    {{ form_label(form.description) }}
-                    {{ form_widget(form.description, {'attr': {'class': 'form-control', 'rows': '3'}}) }}
-                    {{ form_errors(form.description) }}
-                </div>
-                <div class="form-group">
-                    {{ form_label(form.date) }}
-                    {{ form_widget(form.date, {'attr': {'class': 'form-control'}}) }}
-                    {{ form_errors(form.date) }}
-                </div>
-                <div class="form-group">
-                    {{ form_label(form.lieu) }}
-                    {{ form_widget(form.lieu, {'attr': {'class': 'form-control'}}) }}
-                    {{ form_errors(form.lieu) }}
-                </div>
-                <div class="form-group">
-                    {{ form_label(form.statut) }}
-                    {{ form_widget(form.statut, {'attr': {'class': 'form-control'}}) }}
-                    {{ form_errors(form.statut) }}
-                </div>
-                <div class="form-group">
-                    {{ form_label(form.capacite_max) }}
-                    {{ form_widget(form.capacite_max, {'attr': {'class': 'form-control'}}) }}
-                    {{ form_errors(form.capacite_max) }}
-                </div>
-                <div class="form-group">
-                    {{ form_label(form.image) }}
-                    {{ form_widget(form.image, {'attr': {'class': 'form-control-file'}}) }}
-                    {{ form_errors(form.image) }}
-                    {% if evenement.image %}
-                        <p>Image actuelle : <img src="{{ asset('Uploads/' ~ evenement.image) }}" alt="{{ evenement.nom }}" style="max-width: 100px;"></p>
-                    {% endif %}
-                </div>
-                <div class="form-group">
-                    {{ form_label(form.type) }}
-                    {{ form_widget(form.type, {'attr': {'class': 'form-control'}}) }}
-                    {{ form_errors(form.type) }}
-                </div>
-                <button type="submit" class="btn btn-primary btn-user btn-block">Mettre à jour</button>
+                <button type="submit" class="btn btn-primary btn-user btn-block btn-lg">Mettre à jour</button>
+                {{ form_rest(form) }}
                 {{ form_end(form) }}
 
-                <a href="{{ path('app_evenement_index') }}" class="btn btn-secondary btn-user btn-block mt-2">Retour à la liste</a>
+                <a href="{{ path('app_evenement_index') }}" class="btn btn-secondary btn-user btn-block btn-lg mt-2">Retour à la liste</a>
             </div>
         </div>
     </div>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        $(document).ready(function() {
+            $('.custom-file-input').on('change', function() {
+                var fileName = $(this).val().split('\\').pop();
+                $(this).siblings('.custom-file-label').text(fileName || 'Choisir un fichier');
+            });
+        });
+    </script>
 {% endblock %}

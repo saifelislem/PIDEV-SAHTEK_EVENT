@@ -12,6 +12,7 @@ use Symfony\Component\Validator\Constraints\NotBlank;
 use Symfony\Component\Validator\Constraints\Length;
 use Symfony\Component\Validator\Constraints\Email;
 use Symfony\Component\Validator\Constraints\Regex;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 
 class RegistrationFormType extends AbstractType
 {
@@ -23,7 +24,6 @@ class RegistrationFormType extends AbstractType
                 'attr' => ['placeholder' => 'Adresse Email'],
                 'constraints' => [
                     new NotBlank(['message' => 'Veuillez entrer votre email.']),
-                    new Email(['message' => 'L’adresse email n’est pas valide.']),
                     new Length(['max' => 180, 'maxMessage' => 'L’email ne peut pas dépasser {{ limit }} caractères.']),
                 ],
             ])
@@ -31,7 +31,6 @@ class RegistrationFormType extends AbstractType
                 'label' => 'Nom',
                 'attr' => ['placeholder' => 'Nom'],
                 'constraints' => [
-                    new NotBlank(['message' => 'Veuillez entrer votre nom.']),
                     new Length([
                         'min' => 2,
                         'max' => 50,
@@ -48,7 +47,7 @@ class RegistrationFormType extends AbstractType
                 'label' => 'Prénom',
                 'attr' => ['placeholder' => 'Prénom'],
                 'constraints' => [
-                    new NotBlank(['message' => 'Veuillez entrer votre prénom.']),
+
                     new Length([
                         'min' => 2,
                         'max' => 50,
@@ -78,20 +77,19 @@ class RegistrationFormType extends AbstractType
                     ]),
                 ],
             ])
-            ->add('genre', TextType::class, [
+            ->add('genre', ChoiceType::class, [
                 'label' => 'Genre',
-                'attr' => ['placeholder' => 'Genre'],
-                'constraints' => [
-                    new NotBlank(['message' => 'Veuillez entrer votre genre.']),
-                    new Length([
-                        'max' => 20,
-                        'maxMessage' => 'Le genre ne peut pas dépasser {{ limit }} caractères.',
-                    ]),
-                    new Regex([
-                        'pattern' => '/^[a-zA-ZÀ-ÿ\s\-]+$/',
-                        'message' => 'Le genre ne peut contenir que des lettres, des espaces ou des tirets.',
-                    ]),
+                'choices' => [
+                    'Homme' => 'homme',
+                    'Femme' => 'femme',
+
                 ],
+                'placeholder' => 'Sélectionnez votre genre', // Placeholder principal
+                'attr' => [
+                    'class' => 'form-control form-control-user',
+                ],
+                'required' => true,
+                'label_attr' => ['class' => 'sr-only'] // Masque le label si nécessaire
             ])
             ->add('mot_de_passe', PasswordType::class, [
                 'mapped' => false,
@@ -101,7 +99,7 @@ class RegistrationFormType extends AbstractType
                     'placeholder' => 'Mot de passe',
                 ],
                 'constraints' => [
-                    new NotBlank(['message' => 'Veuillez entrer un mot de passe.']),
+
                     new Length([
                         'min' => 8,
                         'max' => 4096,

@@ -18,7 +18,8 @@
                 <h6 class="m-0 font-weight-bold text-primary">Suivi #{{ suivi_reclamation.id }}</h6>
             </div>
             <div class="card-body">
-                {{ form_start(form, {'attr': {'class': 'form'}}) }}
+                {{ form_start(form, {'attr': {'class': 'form', 'novalidate': 'novalidate'}}) }}
+
                 <div class="form-group">
                     {{ form_label(form.status) }}
                     {{ form_widget(form.status, {'attr': {'class': 'form-control'}}) }}

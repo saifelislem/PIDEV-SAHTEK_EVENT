@@ -15,15 +15,11 @@
 
         <div class="card shadow mb-4">
             <div class="card-header py-3">
-                <h6 class="m-0 font-weight-bold text-primary">Transport #{{ transport.id }}</h6>
+                <h6 class="m-0 font-weight-bold text-primary">Transport #{{ transport.id }} - {{ transport.pointDepart }}</h6>
             </div>
             <div class="card-body">
                 <table class="table table-bordered">
                     <tbody>
-                    <tr>
-                        <th>ID</th>
-                        <td>{{ transport.id }}</td>
-                    </tr>
                     <tr>
                         <th>Date</th>
                         <td>{{ transport.date ? transport.date|date('Y-m-d') : 'N/A' }}</td>
@@ -34,15 +30,29 @@
                     </tr>
                     <tr>
                         <th>Point de Départ</th>
-                        <td>{{ transport.pointDepart }}</td>
+                        <td>{{ transport.pointDepart|default('N/A') }}</td>
                     </tr>
                     <tr>
                         <th>Destination</th>
-                        <td>{{ transport.destination }}</td>
+                        <td>{{ transport.destination|default('N/A') }}</td>
                     </tr>
                     <tr>
                         <th>Véhicule</th>
-                        <td>{{ transport.vehicule }}</td>
+                        <td>
+                            {% if transport.vehicule == 'voiture' %}
+                                <span class="badge badge-primary">Voiture</span>
+                            {% elseif transport.vehicule == 'bus' %}
+                                <span class="badge badge-success">Bus</span>
+                            {% elseif transport.vehicule == 'avion' %}
+                                <span class="badge badge-info">Avion</span>
+                            {% elseif transport.vehicule == 'train' %}
+                                <span class="badge badge-warning">Train</span>
+                            {% elseif transport.vehicule == 'bateau' %}
+                                <span class="badge badge-secondary">Bateau</span>
+                            {% else %}
+                                {{ transport.vehicule|default('N/A') }}
+                            {% endif %}
+                        </td>
                     </tr>
                     <tr>
                         <th>Événement Associé</th>
@@ -54,14 +64,75 @@
                     </tr>
                     </tbody>
                 </table>
-                <a href="{{ path('app_transport_index') }}" class="btn btn-secondary btn-user mt-3">Retour à la liste</a>
-                <a href="{{ path('app_transport_edit', {'id': transport.id}) }}" class="btn btn-primary btn-user mt-3">Modifier</a>
-                <form method="post" action="{{ path('app_transport_delete', {'id': transport.id}) }}" style="display:inline;" onsubmit="return confirm('Voulez-vous vraiment supprimer ce transport ?');">
-                    <input type="hidden" name="_method" value="DELETE">
-                    <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ transport.id) }}">
-                    <button type="submit" class="btn btn-danger btn-user mt-3">Supprimer</button>
-                </form>
+                <div class="mt-3">
+                    <a href="{{ path('app_transport_index') }}" class="btn btn-sm btn-secondary" title="Retour à la liste">
+                        <i class="fas fa-arrow-left"></i>
+                    </a>
+                    <a href="{{ path('app_transport_edit', {'id': transport.id}) }}" class="btn btn-sm btn-primary" title="Modifier">
+                        <i class="fas fa-edit"></i>
+                    </a>
+                    <form id="delete-form-{{ transport.id }}"
+                          method="post"
+                          action="{{ path('app_transport_delete', {'id': transport.id}) }}"
+                          style="display:inline;">
+                        <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ transport.id) }}">
+                        <button type="button"
+                                class="btn btn-sm btn-danger"
+                                title="Supprimer"
+                                onclick="confirmDelete({{ transport.id }}, '{{ transport.pointDepart|e('js') }}')">
+                            <i class="fas fa-trash-alt"></i>
+                        </button>
+                    </form>
+                </div>
             </div>
         </div>
     </div>
+
+    <!-- Leaflet Map -->
+    <div id="map" style="height: 400px;"></div>
+
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
+    <script src="https://unpkg.com/leaflet-routing-machine/dist/leaflet-routing-machine.js"></script>
+    <script>
+        // Initialisation de la carte
+        var map = L.map('map').setView([36.8065, 10.1815], 12); // Exemple : coordonnées de Tunis
+
+        // Ajouter une couche OpenStreetMap
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+        }).addTo(map);
+
+        // Fonction pour géocoder les adresses et obtenir les coordonnées
+        function geocodeAddress(address, callback) {
+            var apiUrl = 'https://api.opencagedata.com/geocode/v1/json?q=' + encodeURIComponent(address) + '&key=2745803570de4cdeaba3e145f35d5a59'; // Utilisation de votre clé API
+            fetch(apiUrl)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.results.length > 0) {
+                        callback(data.results[0].geometry.lat, data.results[0].geometry.lng);
+                    }
+                });
+        }
+
+        // Géocoder et afficher les marqueurs et l'itinéraire
+        geocodeAddress("{{ transport.pointDepart }}", function(latDepart, lngDepart) {
+            var pointDepartMarker = L.marker([latDepart, lngDepart]).addTo(map);
+            pointDepartMarker.bindPopup("Point de départ: {{ transport.pointDepart }}");
+
+            geocodeAddress("{{ transport.destination }}", function(latDestination, lngDestination) {
+                var destinationMarker = L.marker([latDestination, lngDestination]).addTo(map);
+                destinationMarker.bindPopup("Destination: {{ transport.destination }}");
+
+                // Tracer l'itinéraire entre les deux points
+                var route = L.Routing.control({
+                    waypoints: [
+                        L.latLng(latDepart, lngDepart),
+                        L.latLng(latDestination, lngDestination)
+                    ],
+                    routeWhileDragging: true
+                }).addTo(map);
+            });
+        });
+    </script>
 {% endblock %}

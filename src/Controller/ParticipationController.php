@@ -14,10 +14,21 @@ use Symfony\Component\Routing\Attribute\Route;
 final class ParticipationController extends AbstractController
 {
     #[Route(name: 'app_participation_index', methods: ['GET'])]
-    public function index(ParticipationRepository $participationRepository): Response
+    public function index(ParticipationRepository $participationRepository, Request $request): Response
     {
+        // Gestion du tri
+        $sort = $request->query->get('sort', 'nom');
+        $order = $request->query->get('order', 'asc');
+        $validSorts = ['id', 'nom', 'dateInscription', 'moyenPaiement'];
+        $sort = in_array($sort, $validSorts) ? $sort : 'nom';
+        $order = in_array(strtolower($order), ['asc', 'desc']) ? $order : 'asc';
+
+        $participations = $participationRepository->findAllSorted($sort, $order);
+
         return $this->render('participation/index.html.twig', [
-            'participations' => $participationRepository->findAll(),
+            'participations' => $participations,
+            'current_sort' => $sort,
+            'current_order' => $order,
         ]);
     }
 

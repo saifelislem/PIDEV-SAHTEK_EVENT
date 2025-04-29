@@ -18,66 +18,91 @@
                 <h6 class="m-0 font-weight-bold text-primary">Formulaire d’Utilisateur</h6>
             </div>
             <div class="card-body">
-                {{ form_start(form, {'attr': {'class': 'form'}}) }}
-                <div class="form-group">
-                    {{ form_label(form.nom) }}
-                    {{ form_widget(form.nom, {'attr': {'class': 'form-control'}}) }}
-                    {{ form_errors(form.nom) }}
+                {{ form_start(form, {'attr': {'class': 'form', 'novalidate': 'novalidate'}}) }}
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group mb-3">
+                            {{ form_label(form.nom, null, {'label_attr': {'class': 'font-weight-bold text-primary'}}) }}
+                            {{ form_widget(form.nom, {'attr': {'class': 'form-control shadow-sm'}}) }}
+                            {{ form_errors(form.nom, {'attr': {'class': 'text-danger small'}}) }}
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group mb-3">
+                            {{ form_label(form.prenom, null, {'label_attr': {'class': 'font-weight-bold text-primary'}}) }}
+                            {{ form_widget(form.prenom, {'attr': {'class': 'form-control shadow-sm'}}) }}
+                            {{ form_errors(form.prenom, {'attr': {'class': 'text-danger small'}}) }}
+                        </div>
+                    </div>
+                    <div class="col-md-12">
+                        <div class="form-group mb-3">
+                            {{ form_label(form.email, null, {'label_attr': {'class': 'font-weight-bold text-primary'}}) }}
+                            {{ form_widget(form.email, {'attr': {'class': 'form-control shadow-sm'}}) }}
+                            {{ form_errors(form.email, {'attr': {'class': 'text-danger small'}}) }}
+                        </div>
+                    </div>
+                    <div class="col-md-12">
+                        <div class="form-group mb-3">
+                            {{ form_label(form.mot_de_passe, null, {'label_attr': {'class': 'font-weight-bold text-primary'}}) }}
+                            {{ form_widget(form.mot_de_passe, {'attr': {'class': 'form-control shadow-sm'}}) }}
+                            {{ form_errors(form.mot_de_passe, {'attr': {'class': 'text-danger small'}}) }}
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group mb-3">
+                            {{ form_label(form.nationalite, null, {'label_attr': {'class': 'font-weight-bold text-primary'}}) }}
+                            {{ form_widget(form.nationalite, {'attr': {'class': 'form-control shadow-sm'}}) }}
+                            {{ form_errors(form.nationalite, {'attr': {'class': 'text-danger small'}}) }}
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group mb-3">
+                            {{ form_label(form.genre, null, {'label_attr': {'class': 'font-weight-bold text-primary'}}) }}
+                            {{ form_widget(form.genre, {'attr': {'class': 'form-control shadow-sm selectpicker'}}) }}
+                            {{ form_errors(form.genre, {'attr': {'class': 'text-danger small'}}) }}
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group mb-3">
+                            {{ form_label(form.role, null, {'label_attr': {'class': 'font-weight-bold text-primary'}}) }}
+                            {{ form_widget(form.role, {'attr': {'class': 'form-control shadow-sm selectpicker'}}) }}
+                            {{ form_errors(form.role, {'attr': {'class': 'text-danger small'}}) }}
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group mb-3">
+                            {{ form_label(form.statut, null, {'label_attr': {'class': 'font-weight-bold text-primary'}}) }}
+                            {{ form_widget(form.statut, {'attr': {'class': 'form-control shadow-sm selectpicker'}}) }}
+                            {{ form_errors(form.statut, {'attr': {'class': 'text-danger small'}}) }}
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group mb-3">
+                            {{ form_label(form.permission, null, {'label_attr': {'class': 'font-weight-bold text-primary'}}) }}
+                            {{ form_widget(form.permission, {'attr': {'class': 'form-control shadow-sm'}}) }}
+                            {{ form_errors(form.permission, {'attr': {'class': 'text-danger small'}}) }}
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group mb-3">
+                            {{ form_label(form.is_verified, null, {'label_attr': {'class': 'font-weight-bold text-primary'}}) }}
+                            {{ form_widget(form.is_verified, {'attr': {'class': 'form-control shadow-sm'}}) }}
+                            {{ form_errors(form.is_verified, {'attr': {'class': 'text-danger small'}}) }}
+                        </div>
+                    </div>
+                    <div class="col-md-12">
+                        <div class="form-group mb-3">
+                            {{ form_label(form.verification_token, null, {'label_attr': {'class': 'font-weight-bold text-primary'}}) }}
+                            {{ form_widget(form.verification_token, {'attr': {'class': 'form-control shadow-sm'}}) }}
+                            {{ form_errors(form.verification_token, {'attr': {'class': 'text-danger small'}}) }}
+                        </div>
+                    </div>
                 </div>
-                <div class="form-group">
-                    {{ form_label(form.prenom) }}
-                    {{ form_widget(form.prenom, {'attr': {'class': 'form-control'}}) }}
-                    {{ form_errors(form.prenom) }}
-                </div>
-                <div class="form-group">
-                    {{ form_label(form.role) }}
-                    {{ form_widget(form.role, {'attr': {'class': 'form-control'}}) }}
-                    {{ form_errors(form.role) }}
-                </div>
-                <div class="form-group">
-                    {{ form_label(form.mot_de_passe) }}
-                    {{ form_widget(form.mot_de_passe, {'attr': {'class': 'form-control'}}) }}
-                    {{ form_errors(form.mot_de_passe) }}
-                </div>
-                <div class="form-group">
-                    {{ form_label(form.nationalite) }}
-                    {{ form_widget(form.nationalite, {'attr': {'class': 'form-control'}}) }}
-                    {{ form_errors(form.nationalite) }}
-                </div>
-                <div class="form-group">
-                    {{ form_label(form.genre) }}
-                    {{ form_widget(form.genre, {'attr': {'class': 'form-control'}}) }}
-                    {{ form_errors(form.genre) }}
-                </div>
-                <div class="form-group">
-                    {{ form_label(form.email) }}
-                    {{ form_widget(form.email, {'attr': {'class': 'form-control'}}) }}
-                    {{ form_errors(form.email) }}
-                </div>
-                <div class="form-group">
-                    {{ form_label(form.permission) }}
-                    {{ form_widget(form.permission, {'attr': {'class': 'form-control'}}) }}
-                    {{ form_errors(form.permission) }}
-                </div>
-                <div class="form-group">
-                    {{ form_label(form.statut) }}
-                    {{ form_widget(form.statut, {'attr': {'class': 'form-control'}}) }}
-                    {{ form_errors(form.statut) }}
-                </div>
-                <div class="form-group">
-                    {{ form_label(form.verification_token) }}
-                    {{ form_widget(form.verification_token, {'attr': {'class': 'form-control'}}) }}
-                    {{ form_errors(form.verification_token) }}
-                </div>
-                <div class="form-group">
-                    {{ form_label(form.is_verified) }}
-                    {{ form_widget(form.is_verified, {'attr': {'class': 'form-control'}}) }}
-                    {{ form_errors(form.is_verified) }}
-                </div>
-                <button type="submit" class="btn btn-primary btn-user btn-block">Créer</button>
+                <button type="submit" class="btn btn-primary btn-user btn-block btn-lg">Créer</button>
+                {{ form_rest(form) }}
                 {{ form_end(form) }}
 
-                <a href="{{ path('app_utilisateur_index') }}" class="btn btn-secondary btn-user btn-block mt-2">Retour à la liste</a>
+                <a href="{{ path('app_utilisateur_index') }}" class="btn btn-secondary btn-user btn-block btn-lg mt-2">Retour à la liste</a>
             </div>
         </div>
     </div>

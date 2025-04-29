@@ -18,37 +18,44 @@
                 <h6 class="m-0 font-weight-bold text-primary">Formulaire de Permission</h6>
             </div>
             <div class="card-body">
-                {{ form_start(form, {'attr': {'class': 'form'}}) }}
-                <div class="form-group">
-                    {{ form_label(form.permission_type) }}
-                    {{ form_widget(form.permission_type, {'attr': {'class': 'form-control'}}) }}
-                    {{ form_errors(form.permission_type) }}
+                {{ form_start(form, {'attr': {'class': 'form', 'novalidate': 'novalidate'}}) }}
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group mb-3">
+                            {{ form_label(form.permission_type, null, {'label_attr': {'class': 'font-weight-bold text-primary'}}) }}
+                            {{ form_widget(form.permission_type, {'attr': {'class': 'form-control shadow-sm selectpicker'}}) }}
+                            {{ form_errors(form.permission_type, {'attr': {'class': 'text-danger small'}}) }}
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group mb-3">
+                            {{ form_label(form.support, null, {'label_attr': {'class': 'font-weight-bold text-primary'}}) }}
+                            {{ form_widget(form.support, {'attr': {'class': 'form-control shadow-sm selectpicker'}}) }}
+                            {{ form_errors(form.support, {'attr': {'class': 'text-danger small'}}) }}
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group mb-3">
+                            {{ form_label(form.startDate, null, {'label_attr': {'class': 'font-weight-bold text-primary'}}) }}
+                            {{ form_widget(form.startDate, {'attr': {'class': 'form-control shadow-sm'}}) }}
+                            {{ form_errors(form.startDate, {'attr': {'class': 'text-danger small'}}) }}
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group mb-3">
+                            {{ form_label(form.endDate, null, {'label_attr': {'class': 'font-weight-bold text-primary'}}) }}
+                            {{ form_widget(form.endDate, {'attr': {'class': 'form-control shadow-sm'}}) }}
+                            {{ form_errors(form.endDate, {'attr': {'class': 'text-danger small'}}) }}
+                        </div>
+                    </div>
                 </div>
-                <div class="form-group">
-                    {{ form_label(form.role) }}
-                    {{ form_widget(form.role, {'attr': {'class': 'form-control'}}) }}
-                    {{ form_errors(form.role) }}
-                </div>
-                <div class="form-group">
-                    {{ form_label(form.startDate) }}
-                    {{ form_widget(form.startDate, {'attr': {'class': 'form-control'}}) }}
-                    {{ form_errors(form.startDate) }}
-                </div>
-                <div class="form-group">
-                    {{ form_label(form.endDate) }}
-                    {{ form_widget(form.endDate, {'attr': {'class': 'form-control'}}) }}
-                    {{ form_errors(form.endDate) }}
-                </div>
-                <div class="form-group">
-                    {{ form_label(form.support) }}
-                    {{ form_widget(form.support, {'attr': {'class': 'form-control'}}) }}
-                    {{ form_errors(form.support) }}
-                </div>
-                <button type="submit" class="btn btn-primary btn-user btn-block">Créer</button>
+                <button type="submit" class="btn btn-primary btn-user btn-block btn-lg">Créer</button>
                 {{ form_end(form) }}
 
-                <a href="{{ path('app_supportpermission_index') }}" class="btn btn-secondary btn-user btn-block mt-2">Retour à la liste</a>
+                <a href="{{ path('app_supportpermission_index') }}" class="btn btn-secondary btn-user btn-block btn-lg mt-2">Retour à la liste</a>
             </div>
         </div>
     </div>
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" integrity="sha512-..." crossorigin="anonymous" referrerpolicy="no-referrer" />
 {% endblock %}

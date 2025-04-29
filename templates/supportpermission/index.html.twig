@@ -4,7 +4,7 @@
 
 {% block body %}
     <div class="container-fluid">
-        <h1 class="h3 mb-4 text-gray-800">Permissions de Support</h1>
+        <h1 class="h3 mb-4 text-gray-800"></h1>
 
         {% for message in app.flashes('success') %}
             <div class="alert alert-success">{{ message }}</div>
@@ -14,30 +14,57 @@
         {% endfor %}
 
         <div class="card shadow mb-4">
-            <div class="card-header py-3">
+            <div class="card-header py-3 d-flex align-items-center">
                 <h6 class="m-0 font-weight-bold text-primary">Liste des Permissions</h6>
+                <div class="ml-auto">
+                    <form method="get" action="{{ path('app_supportpermission_index') }}" class="form-inline">
+                        <div class="dropdown">
+                            <button class="btn btn-primary btn-user dropdown-toggle" type="button" id="sortDropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                Trier
+                            </button>
+                            <div class="dropdown-menu dropdown-menu-right" aria-labelledby="sortDropdown">
+                                <a class="dropdown-item {{ current_sort == 'permissionType' ? 'active' : '' }}" href="{{ path('app_supportpermission_index', {'sort': 'permissionType', 'order': current_order}) }}">Type de Permission</a>
+                                <a class="dropdown-item {{ current_sort == 'startDate' ? 'active' : '' }}" href="{{ path('app_supportpermission_index', {'sort': 'startDate', 'order': current_order}) }}">Date de Début</a>
+                                <a class="dropdown-item {{ current_sort == 'endDate' ? 'active' : '' }}" href="{{ path('app_supportpermission_index', {'sort': 'endDate', 'order': current_order}) }}">Date de Fin</a>
+                            </div>
+                        </div>
+                        <button type="submit" name="order" value="{{ current_order == 'asc' ? 'desc' : 'asc' }}" class="btn btn-primary btn-user ml-2">
+                            {{ current_order == 'asc' ? '↓' : '↑' }}
+                        </button>
+                    </form>
+                </div>
             </div>
             <div class="card-body">
                 <div class="table-responsive">
-                    <table class="table table-bordered table-hover">
+                    <table class="table table-bordered table-hover" id="supportpermissionsTable">
                         <thead class="thead-light">
                         <tr>
                             <th>Type de Permission</th>
-                            <th>Rôle</th>
                             <th>Date de Début</th>
                             <th>Date de Fin</th>
+                            <th>Support Associé</th>
                             <th>Actions</th>
                         </tr>
                         </thead>
                         <tbody>
                         {% for supportpermission in supportpermissions %}
                             <tr>
-                                <td>{{ supportpermission.permissionType }}</td>
-                                <td>{{ supportpermission.role }}</td>
-                                <td>{{ supportpermission.startDate ? supportpermission.startDate|date('Y-m-d') : 'N/A' }}</td>
-                                <td>{{ supportpermission.endDate ? supportpermission.endDate|date('Y-m-d') : 'N/A' }}</td>
                                 <td>
-                                    <a href="{{ path('app_supportpermission_show', {'id': supportpermission.id}) }}" class="btn btn-sm btn-info">Voir</a>
+                                    {% if supportpermission.permissionType|lower == 'lecture' %}
+                                        <span class="badge badge-success">Lecture</span>
+                                    {% elseif supportpermission.permissionType|lower == 'téléchargement' %}
+                                        <span class="badge badge-info">Téléchargement</span>
+                                    {% else %}
+                                        {{ supportpermission.permissionType ?: 'N/A' }}
+                                    {% endif %}
+                                </td>
+                                <td>{{ supportpermission.startDate ? supportpermission.startDate|date('d/m/Y') : 'N/A' }}</td>
+                                <td>{{ supportpermission.endDate ? supportpermission.endDate|date('d/m/Y') : 'N/A' }}</td>
+                                <td>{{ supportpermission.support ? supportpermission.support.titre : 'N/A' }}</td>
+                                <td>
+                                    <a href="{{ path('app_supportpermission_show', {'id': supportpermission.id}) }}" class="btn btn-sm btn-info" title="Voir">
+                                        <i class="fas fa-eye"></i>
+                                    </a>
                                 </td>
                             </tr>
                         {% else %}
@@ -48,8 +75,28 @@
                         </tbody>
                     </table>
                 </div>
-                <a href="{{ path('app_supportpermission_new') }}" class="btn btn-primary btn-user mt-3">Créer une nouvelle permission</a>
+                <a href="{{ path('app_supportpermission_new') }}" class="btn btn-primary btn-user mt-3">
+                    <i class="fas fa-plus"></i> Créer une nouvelle permission
+                </a>
             </div>
         </div>
     </div>
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" integrity="sha512-..." crossorigin="anonymous" referrerpolicy="no-referrer" />
+{% endblock %}
+
+{% block js %}
+    {{ parent() }}
+    <script src="{{ asset('assets/back/vendor/datatables/jquery.dataTables.min.js') }}"></script>
+    <script src="{{ asset('assets/back/vendor/datatables/dataTables.bootstrap4.min.js') }}"></script>
+    <script>
+        $(document).ready(function() {
+            $('#supportpermissionsTable').DataTable({
+                "ordering": false,
+                "language": {
+                    "url": "//cdn.datatables.net/plug-ins/1.10.25/i18n/French.json"
+                }
+            });
+        });
+    </script>
 {% endblock %}

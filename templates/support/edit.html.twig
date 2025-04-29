@@ -18,32 +18,59 @@
                 <h6 class="m-0 font-weight-bold text-primary">{{ support.titre }}</h6>
             </div>
             <div class="card-body">
-                {{ form_start(form, {'attr': {'class': 'form'}}) }}
-                <div class="form-group">
-                    {{ form_label(form.url) }}
-                    {{ form_widget(form.url, {'attr': {'class': 'form-control'}}) }}
-                    {{ form_errors(form.url) }}
+                {{ form_start(form, {'attr': {'class': 'form', 'novalidate': 'novalidate'}}) }}
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group mb-3">
+                            {{ form_label(form.titre, null, {'label_attr': {'class': 'font-weight-bold text-primary'}}) }}
+                            {{ form_widget(form.titre, {'attr': {'class': 'form-control shadow-sm'}}) }}
+                            {{ form_errors(form.titre, {'attr': {'class': 'text-danger small'}}) }}
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group mb-3">
+                            {{ form_label(form.type, null, {'label_attr': {'class': 'font-weight-bold text-primary'}}) }}
+                            {{ form_widget(form.type, {'attr': {'class': 'form-control shadow-sm selectpicker'}}) }}
+                            {{ form_errors(form.type, {'attr': {'class': 'text-danger small'}}) }}
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group mb-3">
+                            {{ form_label(form.evenement, null, {'label_attr': {'class': 'font-weight-bold text-primary'}}) }}
+                            {{ form_widget(form.evenement, {'attr': {'class': 'form-control shadow-sm selectpicker'}}) }}
+                            {{ form_errors(form.evenement, {'attr': {'class': 'text-danger small'}}) }}
+                        </div>
+                    </div>
+                    <div class="col-md-12">
+                        <div class="form-group mb-3">
+                            {{ form_label(form.fichier, null, {'label_attr': {'class': 'font-weight-bold text-primary'}}) }}
+                            <div class="custom-file">
+                                {{ form_widget(form.fichier, {'attr': {'class': 'form-control-file custom-file-input'}}) }}
+                                <label class="custom-file-label" for="{{ form.fichier.vars.id }}">Choisir un fichier</label>
+                            </div>
+                            {{ form_errors(form.fichier, {'attr': {'class': 'text-danger small'}}) }}
+                            {% if support.url %}
+                                <p class="mt-2">Fichier actuel : {{ support.url }}</p>
+                            {% endif %}
+                        </div>
+                    </div>
                 </div>
-                <div class="form-group">
-                    {{ form_label(form.type) }}
-                    {{ form_widget(form.type, {'attr': {'class': 'form-control'}}) }}
-                    {{ form_errors(form.type) }}
-                </div>
-                <div class="form-group">
-                    {{ form_label(form.evenement) }}
-                    {{ form_widget(form.evenement, {'attr': {'class': 'form-control'}}) }}
-                    {{ form_errors(form.evenement) }}
-                </div>
-                <div class="form-group">
-                    {{ form_label(form.titre) }}
-                    {{ form_widget(form.titre, {'attr': {'class': 'form-control'}}) }}
-                    {{ form_errors(form.titre) }}
-                </div>
-                <button type="submit" class="btn btn-primary btn-user btn-block">Mettre à jour</button>
+                <button type="submit" class="btn btn-primary btn-user btn-block btn-lg">Mettre à jour</button>
+                {{ form_rest(form) }}
                 {{ form_end(form) }}
 
-                <a href="{{ path('app_support_index') }}" class="btn btn-secondary btn-user btn-block mt-2">Retour à la liste</a>
+                <a href="{{ path('app_support_index') }}" class="btn btn-secondary btn-user btn-block btn-lg mt-2">Retour à la liste</a>
             </div>
         </div>
     </div>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        $(document).ready(function() {
+            $('.custom-file-input').on('change', function() {
+                var fileName = $(this).val().split('\\').pop();
+                $(this).siblings('.custom-file-label').text(fileName || 'Choisir un fichier');
+            });
+        });
+    </script>
 {% endblock %}

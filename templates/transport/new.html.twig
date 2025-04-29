@@ -18,47 +18,164 @@
                 <h6 class="m-0 font-weight-bold text-primary">Formulaire de Transport</h6>
             </div>
             <div class="card-body">
-                {{ form_start(form, {'attr': {'class': 'form'}}) }}
-                <div class="form-group">
-                    {{ form_label(form.date) }}
-                    {{ form_widget(form.date, {'attr': {'class': 'form-control'}}) }}
-                    {{ form_errors(form.date) }}
+                {{ form_start(form, {'attr': {'class': 'form', 'novalidate': 'novalidate'}}) }}
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group mb-3">
+                            {{ form_label(form.pointDepart, null, {'label_attr': {'class': 'font-weight-bold text-primary'}}) }}
+                            {{ form_widget(form.pointDepart, {'attr': {'class': 'form-control shadow-sm', 'readonly': 'readonly'}}) }}
+                            {{ form_errors(form.pointDepart) }}
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group mb-3">
+                            {{ form_label(form.destination, null, {'label_attr': {'class': 'font-weight-bold text-primary'}}) }}
+                            {{ form_widget(form.destination, {'attr': {'class': 'form-control shadow-sm'}}) }}
+                            {{ form_errors(form.destination) }}
+                            <small class="text-muted">Vous pouvez écrire l'adresse manuellement OU choisir sur la carte.</small>
+                        </div>
+                    </div>
+                    <div class="col-md-12">
+                        <div class="form-group mb-3">
+                            {{ form_label(form.date, null, {'label_attr': {'class': 'font-weight-bold text-primary'}}) }}
+                            {{ form_widget(form.date, {'attr': {'class': 'form-control shadow-sm'}}) }}
+                            {{ form_errors(form.date) }}
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group mb-3">
+                            {{ form_label(form.heureDepart, null, {'label_attr': {'class': 'font-weight-bold text-primary'}}) }}
+                            {{ form_widget(form.heureDepart, {'attr': {'class': 'form-control shadow-sm'}}) }}
+                            {{ form_errors(form.heureDepart) }}
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group mb-3">
+                            {{ form_label(form.vehicule, null, {'label_attr': {'class': 'font-weight-bold text-primary'}}) }}
+                            {{ form_widget(form.vehicule, {'attr': {'class': 'form-control shadow-sm selectpicker'}}) }}
+                            {{ form_errors(form.vehicule) }}
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group mb-3">
+                            {{ form_label(form.evenement, null, {'label_attr': {'class': 'font-weight-bold text-primary'}}) }}
+                            {{ form_widget(form.evenement, {'attr': {'class': 'form-control shadow-sm selectpicker'}}) }}
+                            {{ form_errors(form.evenement) }}
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group mb-3">
+                            {{ form_label(form.service, null, {'label_attr': {'class': 'font-weight-bold text-primary'}}) }}
+                            {{ form_widget(form.service, {'attr': {'class': 'form-control shadow-sm selectpicker'}}) }}
+                            {{ form_errors(form.service) }}
+                        </div>
+                    </div>
                 </div>
-                <div class="form-group">
-                    {{ form_label(form.heureDepart) }}
-                    {{ form_widget(form.heureDepart, {'attr': {'class': 'form-control'}}) }}
-                    {{ form_errors(form.heureDepart) }}
-                </div>
-                <div class="form-group">
-                    {{ form_label(form.pointDepart) }}
-                    {{ form_widget(form.pointDepart, {'attr': {'class': 'form-control'}}) }}
-                    {{ form_errors(form.pointDepart) }}
-                </div>
-                <div class="form-group">
-                    {{ form_label(form.destination) }}
-                    {{ form_widget(form.destination, {'attr': {'class': 'form-control'}}) }}
-                    {{ form_errors(form.destination) }}
-                </div>
-                <div class="form-group">
-                    {{ form_label(form.vehicule) }}
-                    {{ form_widget(form.vehicule, {'attr': {'class': 'form-control'}}) }}
-                    {{ form_errors(form.vehicule) }}
-                </div>
-                <div class="form-group">
-                    {{ form_label(form.evenement) }}
-                    {{ form_widget(form.evenement, {'attr': {'class': 'form-control'}}) }}
-                    {{ form_errors(form.evenement) }}
-                </div>
-                <div class="form-group">
-                    {{ form_label(form.service) }}
-                    {{ form_widget(form.service, {'attr': {'class': 'form-control'}}) }}
-                    {{ form_errors(form.service) }}
-                </div>
-                <button type="submit" class="btn btn-primary btn-user btn-block">Créer</button>
+
+                <button type="submit" class="btn btn-primary btn-user btn-block btn-lg">Créer</button>
+                {{ form_rest(form) }}
                 {{ form_end(form) }}
 
-                <a href="{{ path('app_transport_index') }}" class="btn btn-secondary btn-user btn-block mt-2">Retour à la liste</a>
+                <a href="{{ path('app_transport_index') }}" class="btn btn-secondary btn-user btn-block btn-lg mt-2">Retour à la liste</a>
             </div>
         </div>
+
+        <!-- MAPS SECTION -->
+        <div class="card shadow mb-4 mt-4">
+            <div class="card-header py-3">
+                <h6 class="m-0 font-weight-bold text-primary">Choisissez sur Carte ou Recherchez</h6>
+            </div>
+            <div class="card-body">
+                <div id="map" style="height: 500px; border-radius: 23px;"></div>
+            </div>
+        </div>
+
     </div>
+
+    {# Ajout de Leaflet + Geocoder #}
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.3/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet@1.9.3/dist/leaflet.js"></script>
+
+    <link rel="stylesheet" href="https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.css" />
+    <script src="https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.js"></script>
+
+    <script>
+        var map = L.map('map').setView([36.8065, 10.1815], 13); // Tunis
+
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '© OpenStreetMap',
+        }).addTo(map);
+
+        var departMarker = null;
+        var destinationMarker = null;
+        var selecting = 'depart';
+
+        // Barre de recherche
+        var geocoder = L.Control.geocoder({
+            defaultMarkGeocode: false
+        })
+            .on('markgeocode', function(e) {
+                var center = e.geocode.center;
+                map.setView(center, 14);
+
+                if (selecting === 'depart') {
+                    if (departMarker) {
+                        map.removeLayer(departMarker);
+                    }
+                    departMarker = L.marker(center, { draggable: true }).addTo(map)
+                        .bindPopup('Point de Départ').openPopup();
+                    getLocationName(center.lat, center.lng, 'pointDepart');
+                    selecting = 'destination';
+                    alert('Cliquez maintenant ou recherchez votre Destination !');
+                }
+                else if (selecting === 'destination') {
+                    if (destinationMarker) {
+                        map.removeLayer(destinationMarker);
+                    }
+                    destinationMarker = L.marker(center, { draggable: true }).addTo(map)
+                        .bindPopup('Destination').openPopup();
+                    getLocationName(center.lat, center.lng, 'destination');
+                    selecting = 'done';
+                    alert('Sélection terminée.');
+                }
+            })
+            .addTo(map);
+
+        // Clic sur la carte
+        map.on('click', function(e) {
+            var latlng = e.latlng;
+
+            if (selecting === 'depart') {
+                if (departMarker) {
+                    map.removeLayer(departMarker);
+                }
+                departMarker = L.marker(latlng, { draggable: true }).addTo(map)
+                    .bindPopup('Point de Départ').openPopup();
+                getLocationName(latlng.lat, latlng.lng, 'pointDepart');
+                selecting = 'destination';
+                alert('Cliquez ou recherchez votre Destination maintenant.');
+            }
+            else if (selecting === 'destination') {
+                if (destinationMarker) {
+                    map.removeLayer(destinationMarker);
+                }
+                destinationMarker = L.marker(latlng, { draggable: true }).addTo(map)
+                    .bindPopup('Destination').openPopup();
+                getLocationName(latlng.lat, latlng.lng, 'destination');
+                selecting = 'done';
+                alert('Sélection terminée.');
+            }
+        });
+
+        function getLocationName(lat, lng, field) {
+            var url = 'https://nominatim.openstreetmap.org/reverse?lat=' + lat + '&lon=' + lng + '&format=json';
+            fetch(url)
+                .then(response => response.json())
+                .then(data => {
+                    var name = data.display_name;
+                    document.getElementById('transport_' + field).value = name;
+                })
+                .catch(error => console.error('Error:', error));
+        }
+    </script>
 {% endblock %}

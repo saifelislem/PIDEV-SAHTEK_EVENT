@@ -4,7 +4,7 @@
 
 {% block body %}
     <div class="container-fluid">
-        <h1 class="h3 mb-4 text-gray-800">Produits de Sponsoring</h1>
+        <h1 class="h3 mb-4 text-gray-800"></h1>
 
         {% for message in app.flashes('success') %}
             <div class="alert alert-success">{{ message }}</div>
@@ -14,12 +14,30 @@
         {% endfor %}
 
         <div class="card shadow mb-4">
-            <div class="card-header py-3">
+            <div class="card-header py-3 d-flex align-items-center">
                 <h6 class="m-0 font-weight-bold text-primary">Liste des Produits</h6>
+                <div class="ml-auto">
+                    <form method="get" action="{{ path('app_produitsponsoring_index') }}" class="form-inline">
+                        <div class="dropdown">
+                            <button class="btn btn-primary btn-user dropdown-toggle" type="button" id="sortDropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                Trier
+                            </button>
+                            <div class="dropdown-menu dropdown-menu-right" aria-labelledby="sortDropdown">
+                                <a class="dropdown-item {{ current_sort == 'id' ? 'active' : '' }}" href="{{ path('app_produitsponsoring_index', {'sort': 'id', 'order': current_order}) }}">Par défaut</a>
+                                <a class="dropdown-item {{ current_sort == 'nom' ? 'active' : '' }}" href="{{ path('app_produitsponsoring_index', {'sort': 'nom', 'order': current_order}) }}">Nom</a>
+                                <a class="dropdown-item {{ current_sort == 'quantite' ? 'active' : '' }}" href="{{ path('app_produitsponsoring_index', {'sort': 'quantite', 'order': current_order}) }}">Quantité</a>
+                                <a class="dropdown-item {{ current_sort == 'prix' ? 'active' : '' }}" href="{{ path('app_produitsponsoring_index', {'sort': 'prix', 'order': current_order}) }}">Prix</a>
+                            </div>
+                        </div>
+                        <button type="submit" name="order" value="{{ current_order == 'asc' ? 'desc' : 'asc' }}" class="btn btn-primary btn-user ml-2">
+                            {{ current_order == 'asc' ? '↓' : '↑' }}
+                        </button>
+                    </form>
+                </div>
             </div>
             <div class="card-body">
                 <div class="table-responsive">
-                    <table class="table table-bordered table-hover">
+                    <table class="table table-bordered table-hover" id="produitTable">
                         <thead class="thead-light">
                         <tr>
                             <th>Nom</th>
@@ -27,25 +45,33 @@
                             <th>Quantité</th>
                             <th>Prix</th>
                             <th>Image</th>
-                            <th>Actions</th>
+                            <th></th>
                         </tr>
                         </thead>
                         <tbody>
                         {% for produitsponsoring in produitsponsorings %}
                             <tr>
                                 <td>{{ produitsponsoring.nom }}</td>
-                                <td>{{ produitsponsoring.description }}</td>
-                                <td>{{ produitsponsoring.quantite }}</td>
+                                <td>{{ produitsponsoring.description|slice(0, 10) }}{% if produitsponsoring.description|length > 10 %}...{% endif %}</td>
+                                <td>
+                                    {% if produitsponsoring.quantite > 0 %}
+                                        <span>{{ produitsponsoring.quantite }}</span>
+                                    {% else %}
+                                        <span>{{ produitsponsoring.quantite }}</span>
+                                    {% endif %}
+                                </td>
                                 <td>{{ produitsponsoring.prix|number_format(2, ',', ' ') }} €</td>
                                 <td>
                                     {% if produitsponsoring.image %}
-                                        <img src="{{ asset('Uploads/produits/' ~ produitsponsoring.image) }}" alt="{{ produitsponsoring.nom }}" style="max-width: 100px;">
+                                        <img src="{{ asset('Uploads/' ~ produitsponsoring.image) }}"  style="max-width: 50px;">
                                     {% else %}
                                         Pas d'image
                                     {% endif %}
                                 </td>
                                 <td>
-                                    <a href="{{ path('app_produitsponsoring_show', {'id': produitsponsoring.id}) }}" class="btn btn-sm btn-info">Voir</a>
+                                    <a href="{{ path('app_produitsponsoring_show', {'id': produitsponsoring.id}) }}" class="btn btn-sm btn-info" title="Voir">
+                                        <i class="fas fa-eye"></i>
+                                    </a>
                                 </td>
                             </tr>
                         {% else %}
@@ -56,8 +82,27 @@
                         </tbody>
                     </table>
                 </div>
-                <a href="{{ path('app_produitsponsoring_new') }}" class="btn btn-primary btn-user mt-3">Créer un nouveau produit</a>
+                <a href="{{ path('app_produitsponsoring_new') }}" class="btn btn-primary btn-user mt-3">
+                    <i class="fas fa-plus"></i> Créer un nouveau produit
+                </a>
             </div>
         </div>
     </div>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" integrity="sha512-Avb2QiuDEEvB4bZJYdft2mNjVShBftLdPG8FJ0V7irTLQ8Uo0qcPxh4Plq7G5tGm0rU+1SPhVotteLpBERet7svw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+{% endblock %}
+
+{% block js %}
+    {{ parent() }}
+    <script src="{{ asset('assets/back/vendor/datatables/jquery.dataTables.min.js') }}"></script>
+    <script src="{{ asset('assets/back/vendor/datatables/dataTables.bootstrap4.min.js') }}"></script>
+    <script>
+        $(document).ready(function() {
+            $('#produitTable').DataTable({
+                "ordering": false, // Désactiver le tri côté client
+                "language": {
+                    "url": "//cdn.datatables.net/plug-ins/1.10.25/i18n/French.json"
+                }
+            });
+        });
+    </script>
 {% endblock %}

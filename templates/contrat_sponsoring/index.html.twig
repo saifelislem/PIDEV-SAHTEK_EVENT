@@ -4,7 +4,7 @@
 
 {% block body %}
     <div class="container-fluid">
-        <h1 class="h3 mb-4 text-gray-800">Contrats de Sponsoring</h1>
+        <h1 class="h3 mb-4 text-gray-800"></h1>
 
         {% for message in app.flashes('success') %}
             <div class="alert alert-success">{{ message }}</div>
@@ -14,26 +14,51 @@
         {% endfor %}
 
         <div class="card shadow mb-4">
-            <div class="card-header py-3">
+            <div class="card-header py-3 d-flex align-items-center">
                 <h6 class="m-0 font-weight-bold text-primary">Liste des Contrats</h6>
+                <div class="ml-auto">
+                    <form method="get" action="{{ path('app_contrat_sponsoring_index') }}" class="form-inline">
+                        <div class="dropdown">
+                            <button class="btn btn-primary btn-user dropdown-toggle" type="button" id="sortDropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                Trier
+                            </button>
+                            <div class="dropdown-menu dropdown-menu-right" aria-labelledby="sortDropdown">
+                                <a class="dropdown-item {{ current_sort == 'id' ? 'active' : '' }}" href="{{ path('app_contrat_sponsoring_index', {'sort': 'id', 'order': current_order}) }}">Par défaut</a>
+                                <a class="dropdown-item {{ current_sort == 'montant' ? 'active' : '' }}" href="{{ path('app_contrat_sponsoring_index', {'sort': 'montant', 'order': current_order}) }}">Montant</a>
+                                <a class="dropdown-item {{ current_sort == 'description' ? 'active' : '' }}" href="{{ path('app_contrat_sponsoring_index', {'sort': 'description', 'order': current_order}) }}">Description</a>
+                            </div>
+                        </div>
+                        <button type="submit" name="order" value="{{ current_order == 'asc' ? 'desc' : 'asc' }}" class="btn btn-primary btn-user ml-2">
+                            {{ current_order == 'asc' ? '↓' : '↑' }}
+                        </button>
+                    </form>
+                </div>
             </div>
             <div class="card-body">
                 <div class="table-responsive">
-                    <table class="table table-bordered table-hover">
+                    <table class="table table-bordered table-hover" id="contratTable">
                         <thead class="thead-light">
                         <tr>
-                            <th>Montant</th>
+                            <th>Montant (TND)</th>
                             <th>Description</th>
-                            <th>Actions</th>
+                            <th></th>
                         </tr>
                         </thead>
                         <tbody>
                         {% for contrat_sponsoring in contrat_sponsorings %}
                             <tr>
-                                <td>{{ contrat_sponsoring.montant|number_format(2, ',', ' ') }} €</td>
-                                <td>{{ contrat_sponsoring.description }}</td>
                                 <td>
-                                    <a href="{{ path('app_contrat_sponsoring_show', {'id': contrat_sponsoring.id}) }}" class="btn btn-sm btn-info">Voir</a>
+                                    {% if contrat_sponsoring.montant > 0 %}
+                                        <span >{{ contrat_sponsoring.montant|number_format(2, ',', ' ') }}</span>
+                                    {% else %}
+                                        <span >{{ contrat_sponsoring.montant|number_format(2, ',', ' ') }}</span>
+                                    {% endif %}
+                                </td>
+                                <td>{{ contrat_sponsoring.description|slice(0, 10) }}{% if contrat_sponsoring.description|length > 10 %}...{% endif %}</td>
+                                <td>
+                                    <a href="{{ path('app_contrat_sponsoring_show', {'id': contrat_sponsoring.id}) }}" class="btn btn-sm btn-info" title="Voir">
+                                        <i class="fas fa-eye"></i>
+                                    </a>
                                 </td>
                             </tr>
                         {% else %}
@@ -44,8 +69,27 @@
                         </tbody>
                     </table>
                 </div>
-                <a href="{{ path('app_contrat_sponsoring_new') }}" class="btn btn-primary btn-user mt-3">Créer un nouveau contrat</a>
+                <a href="{{ path('app_contrat_sponsoring_new') }}" class="btn btn-primary btn-user mt-3">
+                    <i class="fas fa-plus"></i> Créer un nouveau contrat
+                </a>
             </div>
         </div>
     </div>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" integrity="sha512-Avb2QiuDEEvB4bZJYdft2mNjVShBftLdPG8FJ0V7irTLQ8Uo0qcPxh4Plq7G5tGm0rU+1SPhVotteLpBERet7svw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+{% endblock %}
+
+{% block js %}
+    {{ parent() }}
+    <script src="{{ asset('assets/back/vendor/datatables/jquery.dataTables.min.js') }}"></script>
+    <script src="{{ asset('assets/back/vendor/datatables/dataTables.bootstrap4.min.js') }}"></script>
+    <script>
+        $(document).ready(function() {
+            $('#contratTable').DataTable({
+                "ordering": false, // Désactiver le tri côté client
+                "language": {
+                    "url": "//cdn.datatables.net/plug-ins/1.10.25/i18n/French.json"
+                }
+            });
+        });
+    </script>
 {% endblock %}

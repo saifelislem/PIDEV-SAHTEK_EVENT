@@ -16,28 +16,30 @@ class UtilisateurRepository extends ServiceEntityRepository
         parent::__construct($registry, Utilisateur::class);
     }
 
-    //    /**
-    //     * @return Utilisateur[] Returns an array of Utilisateur objects
-    //     */
-    //    public function findByExampleField($value): array
-    //    {
-    //        return $this->createQueryBuilder('u')
-    //            ->andWhere('u.exampleField = :val')
-    //            ->setParameter('val', $value)
-    //            ->orderBy('u.id', 'ASC')
-    //            ->setMaxResults(10)
-    //            ->getQuery()
-    //            ->getResult()
-    //        ;
-    //    }
+    /**
+     * @return Utilisateur[] Returns an array of Utilisateur objects sorted by the specified field and direction
+     */
+    public function findAllSorted(string $sort, string $order): array
+    {
+        $queryBuilder = $this->createQueryBuilder('u');
 
-    //    public function findOneBySomeField($value): ?Utilisateur
-    //    {
-    //        return $this->createQueryBuilder('u')
-    //            ->andWhere('u.exampleField = :val')
-    //            ->setParameter('val', $value)
-    //            ->getQuery()
-    //            ->getOneOrNullResult()
-    //        ;
-    //    }
+        switch ($sort) {
+            case 'id':
+                $queryBuilder->orderBy('u.id', $order);
+                break;
+            case 'nom':
+                $queryBuilder->orderBy('u.nom', $order);
+                break;
+            case 'role':
+                $queryBuilder->orderBy('u.role', $order);
+                break;
+            case 'statut':
+                $queryBuilder->orderBy('u.statut', $order);
+                break;
+            default:
+                $queryBuilder->orderBy('u.nom', 'ASC');
+        }
+
+        return $queryBuilder->getQuery()->getResult();
+    }
 }

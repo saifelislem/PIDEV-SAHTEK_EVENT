@@ -8,6 +8,11 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use App\Repository\EvenementRepository;
 use Symfony\Component\Validator\Constraints as Assert;
+use App\Entity\Participation;
+use App\Entity\Reclamation;
+use App\Entity\Service;
+use App\Entity\Transport;
+use App\Entity\Support;
 
 #[ORM\Entity(repositoryClass: EvenementRepository::class)]
 #[ORM\Table(name: 'evenement')]
@@ -27,7 +32,7 @@ class Evenement
     #[Assert\Length(min: 10, minMessage: "La description doit contenir au moins {{ limit }} caractères.")]
     private ?string $description = null;
 
-    #[ORM\Column(type: 'datetime_immutable', nullable: false)]
+    #[ORM\Column(type: Types::DATETIME_IMMUTABLE, nullable: false)]
     #[Assert\NotBlank(message: "La date est obligatoire.")]
     private ?\DateTimeImmutable $date = null;
 
@@ -35,9 +40,9 @@ class Evenement
     #[Assert\NotBlank(message: "Le lieu est obligatoire.")]
     private ?string $lieu = null;
 
-    #[ORM\Column(type: 'string', nullable: false)]
-    #[Assert\NotBlank(message: "Le statut est obligatoire.")]
-    private ?string $statut = null;
+    #[ORM\Column(length: 255, nullable: true)]
+    #[Assert\Choice(choices: ['Actif', 'Annulé', 'Terminé'], message: 'Statut invalide.')]
+    private ?string $statut = 'Actif'; // Default to 'Actif'
 
     #[ORM\Column(type: 'integer', nullable: false)]
     #[Assert\NotBlank(message: "La capacité maximale est obligatoire.")]
@@ -47,9 +52,9 @@ class Evenement
     #[ORM\Column(type: 'string', nullable: false)]
     private ?string $image = null;
 
-    #[ORM\Column(type: 'string', nullable: false)]
-    #[Assert\NotBlank(message: "Le type est obligatoire.")]
-    private ?string $type = null;
+    #[ORM\Column(length: 255)]
+    #[Assert\Choice(choices: ['Conferences', 'Seminaires', 'Ateliers Pratiques', 'Competitions'], message: 'Type invalide.')]
+    private ?string $type = 'Conferences'; // Default to 'Conferences'
 
     #[ORM\OneToMany(targetEntity: Participation::class, mappedBy: 'evenement', cascade: ['remove'], orphanRemoval: true)]
     private Collection $participations;
@@ -235,5 +240,24 @@ class Evenement
             }
         }
         return $this;
+    }
+
+
+    /**
+     * Lifecycle callback to update statut based on date.
+     *
+     * @ORM\PrePersist
+     * @ORM\PreUpdate
+     */
+    public function updateStatut(): void
+    {
+        if ($this->date instanceof \DateTimeImmutable) {
+            $now = new \DateTimeImmutable();
+            if ($this->date < $now && $this->statut !== 'Annulé') {
+                $this->statut = 'Terminé';
+            } elseif ($this->statut === null) {
+                $this->statut = 'Actif';
+            }
+        }
     }
 }

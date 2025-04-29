@@ -4,6 +4,8 @@ namespace App\Entity;
 use App\Repository\SponsorPendingRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
+
 
 #[ORM\Entity(repositoryClass: SponsorPendingRepository::class)]
 class SponsorPending
@@ -14,42 +16,83 @@ class SponsorPending
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
+    #[Assert\NotBlank(message: "Le nom est obligatoire")]
+    #[Assert\Length(
+        min: 2,
+        max: 255,
+        minMessage: "Le nom doit contenir au moins {{ limit }} caractères",
+        maxMessage: "Le nom ne peut dépasser {{ limit }} caractères"
+    )]
     private ?string $nom = null;
 
     #[ORM\Column(length: 255)]
+    #[Assert\NotBlank(message: "Le prénom est obligatoire")]
+    #[Assert\Length(
+        min: 2,
+        max: 255,
+        minMessage: "Le prénom doit contenir au moins {{ limit }} caractères",
+        maxMessage: "Le prénom ne peut dépasser {{ limit }} caractères"
+    )]
     private ?string $prenom = null;
 
     #[ORM\Column(length: 255)]
+    #[Assert\NotBlank(message: "L'email est obligatoire")]
+    #[Assert\Email(message: "L'email '{{ value }}' n'est pas valide")]
     private ?string $email = null;
 
     #[ORM\Column(length: 255, nullable: true)]
+    #[Assert\Length(
+        min: 6,
+        minMessage: "Le mot de passe doit contenir au moins {{ limit }} caractères"
+    )]
     private ?string $mot_de_passe = null;
 
     #[ORM\Column(length: 255)]
+    #[Assert\NotBlank(message: "La nationalité est obligatoire")]
     private ?string $nationalite = null;
 
     #[ORM\Column(length: 255)]
+    #[Assert\NotBlank(message: "Le genre est obligatoire")]
+    #[Assert\Choice(
+        choices: ["homme", "femme", "autre"],
+        message: "Le genre doit être homme, femme ou autre"
+    )]
     private ?string $genre = null;
 
     #[ORM\Column(length: 255)]
+    #[Assert\NotBlank(message: "Le statut est obligatoire")]
     private ?string $status = null;
 
     #[ORM\Column(length: 255)]
+    #[Assert\NotBlank(message: "Le nom du produit est obligatoire")]
+    #[Assert\Length(max: 255, maxMessage: "Le nom du produit est trop long")]
     private ?string $produit_nom = null;
 
     #[ORM\Column(type: Types::TEXT)]
+    #[Assert\NotBlank(message: "La description du produit est obligatoire")]
+
     private ?string $produit_description = null;
 
     #[ORM\Column]
+    #[Assert\NotBlank(message: "La quantité est obligatoire")]
+    #[Assert\Positive(message: "La quantité doit être positive")]
     private ?int $produit_quantite = null;
 
     #[ORM\Column]
+    #[Assert\NotBlank(message: "Le prix est obligatoire")]
+    #[Assert\Positive(message: "Le prix doit être positif")]
     private ?float $produit_prix = null;
 
     #[ORM\Column(length: 255, nullable: true)]
+    #[Assert\File(
+        maxSize: "2M",
+        mimeTypes: ["image/jpeg", "image/png", "image/gif"],
+        mimeTypesMessage: "Veuillez uploader une image valide (JPEG, PNG ou GIF)"
+    )]
     private ?string $produit_image = null;
 
     #[ORM\Column(type: Types::DECIMAL, precision: 10, scale: 2, nullable: true)]
+    #[Assert\PositiveOrZero(message: "Le montant du contrat doit être positif")]
     private ?string $contrat_montant = null;
 
     #[ORM\Column(type: Types::TEXT, nullable: true)]

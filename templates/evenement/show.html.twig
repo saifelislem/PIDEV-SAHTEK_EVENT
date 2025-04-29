@@ -38,7 +38,17 @@
                     </tr>
                     <tr>
                         <th>Statut</th>
-                        <td>{{ evenement.statut|default('N/A') }}</td>
+                        <td>
+                            {% if evenement.statut == 'Actif' %}
+                                <span class="badge badge-success">Actif</span>
+                            {% elseif evenement.statut == 'Annulé' %}
+                                <span class="badge badge-danger">Annulé</span>
+                            {% elseif evenement.statut == 'Terminé' %}
+                                <span class="badge badge-secondary">Terminé</span>
+                            {% else %}
+                                {{ evenement.statut|default('N/A') }}
+                            {% endif %}
+                        </td>
                     </tr>
                     <tr>
                         <th>Capacité Max</th>
@@ -56,18 +66,63 @@
                     </tr>
                     <tr>
                         <th>Type</th>
-                        <td>{{ evenement.type|default('N/A') }}</td>
+                        <td>
+                            {% if evenement.type == 'Conferences' %}
+                                <span class="badge badge-primary">Conférences</span>
+                            {% elseif evenement.type == 'Seminaires' %}
+                                <span class="badge badge-info">Séminaires</span>
+                            {% elseif evenement.type == 'Ateliers Pratiques' %}
+                                <span class="badge badge-warning">Ateliers Pratiques</span>
+                            {% elseif evenement.type == 'Competitions' %}
+                                <span class="badge badge-dark">Compétitions</span>
+                            {% else %}
+                                {{ evenement.type|default('N/A') }}
+                            {% endif %}
+                        </td>
                     </tr>
                     </tbody>
                 </table>
-                <a href="{{ path('app_evenement_index') }}" class="btn btn-secondary btn-user mt-3">Retour à la liste</a>
-                <a href="{{ path('app_evenement_edit', {'id': evenement.id}) }}" class="btn btn-primary btn-user mt-3">Modifier</a>
-                <form method="post" action="{{ path('app_evenement_delete', {'id': evenement.id}) }}" style="display:inline;" onsubmit="return confirm('Voulez-vous vraiment supprimer cet événement ?');">
-                    <input type="hidden" name="_method" value="DELETE">
-                    <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ evenement.id) }}">
-                    <button type="submit" class="btn btn-danger btn-user mt-3">Supprimer</button>
-                </form>
+                <div class="mt-3">
+                    <a href="{{ path('app_evenement_index') }}" class="btn btn-sm btn-secondary" title="Retour à la liste">
+                        <i class="fas fa-arrow-left"></i>
+                    </a>
+                    <a href="{{ path('app_evenement_edit', {'id': evenement.id}) }}" class="btn btn-sm btn-primary" title="Modifier">
+                        <i class="fas fa-edit"></i>
+                    </a>
+                    <form id="delete-form-{{ evenement.id }}"
+                          method="post"
+                          action="{{ path('app_evenement_delete', {'id': evenement.id}) }}"
+                          style="display:inline;">
+                        <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ evenement.id) }}">
+                        <button type="button"
+                                class="btn btn-sm btn-danger"
+                                title="Supprimer"
+                                onclick="confirmDelete({{ evenement.id }}, '{{ evenement.nom|e('js') }}')">
+                            <i class="fas fa-trash-alt"></i>
+                        </button>
+                    </form>
+                </div>
             </div>
         </div>
     </div>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" integrity="sha512-..." crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script>
+        function confirmDelete(id, nom) {
+            Swal.fire({
+                title: 'Confirmer la suppression',
+                html: 'Voulez-vous vraiment supprimer l\'événement <strong>' + nom + '</strong> ?',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#d33',
+                cancelButtonColor: '#6c757d',
+                confirmButtonText: 'Oui, supprimer',
+                cancelButtonText: 'Annuler'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    document.getElementById('delete-form-' + id).submit();
+                }
+            });
+        }
+    </script>
 {% endblock %}

@@ -18,47 +18,65 @@
                 <h6 class="m-0 font-weight-bold text-primary">Transport #{{ transport.id }}</h6>
             </div>
             <div class="card-body">
-                {{ form_start(form, {'attr': {'class': 'form'}}) }}
-                <div class="form-group">
-                    {{ form_label(form.date) }}
-                    {{ form_widget(form.date, {'attr': {'class': 'form-control'}}) }}
-                    {{ form_errors(form.date) }}
+                {{ form_start(form, {'attr': {'class': 'form', 'novalidate': 'novalidate'}}) }}
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group mb-3">
+                            {{ form_label(form.pointDepart, null, {'label_attr': {'class': 'font-weight-bold text-primary'}}) }}
+                            {{ form_widget(form.pointDepart, {'attr': {'class': 'form-control shadow-sm'}}) }}
+                            {{ form_errors(form.pointDepart, {'attr': {'class': 'text-danger small'}}) }}
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group mb-3">
+                            {{ form_label(form.destination, null, {'label_attr': {'class': 'font-weight-bold text-primary'}}) }}
+                            {{ form_widget(form.destination, {'attr': {'class': 'form-control shadow-sm'}}) }}
+                            {{ form_errors(form.destination, {'attr': {'class': 'text-danger small'}}) }}
+                        </div>
+                    </div>
+                    <div class="col-md-12">
+                        <div class="form-group mb-3">
+                            {{ form_label(form.date, null, {'label_attr': {'class': 'font-weight-bold text-primary'}}) }}
+                            {{ form_widget(form.date, {'attr': {'class': 'form-control shadow-sm'}}) }}
+                            {{ form_errors(form.date, {'attr': {'class': 'text-danger small'}}) }}
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group mb-3">
+                            {{ form_label(form.heureDepart, null, {'label_attr': {'class': 'font-weight-bold text-primary'}}) }}
+                            {{ form_widget(form.heureDepart, {'attr': {'class': 'form-control shadow-sm'}}) }}
+                            {{ form_errors(form.heureDepart, {'attr': {'class': 'text-danger small'}}) }}
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group mb-3">
+                            {{ form_label(form.vehicule, null, {'label_attr': {'class': 'font-weight-bold text-primary'}}) }}
+                            {{ form_widget(form.vehicule, {'attr': {'class': 'form-control shadow-sm selectpicker'}}) }}
+                            {{ form_errors(form.vehicule, {'attr': {'class': 'text-danger small'}}) }}
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group mb-3">
+                            {{ form_label(form.evenement, null, {'label_attr': {'class': 'font-weight-bold text-primary'}}) }}
+                            {{ form_widget(form.evenement, {'attr': {'class': 'form-control shadow-sm selectpicker'}}) }}
+                            {{ form_errors(form.evenement, {'attr': {'class': 'text-danger small'}}) }}
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group mb-3">
+                            {{ form_label(form.service, null, {'label_attr': {'class': 'font-weight-bold text-primary'}}) }}
+                            {{ form_widget(form.service, {'attr': {'class': 'form-control shadow-sm selectpicker'}}) }}
+                            {{ form_errors(form.service, {'attr': {'class': 'text-danger small'}}) }}
+                        </div>
+                    </div>
                 </div>
-                <div class="form-group">
-                    {{ form_label(form.heureDepart) }}
-                    {{ form_widget(form.heureDepart, {'attr': {'class': 'form-control'}}) }}
-                    {{ form_errors(form.heureDepart) }}
-                </div>
-                <div class="form-group">
-                    {{ form_label(form.pointDepart) }}
-                    {{ form_widget(form.pointDepart, {'attr': {'class': 'form-control'}}) }}
-                    {{ form_errors(form.pointDepart) }}
-                </div>
-                <div class="form-group">
-                    {{ form_label(form.destination) }}
-                    {{ form_widget(form.destination, {'attr': {'class': 'form-control'}}) }}
-                    {{ form_errors(form.destination) }}
-                </div>
-                <div class="form-group">
-                    {{ form_label(form.vehicule) }}
-                    {{ form_widget(form.vehicule, {'attr': {'class': 'form-control'}}) }}
-                    {{ form_errors(form.vehicule) }}
-                </div>
-                <div class="form-group">
-                    {{ form_label(form.evenement) }}
-                    {{ form_widget(form.evenement, {'attr': {'class': 'form-control'}}) }}
-                    {{ form_errors(form.evenement) }}
-                </div>
-                <div class="form-group">
-                    {{ form_label(form.service) }}
-                    {{ form_widget(form.service, {'attr': {'class': 'form-control'}}) }}
-                    {{ form_errors(form.service) }}
-                </div>
-                <button type="submit" class="btn btn-primary btn-user btn-block">Mettre à jour</button>
+                <button type="submit" class="btn btn-primary btn-user btn-block btn-lg">Mettre à jour</button>
+                {{ form_rest(form) }}
                 {{ form_end(form) }}
 
-                <a href="{{ path('app_transport_index') }}" class="btn btn-secondary btn-user btn-block mt-2">Retour à la liste</a>
+                <a href="{{ path('app_transport_index') }}" class="btn btn-secondary btn-user btn-block btn-lg mt-2">Retour à la liste</a>
             </div>
         </div>
     </div>
+
 {% endblock %}
