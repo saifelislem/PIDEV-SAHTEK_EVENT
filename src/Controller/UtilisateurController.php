@@ -138,7 +138,7 @@ final class UtilisateurController extends AbstractController
                 $newFilename = $safeFilename.'-'.uniqid().'.'.$photoFile->guessExtension();
 
                 try {
-                    $photoFile->move(
+                    $photoFile->move (
                         $this->getParameter('photo_directory'),
                         $newFilename
                     );
