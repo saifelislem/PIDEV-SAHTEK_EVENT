@@ -21,6 +21,12 @@ final class ParticipationController extends AbstractController
         ]);
     }
 
+
+
+
+
+
+    
     #[Route('/new', name: 'app_participation_new', methods: ['GET', 'POST'])]
     public function new(Request $request, EntityManagerInterface $entityManager): Response
     {
