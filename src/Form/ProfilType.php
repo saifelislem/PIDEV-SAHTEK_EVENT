@@ -16,6 +16,14 @@ class ProfilType extends AbstractType
             ->add('email', TextType::class, [
                 'disabled' => true, // L'email ne doit pas être modifiable
             ])
+
+
+
+
+
+
+
+            
             ->add('num_tel', TextType::class, [
                 'label' => 'Numéro de téléphone',
                 'required' => false,
