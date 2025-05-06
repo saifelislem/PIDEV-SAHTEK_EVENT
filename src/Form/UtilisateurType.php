@@ -26,6 +26,16 @@ class UtilisateurType extends AbstractType
                 'label' => 'Prénom',
                 'attr' => ['placeholder' => 'Entrez le prénom', 'class' => 'form-control'],
             ])
+            ->add('email', EmailType::class, [
+                'label' => 'Email',
+                'attr' => ['placeholder' => 'Entrez l’email', 'class' => 'form-control'],
+            ])
+            ->add('mot_de_passe', PasswordType::class, [
+                'label' => 'Mot de passe',
+                'mapped' => false,
+                'required' => false,
+                'attr' => ['placeholder' => 'Entrez le mot de passe', 'class' => 'form-control'],
+            ])
             ->add('role', ChoiceType::class, [
                 'label' => 'Rôle',
                 'choices' => [
@@ -33,15 +43,39 @@ class UtilisateurType extends AbstractType
                     'Utilisateur' => 'ROLE_USER',
                     'Modérateur' => 'ROLE_MODERATOR',
                 ],
-                'multiple' => true, // Si les rôles sont un tableau
+                'multiple' => true,
                 'expanded' => false,
                 'attr' => ['class' => 'form-control'],
             ])
-            ->add('mot_de_passe', PasswordType::class, [
-                'label' => 'Mot de passe',
-                'attr' => ['placeholder' => 'Entrez le mot de passe', 'class' => 'form-control'],
-                'mapped' => false, // Pour ne pas mapper directement, gérer dans le contrôleur
-                'required' => false,
+            ->add('permission', ChoiceType::class, [
+                'label' => 'Permission',
+                'choices' => [
+                    'Oui' => true,
+                    'Non' => false,
+                ],
+                'expanded' => false,
+                'multiple' => false,
+                'attr' => ['class' => 'form-control'],
+            ])
+            ->add('statut', ChoiceType::class, [
+                'label' => 'Statut',
+                'choices' => [
+                    'Actif' => true,
+                    'Inactif' => false,
+                ],
+                'expanded' => false,
+                'multiple' => false,
+                'attr' => ['class' => 'form-control'],
+            ])
+            ->add('is_verified', ChoiceType::class, [
+                'label' => 'Vérifié',
+                'choices' => [
+                    'Oui' => true,
+                    'Non' => false,
+                ],
+                'expanded' => false,
+                'multiple' => false,
+                'attr' => ['class' => 'form-control'],
             ])
             ->add('nationalite', TextType::class, [
                 'label' => 'Nationalité',
@@ -54,51 +88,24 @@ class UtilisateurType extends AbstractType
                     'Femme' => 'Femme',
                     'Autre' => 'Autre',
                 ],
-                'attr' => ['class' => 'form-control'],
-            ])
-            ->add('email', EmailType::class, [
-                'label' => 'Email',
-                'attr' => ['placeholder' => 'Entrez l’email', 'class' => 'form-control'],
-            ])
-            ->add('permission', ChoiceType::class, [
-                'label' => 'Permission',
-                'choices' => [
-                    'Oui' => true,
-                    'Non' => false,
-                ],
-                'attr' => ['class' => 'form-control'],
-            ])
-            ->add('statut', ChoiceType::class, [
-                'label' => 'Statut',
-                'choices' => [
-                    'Actif' => true,
-                    'Inactif' => false,
-                ],
+                'expanded' => false,
+                'multiple' => false,
                 'attr' => ['class' => 'form-control'],
             ])
             ->add('verification_token', TextType::class, [
                 'label' => 'Token de vérification',
-                'attr' => ['placeholder' => 'Token généré automatiquement', 'class' => 'form-control'],
                 'required' => false,
+                'attr' => ['placeholder' => 'Token généré automatiquement', 'class' => 'form-control'],
             ])
-            ->add('is_verified', ChoiceType::class, [
-                'label' => 'Vérifié',
-                'choices' => [
-                    'Oui' => true,
-                    'Non' => false,
-                ],
-                'attr' => ['class' => 'form-control'],
-            ])
-            // Champ photo ajouté
             ->add('photo', FileType::class, [
-                'label' => 'Photo de profil (JPG ou PNG)',
-                'mapped' => false, // Pas directement lié à l'entité
+                'label' => 'Photo de profil (JPEG ou PNG)',
+                'mapped' => false,
                 'required' => false,
                 'constraints' => [
                     new File([
                         'maxSize' => '2M',
                         'mimeTypes' => ['image/jpeg', 'image/png'],
-                        'mimeTypesMessage' => 'Format autorisé : JPEG ou PNG',
+                        'mimeTypesMessage' => 'Formats autorisés : JPEG ou PNG',
                     ]),
                 ],
                 'attr' => ['class' => 'form-control'],
