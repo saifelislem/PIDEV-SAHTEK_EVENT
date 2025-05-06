@@ -54,11 +54,25 @@ Le projet est divisé en 6 modules principaux :
 
 ## 🚀 Lancement du projet
 
-```bash
 # Cloner le projet
 git clone https://github.com/ton-utilisateur/shatek-event.git
 
 # Accéder au dossier
 cd shatek-event
 
+# Installer les dépendances
+composer install
+
+# Configurer l'environnement
+cp .env.example .env
+# Modifier .env avec vos configurations (base de données, clés API, etc.)
+
+# Créer la base de données
+php bin/console doctrine:database:create
+
+# Exécuter les migrations
+php bin/console doctrine:migrations:migrate
+
+# Lancer le serveur local
+symfony server:start
 
